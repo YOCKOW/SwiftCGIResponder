@@ -25,7 +25,6 @@ matrix:
       language: objective-c
 
 script:
-  - swift build
-  - swift test
-  - swift build --configuration release
+  - ./build-install.rb --debug 
+  - ./build-install.rb --release --skip-test
 

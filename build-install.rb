@@ -214,10 +214,10 @@ modulePath = binPath + moduleFilename
 swiftBuildArguments = [
   "--build-path #{Options[:build_directory].escaped()}",
   "--configuration #{configuration}",
-  "-Xswiftc -emit-library -Xswiftc -o#{libPath.escaped()}",
-  "-Xswiftc -module-link-name -Xswiftc #{ModuleLinkName}",
-  "-Xswiftc -module-name -Xswiftc #{ModuleName}",
-  "-Xswiftc -emit-module-path -Xswiftc #{modulePath.escaped()}"
+#  "-Xswiftc -emit-library -Xswiftc -o#{libPath.escaped()}",
+#  "-Xswiftc -module-link-name -Xswiftc #{ModuleLinkName}",
+#  "-Xswiftc -module-name -Xswiftc #{ModuleName}",
+#  "-Xswiftc -emit-module-path -Xswiftc #{modulePath.escaped()}"
 ].join(" ")
 
 # Build
