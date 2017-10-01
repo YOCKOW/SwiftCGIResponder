@@ -18,7 +18,7 @@ Files = [
   :SwiftKeywords,
 #  :ContentDispositionParameterKey,
 #  :ContentDispositionValue,
-#  :HTTPHeaderFieldName_IANARegistered,
+  :HTTPHeaderFieldName_IANARegistered,
 #  :HTTPMethod,
   :HTTPStatusCode,
 #  :MIMEType_PathExtension,
