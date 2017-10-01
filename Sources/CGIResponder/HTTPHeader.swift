@@ -10,6 +10,16 @@
  # HTTPHeader
  Represents for HTTP Header
  
+ === HTTPHeader ===
+ +-----------------++---------------------+----------------------+
+ | HTTPHeaderField || HTTPHeaderFieldName | HTTPHeaderFieldValue |
+ +-----------------++---------------------+----------------------+
+ | HTTPHeaderField || HTTPHeaderFieldName | HTTPHeaderFieldValue |
+ +-----------------++---------------------+----------------------+
+ | HTTPHeaderField || HTTPHeaderFieldName | HTTPHeaderFieldValue |
+ +-----------------++---------------------+----------------------+
+ :                 ::                     :                      :
+ 
  */
 
 public struct HTTPHeader {
