@@ -6,7 +6,7 @@
  **************************************************************************************************/
  
 extension String {
-  public func trimmingCharacters(in set: CGICharacterSet) -> String {
+  public func trimmingCharacters(in set: CharacterSet) -> String {
     var ii: String.Index
     
     // search first character that is not contained in `set`

@@ -12,7 +12,7 @@ class StringCharacterSetTests: XCTestCase {
   func testTrimming() {
     let expected = "ABC DEF GHI JKL"
     let string = "   \t \(expected) \r\n"
-    let trimmed = string.trimmingCharacters(in:CGICharacterSet.whitespacesAndNewlines)
+    let trimmed = string.trimmingCharacters(in:CGIResponder.CharacterSet.whitespacesAndNewlines)
     XCTAssertEqual(expected, trimmed)
   }
   
