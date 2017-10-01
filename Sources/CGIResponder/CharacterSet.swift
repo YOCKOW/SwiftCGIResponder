@@ -19,9 +19,39 @@ public struct CharacterSet {
     self.set = set
   }
   
+  internal init(_ unicodeScalarSet:UnicodeScalarSet) {
+    var set = Set<Character>()
+    let data = unicodeScalarSet.bitmapRepresentation
+    for ii in 0..<data.count {
+      if (data[ii >> 3] & UInt8(1 << (ii & 7))) > 0 {
+        let scalar = Unicode.Scalar(ii)!
+        set.insert(Character(scalar))
+      }
+    }
+    self.init(set)
+  }
+  
   public init(charactersIn string:String) {
     self.init(Set<Character>(Array(string.characters)))
   }
+}
+
+extension CharacterSet {
+  public static let alphanumerics = CharacterSet(UnicodeScalarSet.alphanumerics)
+  public static let capitalizedLetters = CharacterSet(UnicodeScalarSet.capitalizedLetters)
+  public static let controlCharacters = CharacterSet(UnicodeScalarSet.controlCharacters)
+  public static let decimalDigits = CharacterSet(UnicodeScalarSet.decimalDigits)
+  public static let decomposables = CharacterSet(UnicodeScalarSet.decomposables)
+  public static let illegalCharacters = CharacterSet(UnicodeScalarSet.illegalCharacters)
+  public static let letters = CharacterSet(UnicodeScalarSet.letters)
+  public static let lowercaseLetters = CharacterSet(UnicodeScalarSet.lowercaseLetters)
+  public static let newlines = ({ () -> CharacterSet in  var cs = CharacterSet(UnicodeScalarSet.newlines); cs.insert("\r\n"); return cs })()
+  public static let nonBaseCharacters = CharacterSet(UnicodeScalarSet.nonBaseCharacters)
+  public static let punctuationCharacters = CharacterSet(UnicodeScalarSet.punctuationCharacters)
+  public static let symbols = CharacterSet(UnicodeScalarSet.symbols)
+  public static let uppercaseLetters = CharacterSet(UnicodeScalarSet.uppercaseLetters)
+  public static let whitespaces = CharacterSet(UnicodeScalarSet.whitespaces)
+  public static let whitespacesAndNewlines = whitespaces.union(newlines)
 }
 
 extension CharacterSet: Hashable {

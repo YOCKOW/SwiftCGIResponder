@@ -39,6 +39,24 @@ public struct UnicodeScalarSet {
   }
 }
 
+extension UnicodeScalarSet {
+  public static let alphanumerics = UnicodeScalarSet(Foundation.CharacterSet.alphanumerics)
+  public static let capitalizedLetters = UnicodeScalarSet(Foundation.CharacterSet.capitalizedLetters)
+  public static let controlCharacters = UnicodeScalarSet(Foundation.CharacterSet.controlCharacters)
+  public static let decimalDigits = UnicodeScalarSet(Foundation.CharacterSet.decimalDigits)
+  public static let decomposables = UnicodeScalarSet(Foundation.CharacterSet.decomposables)
+  public static let illegalCharacters = UnicodeScalarSet(Foundation.CharacterSet.illegalCharacters)
+  public static let letters = UnicodeScalarSet(Foundation.CharacterSet.letters)
+  public static let lowercaseLetters = UnicodeScalarSet(Foundation.CharacterSet.lowercaseLetters)
+  public static let newlines = UnicodeScalarSet(Foundation.CharacterSet.newlines)
+  public static let nonBaseCharacters = UnicodeScalarSet(Foundation.CharacterSet.nonBaseCharacters)
+  public static let punctuationCharacters = UnicodeScalarSet(Foundation.CharacterSet.punctuationCharacters)
+  public static let symbols = UnicodeScalarSet(Foundation.CharacterSet.symbols)
+  public static let uppercaseLetters = UnicodeScalarSet(Foundation.CharacterSet.uppercaseLetters)
+  public static let whitespaces = UnicodeScalarSet(Foundation.CharacterSet.whitespaces)
+  public static let whitespacesAndNewlines = UnicodeScalarSet(Foundation.CharacterSet.whitespacesAndNewlines)
+}
+
 extension UnicodeScalarSet: CustomDebugStringConvertible, CustomStringConvertible {
   public var debugDescription: String {
     return self._legacyCharacterSet.debugDescription
@@ -107,4 +125,10 @@ extension UnicodeScalarSet: SetAlgebra {
     self._legacyCharacterSet.formSymmetricDifference(other._legacyCharacterSet)
   }
   
+}
+
+extension UnicodeScalarSet {
+  public var bitmapRepresentation: Data {
+    return self._legacyCharacterSet.bitmapRepresentation
+  }
 }

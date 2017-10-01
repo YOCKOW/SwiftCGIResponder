@@ -18,6 +18,7 @@ open class HTTPHeaderFieldDelegate: Hashable {
     self.name = name
     self.value = value
   }
+  
   public func isEqual(to another:HTTPHeaderFieldDelegate) -> Bool {
     return self.name == another.name && self.value == another.value
   }
