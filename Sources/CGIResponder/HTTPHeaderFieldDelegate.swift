@@ -11,7 +11,7 @@
  Holds an instance of `HTTPHeaderFieldName`, and computes an instance of `HTTPHeaderFieldValue`.
  
  */
-open class HTTPHeaderFieldDelegate {
+open class HTTPHeaderFieldDelegate: Hashable {
   open var name: HTTPHeaderFieldName
   open var value: HTTPHeaderFieldValue
   public init?(name: HTTPHeaderFieldName, value: HTTPHeaderFieldValue) {
@@ -21,16 +21,16 @@ open class HTTPHeaderFieldDelegate {
   public func isEqual(to another:HTTPHeaderFieldDelegate) -> Bool {
     return self.name == another.name && self.value == another.value
   }
+  
+  // Avoid error "Declarations from extensions cannot be overridden yet"
+  open var hashValue: Int { return self.name.hashValue ^ self.value.hashValue }
+  public static func ==(lhs: HTTPHeaderFieldDelegate, rhs: HTTPHeaderFieldDelegate) -> Bool {
+    return lhs.isEqual(to:rhs)
+  }
 }
 extension HTTPHeaderFieldDelegate: CustomStringConvertible {
   public var description: String {
     return "\(self.name.rawValue): \(self.value.rawValue)\r\n"
-  }
-}
-extension HTTPHeaderFieldDelegate: Hashable {
-  open var hashValue: Int { return self.name.hashValue ^ self.value.hashValue }
-  public static func ==(lhs: HTTPHeaderFieldDelegate, rhs: HTTPHeaderFieldDelegate) -> Bool {
-    return lhs.isEqual(to:rhs)
   }
 }
 
