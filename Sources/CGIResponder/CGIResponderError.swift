@@ -1,20 +1,20 @@
 /***************************************************************************************************
- Responder.swift
-   © 2017 YOCKOW.
+ CGIResponderError.swift
+   © 2017年 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  **************************************************************************************************/
-
+ 
 /**
  
- # Responder
- The principal structure that can respond to the client.
+ # CGIResponderError
+ Defines errors
  
  */
-public struct Responder {
-  public var status: HTTPStatusCode
-  
-  public init(status: HTTPStatusCode = .ok) {
-    self.status = status
-  }
+public enum CGIResponderError: Error {
+  case invalidArgument
+  case illegalOperation
+  case missingRequiredHTTPHeaderField(name:HTTPHeaderFieldName)
+  case unexpectedError(message:String)
 }
+

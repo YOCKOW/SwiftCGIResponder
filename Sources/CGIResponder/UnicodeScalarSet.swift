@@ -22,39 +22,40 @@
  */
 
 import Foundation
+private typealias LegacyCharacterSet = Foundation.CharacterSet
 
 public struct UnicodeScalarSet {
-  fileprivate var _legacyCharacterSet: Foundation.CharacterSet
-  public init(_ legacyCharacterSet: Foundation.CharacterSet) {
+  fileprivate var _legacyCharacterSet: LegacyCharacterSet
+  private init(_ legacyCharacterSet: LegacyCharacterSet) {
     self._legacyCharacterSet = legacyCharacterSet
   }
   public init(unicodeScalarsIn string: String) {
-    self.init(Foundation.CharacterSet(charactersIn:string))
+    self.init(LegacyCharacterSet(charactersIn:string))
   }
   public init(unicodeScalarsIn closedRange:ClosedRange<Unicode.Scalar>) {
-    self.init(Foundation.CharacterSet(charactersIn:closedRange))
+    self.init(LegacyCharacterSet(charactersIn:closedRange))
   }
   public init(unicodeScalarsIn range:Range<Unicode.Scalar>) {
-    self.init(Foundation.CharacterSet(charactersIn:range))
+    self.init(LegacyCharacterSet(charactersIn:range))
   }
 }
 
 extension UnicodeScalarSet {
-  public static let alphanumerics = UnicodeScalarSet(Foundation.CharacterSet.alphanumerics)
-  public static let capitalizedLetters = UnicodeScalarSet(Foundation.CharacterSet.capitalizedLetters)
-  public static let controlCharacters = UnicodeScalarSet(Foundation.CharacterSet.controlCharacters)
-  public static let decimalDigits = UnicodeScalarSet(Foundation.CharacterSet.decimalDigits)
-  public static let decomposables = UnicodeScalarSet(Foundation.CharacterSet.decomposables)
-  public static let illegalCharacters = UnicodeScalarSet(Foundation.CharacterSet.illegalCharacters)
-  public static let letters = UnicodeScalarSet(Foundation.CharacterSet.letters)
-  public static let lowercaseLetters = UnicodeScalarSet(Foundation.CharacterSet.lowercaseLetters)
-  public static let newlines = UnicodeScalarSet(Foundation.CharacterSet.newlines)
-  public static let nonBaseCharacters = UnicodeScalarSet(Foundation.CharacterSet.nonBaseCharacters)
-  public static let punctuationCharacters = UnicodeScalarSet(Foundation.CharacterSet.punctuationCharacters)
-  public static let symbols = UnicodeScalarSet(Foundation.CharacterSet.symbols)
-  public static let uppercaseLetters = UnicodeScalarSet(Foundation.CharacterSet.uppercaseLetters)
-  public static let whitespaces = UnicodeScalarSet(Foundation.CharacterSet.whitespaces)
-  public static let whitespacesAndNewlines = UnicodeScalarSet(Foundation.CharacterSet.whitespacesAndNewlines)
+  public static let alphanumerics = UnicodeScalarSet(LegacyCharacterSet.alphanumerics)
+  public static let capitalizedLetters = UnicodeScalarSet(LegacyCharacterSet.capitalizedLetters)
+  public static let controlCharacters = UnicodeScalarSet(LegacyCharacterSet.controlCharacters)
+  public static let decimalDigits = UnicodeScalarSet(LegacyCharacterSet.decimalDigits)
+  public static let decomposables = UnicodeScalarSet(LegacyCharacterSet.decomposables)
+  public static let illegalCharacters = UnicodeScalarSet(LegacyCharacterSet.illegalCharacters)
+  public static let letters = UnicodeScalarSet(LegacyCharacterSet.letters)
+  public static let lowercaseLetters = UnicodeScalarSet(LegacyCharacterSet.lowercaseLetters)
+  public static let newlines = UnicodeScalarSet(LegacyCharacterSet.newlines)
+  public static let nonBaseCharacters = UnicodeScalarSet(LegacyCharacterSet.nonBaseCharacters)
+  public static let punctuationCharacters = UnicodeScalarSet(LegacyCharacterSet.punctuationCharacters)
+  public static let symbols = UnicodeScalarSet(LegacyCharacterSet.symbols)
+  public static let uppercaseLetters = UnicodeScalarSet(LegacyCharacterSet.uppercaseLetters)
+  public static let whitespaces = UnicodeScalarSet(LegacyCharacterSet.whitespaces)
+  public static let whitespacesAndNewlines = UnicodeScalarSet(LegacyCharacterSet.whitespacesAndNewlines)
 }
 
 extension UnicodeScalarSet: CustomDebugStringConvertible, CustomStringConvertible {
@@ -79,7 +80,7 @@ extension UnicodeScalarSet: SetAlgebra {
   public typealias Element = Unicode.Scalar
   
   public init() {
-    self.init(Foundation.CharacterSet())
+    self.init(LegacyCharacterSet())
   }
   
   public func contains(_ member: Unicode.Scalar) -> Bool {
