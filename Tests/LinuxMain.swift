@@ -4,6 +4,7 @@ import XCTest
 XCTMain([
   testCase(CGIResponderTests.allTests),
   testCase(HTTPHeaderFieldTests.allTests),
+  testCase(HTTPHeaderFieldDelegateCacheControlTests.allTests),
   testCase(HTTPHeaderFieldDelegateContentLengthTests.allTests),
-  testCase(StringCharacterSetTests.allTests),
+  testCase(StringUnicodeScalarSetTests.allTests),
 ])

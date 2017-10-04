@@ -8,6 +8,7 @@
 /// Select delegate automatically...
 extension HTTPHeaderField {
   private static let specifiedFields: [HTTPHeaderFieldName:SpecifiedHTTPHeaderFieldDelegate.Type] = [
+    .cacheControl:HTTPHeaderFieldDelegate.CacheControl.self,
     .contentLength:HTTPHeaderFieldDelegate.ContentLength.self
   ]
   public init?(name:HTTPHeaderFieldName, value:HTTPHeaderFieldValue) {

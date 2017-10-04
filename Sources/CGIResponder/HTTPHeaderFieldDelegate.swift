@@ -84,8 +84,5 @@ open class AppendableHTTPHeaderFieldDelegate: SpecifiedHTTPHeaderFieldDelegate {
   public func append(_ value:HTTPHeaderFieldValue) throws {
     fatalError("append(_:) must be overriden in subclass implementations")
   }
-  public func append(_ field:HTTPHeaderField) throws {
-    fatalError("append(_:) must be overriden in subclass implementations")
-  }
 }
 
