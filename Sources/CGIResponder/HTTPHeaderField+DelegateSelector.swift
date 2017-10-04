@@ -8,6 +8,7 @@
 /// Select delegate automatically...
 extension HTTPHeaderField {
   private static let specifiedFields: [HTTPHeaderFieldName:SpecifiedHTTPHeaderFieldDelegate.Type] = [
+    .cacheControl:HTTPHeaderFieldDelegate.CacheControl.self,
     .contentLength:HTTPHeaderFieldDelegate.ContentLength.self
   ]
   public init?(name:HTTPHeaderFieldName, value:HTTPHeaderFieldValue) {
@@ -26,7 +27,7 @@ extension HTTPHeaderField {
     let nameAndValue = string.split(separator:":", maxSplits:1, omittingEmptySubsequences:false)
     if nameAndValue.count != 2 { return nil }
     guard let name = HTTPHeaderFieldName(rawValue:String(nameAndValue[0])),
-      let value = HTTPHeaderFieldValue(rawValue:String(nameAndValue[1]).trimmingCharacters(in:CharacterSet.whitespacesAndNewlines)) else {
+      let value = HTTPHeaderFieldValue(rawValue:String(nameAndValue[1]).trimmingUnicodeScalars(in:.whitespacesAndNewlines)) else {
         return nil
     }
     self.init(name:name, value:value)

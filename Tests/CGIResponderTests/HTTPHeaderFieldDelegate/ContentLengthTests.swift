@@ -23,5 +23,6 @@ class HTTPHeaderFieldDelegateContentLengthTests: XCTestCase {
   
   static var allTests: [(String, (HTTPHeaderFieldDelegateContentLengthTests) -> () -> Void)] = [
     ("testCreation", testCreation),
+    ("testDelegateSelection", testDelegateSelection)
   ]
 }
