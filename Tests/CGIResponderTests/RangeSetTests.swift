@@ -8,7 +8,7 @@
 import XCTest
 @testable import CGIResponder
 
-class RageSetTests: XCTestCase {
+class RangeSetTests: XCTestCase {
   func testNormalization() {
     let range1: PartialRangeUpTo<Int> = ..<15
     let range2: Range<Int> = 10 ..< 40
@@ -37,7 +37,7 @@ class RageSetTests: XCTestCase {
     XCTAssertTrue(set.contains(1000))
   }
   
-  static var allTests: [(String, (RageSetTests) -> () -> Void)] = [
+  static var allTests: [(String, (RangeSetTests) -> () -> Void)] = [
     ("testNormalization", testNormalization),
   ]
 }
