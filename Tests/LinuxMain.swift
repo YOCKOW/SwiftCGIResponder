@@ -6,5 +6,6 @@ XCTMain([
   testCase(HTTPHeaderFieldTests.allTests),
   testCase(HTTPHeaderFieldDelegateCacheControlTests.allTests),
   testCase(HTTPHeaderFieldDelegateContentLengthTests.allTests),
+  testCase(RangeSetTests.allTests),
   testCase(StringUnicodeScalarSetTests.allTests),
 ])
