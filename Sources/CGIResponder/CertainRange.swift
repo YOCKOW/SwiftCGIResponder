@@ -10,7 +10,7 @@
  # CertainRange
  Wrapper for `ClosedRange`, `LeftOpenRange`, `OpenRange`, `PartialRangeFrom`, `PartialRangeGreaterThan`,
  `PartialRangeThrough`, `PartialRangeUpTo` and `Range`.
- This is expected to be used in `RangeSet`.
+ This is expected to be used in `Multirange`.
  
  */
 internal enum CertainRange<Bound> where Bound: Comparable {
