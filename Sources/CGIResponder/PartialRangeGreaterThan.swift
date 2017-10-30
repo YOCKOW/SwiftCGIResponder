@@ -37,6 +37,12 @@ public postfix func <-- <T>(_ element:T) -> PartialRangeGreaterThan<T> where T:C
   return element<‥
 }
 
+extension PartialRangeGreaterThan {
+  public init(_ range:PartialRangeGreaterThan<Bound>) {
+    self.init(range.lowerBound)
+  }
+}
+
 extension PartialRangeGreaterThan: UncountableRangeExpression {
   typealias UncountableBound = Bound
 }
