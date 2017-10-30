@@ -23,4 +23,20 @@ extension BonaFideCharacterSet {
     set.insert("\r\n") // This is also one `Character`. See https://www.unicode.org/reports/tr29/#GB3
     return set
   })()
+  
+  /// Same as `Foundation.CharacterSet.whitespaces`
+  public static let whitespaces: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+    var set = BonaFideCharacterSet()
+    set.insert("\u{0009}")
+    set.insert("\u{0020}")
+    set.insert("\u{00A0}")
+    set.insert("\u{1680}")
+    set.insert(charactersIn:"\u{2000}"..."\u{200A}")
+    set.insert("\u{202F}")
+    set.insert("\u{205F}")
+    set.insert("\u{3000}")
+    return set
+  })()
+  
+  public static let whitespacesAndNewlines = newlines.union(whitespaces)
 }
