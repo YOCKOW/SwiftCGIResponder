@@ -83,7 +83,29 @@ extension Multirange {
   
   public internal(set) var ranges: [Multirange<Bound>.Range] {
     get { return self._ranges }
-    set { self._ranges = newValue; self._normalize() }
+    set { self._ranges = newValue; self._normalize() } // Always normalized.
+  }
+}
+
+extension Multirange: ExpressibleByArrayLiteral {
+  public init(arrayLiteral elements:Multirange<Bound>.Range...) {
+    self.init()
+    self.ranges = elements
+  }
+}
+
+extension Multirange: Equatable {
+  public static func ==(lhs:Multirange<Bound>, rhs:Multirange<Bound>) -> Bool {
+    return lhs.ranges == rhs.ranges
+  }
+}
+
+extension Multirange {
+  public func contains(_ value:Bound) -> Bool {
+    for range in self.ranges {
+      if range.contains(value) { return true }
+    }
+    return false
   }
 }
 
@@ -128,13 +150,125 @@ extension Multirange {
     self.insert(Multirange<Bound>.Range(newValue))
   }
 }
-  
+
 extension Multirange {
-  public func contains(_ value:Bound) -> Bool {
+  public mutating func formUnion(_ other:Multirange<Bound>) {
+    self.ranges.append(contentsOf:other.ranges)
+  }
+  
+  public func union(_ other:Multirange<Bound>) -> Multirange<Bound> {
+    var set = self
+    set.formUnion(other)
+    return set
+  }
+}
+
+extension Multirange {
+  public mutating func subtract(_ otherRange:Multirange<Bound>.Range) {
+    var subtracted = false
+    var skipJudgment = false
+    var newRanges: [Multirange<Bound>.Range] = []
     for range in self.ranges {
-      if range.contains(value) { return true }
+      if skipJudgment {
+        newRanges.append(range)
+      } else {
+        let sr = range.range.subtracting(otherRange.range)
+        if sr.0 == range.range && sr.1 == nil { // no range subtracted
+          if subtracted {
+            // If there are more than one ranges already subtracted and
+            // this `range` cannot subtract `otherRange`,
+            // the next ranges also cannot subtract `otherRange`,
+            // because `self.ranges` is sorted.
+            skipJudgment = true
+          }
+        }
+        newRanges.append(Multirange<Bound>.Range(sr.0))
+        if let another = sr.1 {
+          subtracted = true
+          newRanges.append(Multirange<Bound>.Range(another))
+        }
+      }
     }
-    return false
+    self.ranges = newRanges
+  }
+  public func subtracting(_ otherRange:Multirange<Bound>.Range) -> Multirange<Bound> {
+    var set = self
+    set.subtract(otherRange)
+    return set
+  }
+  
+  public mutating func subtract(_ otherRange:ClosedRange<Bound>) {
+    self.subtract(Multirange<Bound>.Range(otherRange))
+  }
+  public func subtracting(_ otherRange:ClosedRange<Bound>) -> Multirange<Bound> {
+    return self.subtracting(Multirange<Bound>.Range(otherRange))
+  }
+  
+  public mutating func subtract(_ otherRange:LeftOpenRange<Bound>) {
+    self.subtract(Multirange<Bound>.Range(otherRange))
+  }
+  public func subtracting(_ otherRange:LeftOpenRange<Bound>) -> Multirange<Bound> {
+    return self.subtracting(Multirange<Bound>.Range(otherRange))
+  }
+  
+  public mutating func subtract(_ otherRange:OpenRange<Bound>) {
+    self.subtract(Multirange<Bound>.Range(otherRange))
+  }
+  public func subtracting(_ otherRange:OpenRange<Bound>) -> Multirange<Bound> {
+    return self.subtracting(Multirange<Bound>.Range(otherRange))
+  }
+  
+  public mutating func subtract(_ otherRange:Swift.Range<Bound>) {
+    self.subtract(Multirange<Bound>.Range(otherRange))
+  }
+  public func subtracting(_ otherRange:Swift.Range<Bound>) -> Multirange<Bound> {
+    return self.subtracting(Multirange<Bound>.Range(otherRange))
+  }
+  
+  public mutating func subtract(_ otherRange:PartialRangeFrom<Bound>) {
+    return self.subtract(Multirange<Bound>.Range(otherRange))
+  }
+  public func subtracting(_ otherRange:PartialRangeFrom<Bound>) -> Multirange<Bound> {
+    return self.subtracting(Multirange<Bound>.Range(otherRange))
+  }
+  
+  public mutating func subtract(_ otherRange:PartialRangeGreaterThan<Bound>) {
+    self.subtract(Multirange<Bound>.Range(otherRange))
+  }
+  public func subtracting(_ otherRange:PartialRangeGreaterThan<Bound>) -> Multirange<Bound> {
+    return self.subtracting(Multirange<Bound>.Range(otherRange))
+  }
+  
+  public mutating func subtract(_ otherRange:PartialRangeThrough<Bound>) {
+    return self.subtract(Multirange<Bound>.Range(otherRange))
+  }
+  public func subtracting(_ otherRange:PartialRangeThrough<Bound>) -> Multirange<Bound> {
+    return self.subtracting(Multirange<Bound>.Range(otherRange))
+  }
+  
+  public mutating func subtract(_ otherRange:PartialRangeUpTo<Bound>) {
+    self.subtract(Multirange<Bound>.Range(otherRange))
+  }
+  public func subtracting(_ otherRange:PartialRangeUpTo<Bound>) -> Multirange<Bound> {
+    return self.subtracting(Multirange<Bound>.Range(otherRange))
+  }
+  
+  public mutating func subtract(_ value:Bound) {
+    self.subtract(Multirange<Bound>.Range(value))
+  }
+  public func subtracting(_ value:Bound) -> Multirange<Bound> {
+    return self.subtracting(Multirange<Bound>.Range(value))
+  }
+  
+  public mutating func subtract(_ other:Multirange<Bound>) {
+    for range in other.ranges {
+      self.subtract(range)
+    }
+  }
+  public func subtracting(_ other:Multirange<Bound>) -> Multirange<Bound> {
+    var set = self
+    set.subtract(other)
+    return set
   }
 }
 

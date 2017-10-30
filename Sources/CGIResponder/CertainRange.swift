@@ -297,35 +297,35 @@ extension CertainRange {
     
     // LeftOpenRange + ***
     case (.leftOpenRange(let lor), .closedRange(let cr)) where lor.upperBound >= cr.lowerBound:
-      return .leftOpenRange(lor.lowerBound<--max(lor.upperBound, cr.upperBound))
+      return .leftOpenRange(lor.lowerBound<..max(lor.upperBound, cr.upperBound))
     case (.leftOpenRange(let lor1), .leftOpenRange(let lor2)) where lor1.upperBound >= lor2.lowerBound:
-      return .leftOpenRange(lor1.lowerBound<--max(lor1.upperBound, lor2.upperBound))
+      return .leftOpenRange(lor1.lowerBound<..max(lor1.upperBound, lor2.upperBound))
     case (.leftOpenRange(let lor), .openRange(let or)) where lor.upperBound >= or.lowerBound:
       if lor.upperBound >= or.upperBound { return .leftOpenRange(lor) }
-      else { return .openRange(lor.lowerBound<-<or.upperBound) }
+      else { return .openRange(lor.lowerBound<.<or.upperBound) }
     case (.leftOpenRange(let lor), .range(let rr)) where lor.upperBound >= rr.lowerBound:
       if lor.upperBound >= rr.upperBound { return .leftOpenRange(lor) }
       else { return .range(lor.lowerBound..<rr.upperBound) }
     case (.leftOpenRange(let lor), .partialRangeFrom(let prf)) where lor.upperBound >= prf.lowerBound:
-      return .partialRangeGreaterThan(lor.lowerBound<--)
+      return .partialRangeGreaterThan(lor.lowerBound<..)
     case (.leftOpenRange(let lor), .partialRangeGreaterThan(let prgt)) where lor.upperBound >= prgt.lowerBound:
-      return .partialRangeGreaterThan(lor.lowerBound<--)
+      return .partialRangeGreaterThan(lor.lowerBound<..)
       
     // OpenRange + ***
     case (.openRange(let or), .closedRange(let cr)) where or.upperBound >= cr.lowerBound:
       if or.upperBound > cr.upperBound { return .openRange(or) }
-      else { return .leftOpenRange(or.lowerBound<--cr.upperBound) }
+      else { return .leftOpenRange(or.lowerBound<..cr.upperBound) }
     case (.openRange(let or), .leftOpenRange(let lor)) where or.upperBound >= lor.lowerBound:
       if or.upperBound > lor.upperBound { return .openRange(or) }
-      else { return .leftOpenRange(or.lowerBound<--lor.upperBound) }
+      else { return .leftOpenRange(or.lowerBound<..lor.upperBound) }
     case (.openRange(let or1), .openRange(let or2)) where or1.overlaps(or2):
-      return .openRange(or1.lowerBound<-<max(or1.upperBound, or2.upperBound))
+      return .openRange(or1.lowerBound<.<max(or1.upperBound, or2.upperBound))
     case (.openRange(let or), .range(let rr)) where or.upperBound >= rr.lowerBound:
-      return .openRange(or.lowerBound<-<max(or.upperBound, rr.upperBound))
+      return .openRange(or.lowerBound<.<max(or.upperBound, rr.upperBound))
     case (.openRange(let or), .partialRangeFrom(let prf)) where or.upperBound >= prf.lowerBound:
-      return .partialRangeGreaterThan(or.lowerBound<--)
+      return .partialRangeGreaterThan(or.lowerBound<..)
     case (.openRange(let or), .partialRangeGreaterThan(let prgt)) where or.upperBound > prgt.lowerBound:
-      return .partialRangeGreaterThan(or.lowerBound<--)
+      return .partialRangeGreaterThan(or.lowerBound<..)
       
     // Range + ***
     case (.range(let rr), .closedRange(let cr)) where rr.upperBound >= cr.lowerBound:
@@ -419,10 +419,675 @@ extension CertainRange {
     case (.partialRangeUpTo, .partialRangeUpTo(let prut2)):
       return .partialRangeUpTo(prut2)
     
-    
     // else...
     default:
       return nil
+    }
+  }
+}
+
+extension CertainRange {
+  /**
+   
+   - returns:
+     Subtracted range(s).
+     Under some conditions, `other` divides the range. That is why a tuple is returned.
+   
+   */
+  public func subtracting(_ other:CertainRange<Bound>) -> (CertainRange<Bound>, CertainRange<Bound>?) {
+    // The result must be .empty when...
+    if self == other || self == .empty || other == .universal { return (.empty, nil) }
+    if other == .empty { return (self, nil) }
+    
+    switch (self, other) {
+    
+    // .universal - ***
+    case (.universal, .closedRange(let cr)):
+      return (.partialRangeUpTo(..<cr.lowerBound), .partialRangeGreaterThan(cr.upperBound<..))
+    case (.universal, .leftOpenRange(let lor)):
+      return (.partialRangeThrough(...lor.lowerBound), .partialRangeGreaterThan(lor.upperBound<..))
+    case (.universal, .openRange(let or)):
+      return (.partialRangeThrough(...or.lowerBound), .partialRangeFrom(or.upperBound...))
+    case (.universal, .range(let rr)):
+      return (.partialRangeUpTo(..<rr.lowerBound), .partialRangeFrom(rr.upperBound...))
+    case (.universal, .partialRangeFrom(let prf)):
+      return (.partialRangeUpTo(..<prf.lowerBound), nil)
+    case (.universal, .partialRangeGreaterThan(let prgt)):
+      return (.partialRangeThrough(...prgt.lowerBound), nil)
+    case (.universal, .partialRangeThrough(let prt)):
+      return (.partialRangeGreaterThan(prt.upperBound<..), nil)
+    case (.universal, .partialRangeUpTo(let prut)):
+      return (.partialRangeFrom(prut.upperBound...), nil)
+      
+    // ClosedRange - ***
+    case (.closedRange(let cr1), .closedRange(let cr2)):
+      if !cr1.overlaps(cr2) {
+        return (self, nil)
+      } else if cr2.lowerBound >= cr1.lowerBound {
+        if cr2.upperBound >= cr1.upperBound {
+          return (.range(cr1.lowerBound..<cr2.lowerBound), nil)
+        } else {
+          return (.range(cr1.lowerBound..<cr2.lowerBound), .leftOpenRange(cr2.upperBound<..cr1.upperBound))
+        }
+      } else {
+        if cr2.upperBound >= cr1.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.leftOpenRange(cr2.upperBound<..cr1.upperBound), nil)
+        }
+      }
+    case (.closedRange(let cr), .leftOpenRange(let lor)):
+      if lor.upperBound < cr.lowerBound || cr.upperBound <= lor.lowerBound {
+        return (self, nil)
+      } else if lor.lowerBound < cr.lowerBound {
+        if lor.upperBound >= cr.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.leftOpenRange(lor.upperBound<..cr.upperBound), nil)
+        }
+      } else {
+        if lor.upperBound >= cr.upperBound {
+          return (.closedRange(cr.lowerBound...lor.lowerBound), nil)
+        } else {
+          return (.closedRange(cr.lowerBound...lor.lowerBound), .leftOpenRange(lor.upperBound<..cr.upperBound))
+        }
+      }
+    case (.closedRange(let cr), .openRange(let or)):
+      if or.upperBound <= cr.lowerBound || cr.upperBound <= or.lowerBound {
+        return (self, nil)
+      } else if or.lowerBound < cr.lowerBound {
+        if or.upperBound > cr.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.closedRange(or.upperBound...cr.upperBound), nil)
+        }
+      } else {
+        if or.upperBound > cr.upperBound {
+          return (.closedRange(cr.lowerBound...or.lowerBound), nil)
+        } else {
+          return (.closedRange(cr.lowerBound...or.lowerBound), .closedRange(or.upperBound...cr.upperBound))
+        }
+      }
+    case (.closedRange(let cr), .range(let rr)):
+      if rr.upperBound <= cr.lowerBound || cr.upperBound < rr.lowerBound {
+        return (self, nil)
+      } else if rr.lowerBound <= cr.lowerBound {
+        if rr.upperBound > cr.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.closedRange(rr.upperBound...cr.upperBound), nil)
+        }
+      } else {
+        if rr.upperBound > cr.upperBound {
+          return (.range(cr.lowerBound..<rr.lowerBound), nil)
+        } else {
+          return (.range(cr.lowerBound..<rr.lowerBound), .closedRange(rr.upperBound...cr.upperBound))
+        }
+      }
+    case (.closedRange(let cr), .partialRangeFrom(let prf)):
+      if prf.lowerBound > cr.upperBound {
+        return (self, nil)
+      } else if prf.lowerBound <= cr.lowerBound {
+        return (.empty, nil)
+      } else {
+        return (.range(cr.lowerBound..<prf.lowerBound), nil)
+      }
+    case (.closedRange(let cr), .partialRangeGreaterThan(let prgt)):
+      if prgt.lowerBound >= cr.upperBound {
+        return (self, nil)
+      } else if prgt.lowerBound < cr.lowerBound {
+        return (.empty, nil)
+      } else {
+        return (.closedRange(cr.lowerBound...prgt.lowerBound), nil)
+      }
+    case (.closedRange(let cr), .partialRangeThrough(let prt)):
+      if prt.upperBound < cr.lowerBound {
+        return (self, nil)
+      } else if prt.upperBound >= cr.upperBound {
+        return (.empty, nil)
+      } else {
+        return (.leftOpenRange(prt.upperBound<..cr.upperBound), nil)
+      }
+    case (.closedRange(let cr), .partialRangeUpTo(let prut)):
+      if prut.upperBound <= cr.lowerBound {
+        return (self, nil)
+      } else if prut.upperBound > cr.upperBound {
+        return (.empty, nil)
+      } else {
+        return (.closedRange(prut.upperBound...cr.upperBound), nil)
+      }
+      
+    // LeftOpenRange - ***
+    case (.leftOpenRange(let lor), .closedRange(let cr)):
+      if cr.upperBound <= lor.lowerBound || lor.upperBound < cr.lowerBound {
+        return (self, nil)
+      } else if cr.lowerBound <= lor.lowerBound {
+        if cr.upperBound >= lor.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.leftOpenRange(cr.upperBound<..lor.upperBound), nil)
+        }
+      } else {
+        if cr.upperBound >= lor.upperBound {
+          return (.openRange(lor.lowerBound<.<cr.lowerBound), nil)
+        } else {
+          return (.openRange(lor.lowerBound<.<cr.lowerBound), .leftOpenRange(cr.upperBound<..lor.upperBound))
+        }
+      }
+    case (.leftOpenRange(let lor1), .leftOpenRange(let lor2)):
+      if lor2.upperBound <= lor1.lowerBound || lor1.upperBound <= lor2.lowerBound {
+        return (self, nil)
+      } else if lor2.lowerBound <= lor1.lowerBound {
+        if lor2.upperBound >= lor1.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.leftOpenRange(lor2.upperBound<..lor1.upperBound), nil)
+        }
+      } else {
+        if lor2.upperBound >= lor1.upperBound {
+          return (.leftOpenRange(lor1.lowerBound<..lor2.lowerBound), nil)
+        } else {
+          return (.leftOpenRange(lor1.lowerBound<..lor2.lowerBound), .leftOpenRange(lor2.upperBound<..lor1.upperBound))
+        }
+      }
+    case (.leftOpenRange(let lor), .openRange(let or)):
+      if or.upperBound <= lor.lowerBound || lor.upperBound <= or.lowerBound {
+        return (self, nil)
+      } else if or.lowerBound <= lor.lowerBound {
+        if or.upperBound > lor.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.closedRange(or.upperBound...lor.upperBound), nil)
+        }
+      } else {
+        if or.upperBound > lor.upperBound {
+          return (.leftOpenRange(lor.lowerBound<..or.lowerBound), nil)
+        } else {
+          return (.leftOpenRange(lor.lowerBound<..or.lowerBound), .closedRange(or.upperBound...lor.upperBound))
+        }
+      }
+    case (.leftOpenRange(let lor), .range(let rr)):
+      if rr.upperBound <= lor.lowerBound || lor.upperBound < rr.lowerBound {
+        return (self, nil)
+      } else if rr.lowerBound <= lor.lowerBound {
+        if rr.upperBound > lor.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.closedRange(rr.upperBound...lor.upperBound), nil)
+        }
+      } else {
+        if rr.upperBound > lor.upperBound {
+          return (.openRange(lor.lowerBound<.<rr.lowerBound), nil)
+        } else {
+          return (.openRange(lor.lowerBound<.<rr.lowerBound), .closedRange(rr.upperBound...lor.upperBound))
+        }
+      }
+    case (.leftOpenRange(let lor), .partialRangeFrom(let prf)):
+      if prf.lowerBound > lor.upperBound {
+        return (self, nil)
+      } else if prf.lowerBound <= lor.lowerBound {
+        return (.empty, nil)
+      } else {
+        return (.openRange(lor.lowerBound<.<prf.lowerBound), nil)
+      }
+    case (.leftOpenRange(let lor), .partialRangeGreaterThan(let prgt)):
+      if prgt.lowerBound >= lor.upperBound {
+        return (self, nil)
+      } else if prgt.lowerBound < lor.lowerBound {
+        return (.empty, nil)
+      } else {
+        return (.leftOpenRange(lor.lowerBound<..prgt.lowerBound), nil)
+      }
+    case (.leftOpenRange(let lor), .partialRangeThrough(let prt)):
+      if prt.upperBound <= lor.lowerBound {
+        return (self, nil)
+      } else if prt.upperBound >= lor.upperBound {
+        return (.empty, nil)
+      } else {
+        return (.leftOpenRange(prt.upperBound<..lor.upperBound), nil)
+      }
+    case (.leftOpenRange(let lor), .partialRangeUpTo(let prut)):
+      if prut.upperBound <= lor.lowerBound {
+        return (self, nil)
+      } else if prut.upperBound > lor.upperBound {
+        return (.empty, nil)
+      } else {
+        return (.closedRange(prut.upperBound...lor.upperBound), nil)
+      }
+      
+    // OpenRange - ***
+    case (.openRange(let or), .closedRange(let cr)):
+      if cr.upperBound <= or.lowerBound || or.upperBound <= cr.lowerBound {
+        return (self, nil)
+      } else if cr.lowerBound <= or.lowerBound {
+        if cr.upperBound >= or.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.openRange(cr.upperBound<.<or.upperBound), nil)
+        }
+      } else {
+        if cr.upperBound >= or.upperBound {
+          return (.openRange(or.lowerBound<.<cr.lowerBound), nil)
+        } else {
+          return (.openRange(or.lowerBound<.<cr.lowerBound), .openRange(cr.upperBound<.<or.upperBound))
+        }
+      }
+    case (.openRange(let or), .leftOpenRange(let lor)):
+      if lor.upperBound <= or.lowerBound || or.upperBound <= lor.lowerBound {
+        return (self, nil)
+      } else if lor.lowerBound <= or.lowerBound {
+        if lor.upperBound >= or.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.openRange(lor.upperBound<.<or.upperBound), nil)
+        }
+      } else {
+        if lor.upperBound >= or.upperBound {
+          return (.leftOpenRange(or.lowerBound<..lor.lowerBound), nil)
+        } else {
+          return (.leftOpenRange(or.lowerBound<..lor.lowerBound), .openRange(lor.upperBound<.<or.upperBound))
+        }
+      }
+    case (.openRange(let or1), .openRange(let or2)):
+      if or2.upperBound <= or1.lowerBound || or1.upperBound <= or2.lowerBound {
+        return (self, nil)
+      } else if or2.lowerBound <= or1.lowerBound {
+        if or2.upperBound >= or1.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.range(or2.upperBound..<or1.upperBound), nil)
+        }
+      } else {
+        if or2.upperBound >= or1.upperBound {
+          return (.leftOpenRange(or1.lowerBound<..or2.lowerBound), nil)
+        } else {
+          return (.leftOpenRange(or1.lowerBound<..or2.lowerBound), .range(or2.upperBound..<or1.upperBound))
+        }
+      }
+    case (.openRange(let or), .range(let rr)):
+      if rr.upperBound <= or.lowerBound || or.upperBound <= rr.lowerBound {
+        return (self, nil)
+      } else if rr.lowerBound <= or.lowerBound {
+        if rr.upperBound >= or.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.range(rr.upperBound..<or.upperBound), nil)
+        }
+      } else {
+        if rr.upperBound > or.upperBound {
+          return (.openRange(or.lowerBound<.<rr.lowerBound), nil)
+        } else {
+          return (.openRange(or.lowerBound<.<rr.lowerBound), .range(rr.upperBound..<or.upperBound))
+        }
+      }
+    case (.openRange(let or), .partialRangeFrom(let prf)):
+      if prf.lowerBound >= or.upperBound {
+        return (self, nil)
+      } else if prf.lowerBound <= or.lowerBound {
+        return (.empty, nil)
+      } else {
+        return (.openRange(or.lowerBound<.<prf.lowerBound), nil)
+      }
+    case (.openRange(let or), .partialRangeGreaterThan(let prgt)):
+      if prgt.lowerBound >= or.upperBound {
+        return (self, nil)
+      } else if prgt.lowerBound <= or.lowerBound {
+        return (.empty, nil)
+      } else {
+        return (.leftOpenRange(or.lowerBound<..prgt.lowerBound), nil)
+      }
+    case (.openRange(let or), .partialRangeThrough(let prt)):
+      if prt.upperBound <= or.lowerBound {
+        return (self, nil)
+      } else if prt.upperBound >= or.upperBound {
+        return (.empty, nil)
+      } else {
+        return (.openRange(prt.upperBound<.<or.upperBound), nil)
+      }
+    case (.openRange(let or), .partialRangeUpTo(let prut)):
+      if prut.upperBound <= or.lowerBound {
+        return (self, nil)
+      } else if prut.upperBound >= or.upperBound {
+        return (.empty, nil)
+      } else {
+        return (.range(prut.upperBound..<or.upperBound), nil)
+      }
+      
+    // Range - ***
+    case (.range(let rr), .closedRange(let cr)):
+      if cr.upperBound < rr.lowerBound || rr.upperBound <= cr.lowerBound {
+        return (self, nil)
+      } else if cr.lowerBound <= rr.lowerBound {
+        if cr.upperBound >= rr.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.openRange(cr.upperBound<.<rr.upperBound), nil)
+        }
+      } else {
+        if cr.upperBound >= rr.upperBound {
+          return (.range(rr.lowerBound..<cr.lowerBound), nil)
+        } else {
+          return (.range(rr.lowerBound..<cr.lowerBound), .openRange(cr.upperBound<.<rr.upperBound))
+        }
+      }
+    case (.range(let rr), .leftOpenRange(let lor)):
+      if lor.upperBound < rr.lowerBound || rr.upperBound <= lor.lowerBound {
+        return (self, nil)
+      } else if lor.lowerBound < rr.lowerBound {
+        if lor.upperBound >= rr.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.openRange(lor.upperBound<.<rr.upperBound), nil)
+        }
+      } else {
+        if lor.upperBound >= rr.upperBound {
+          return (.closedRange(rr.lowerBound...lor.lowerBound), nil)
+        } else {
+          return (.closedRange(rr.lowerBound...lor.lowerBound), .openRange(lor.upperBound<.<rr.upperBound))
+        }
+      }
+    case (.range(let rr), .openRange(let or)):
+      if or.upperBound <= rr.lowerBound || rr.upperBound <= or.lowerBound {
+        return (self, nil)
+      } else if or.lowerBound < rr.lowerBound {
+        if or.upperBound >= rr.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.range(or.upperBound..<rr.upperBound), nil)
+        }
+      } else {
+        if or.upperBound >= rr.upperBound {
+          return (.closedRange(rr.lowerBound...or.lowerBound), nil)
+        } else {
+          return (.closedRange(rr.lowerBound...or.lowerBound), .range(or.upperBound..<rr.upperBound))
+        }
+      }
+    case (.range(let rr1), .range(let rr2)):
+      if rr2.upperBound <= rr1.lowerBound || rr1.upperBound <= rr2.lowerBound {
+        return (self, nil)
+      } else if rr2.lowerBound <= rr1.lowerBound {
+        if rr2.upperBound >= rr1.upperBound {
+          return (.empty, nil)
+        } else {
+          return (.range(rr2.upperBound..<rr1.upperBound), nil)
+        }
+      } else {
+        if rr2.upperBound >= rr1.upperBound {
+          return (.range(rr1.lowerBound..<rr2.lowerBound), nil)
+        } else {
+          return (.range(rr1.lowerBound..<rr2.lowerBound), .range(rr2.upperBound..<rr1.upperBound))
+        }
+      }
+    case (.range(let rr), .partialRangeFrom(let prf)):
+      if prf.lowerBound >= rr.upperBound {
+        return (self, nil)
+      } else if prf.lowerBound <= rr.lowerBound {
+        return (.empty, nil)
+      } else {
+        return (.range(rr.lowerBound..<prf.lowerBound), nil)
+      }
+    case (.range(let rr), .partialRangeGreaterThan(let prgt)):
+      if prgt.lowerBound >= rr.upperBound {
+        return (self, nil)
+      } else if prgt.lowerBound < rr.lowerBound {
+        return (.empty, nil)
+      } else {
+        return (.closedRange(rr.lowerBound...prgt.lowerBound), nil)
+      }
+    case (.range(let rr), .partialRangeThrough(let prt)):
+      if prt.upperBound < rr.lowerBound {
+        return (self, nil)
+      } else if prt.upperBound >= rr.upperBound {
+        return (.empty, nil)
+      } else {
+        return (.openRange(prt.upperBound<.<rr.upperBound), nil)
+      }
+    case (.range(let rr), .partialRangeUpTo(let prut)):
+      if prut.upperBound <= rr.lowerBound {
+        return (self, nil)
+      } else if prut.upperBound >= rr.upperBound {
+        return (.empty, nil)
+      } else {
+        return (.range(prut.upperBound..<rr.upperBound), nil)
+      }
+      
+    // PartialRangeFrom - ***
+    case (.partialRangeFrom(let prf), .closedRange(let cr)):
+      if cr.upperBound < prf.lowerBound {
+        return (self, nil)
+      } else if cr.lowerBound <= prf.lowerBound {
+        return (.partialRangeGreaterThan(cr.upperBound<..), nil)
+      } else {
+        return (.range(prf.lowerBound..<cr.lowerBound), .partialRangeGreaterThan(cr.upperBound<..))
+      }
+    case (.partialRangeFrom(let prf), .leftOpenRange(let lor)):
+      if lor.upperBound < prf.lowerBound {
+        return (self, nil)
+      } else if lor.lowerBound < prf.lowerBound {
+        return (.partialRangeGreaterThan(lor.upperBound<..), nil)
+      } else {
+        return (.closedRange(prf.lowerBound...lor.lowerBound), .partialRangeGreaterThan(lor.upperBound<..))
+      }
+    case (.partialRangeFrom(let prf), .openRange(let or)):
+      if or.upperBound <= prf.lowerBound {
+        return (self, nil)
+      } else if or.lowerBound < prf.lowerBound {
+        return (.partialRangeFrom(or.upperBound...), nil)
+      } else {
+        return (.closedRange(prf.lowerBound...or.lowerBound), .partialRangeFrom(or.upperBound...))
+      }
+    case (.partialRangeFrom(let prf), .range(let rr)):
+      if rr.upperBound <= prf.lowerBound {
+        return (self, nil)
+      } else if rr.lowerBound <= prf.lowerBound {
+        return (.partialRangeFrom(rr.upperBound...), nil)
+      } else {
+        return (.range(prf.lowerBound..<rr.lowerBound), .partialRangeFrom(rr.upperBound...))
+      }
+    case (.partialRangeFrom(let prf1), .partialRangeFrom(let prf2)):
+      if prf2.lowerBound <= prf1.lowerBound {
+        return (.empty, nil)
+      } else {
+        return (.range(prf1.lowerBound..<prf2.lowerBound), nil)
+      }
+    case (.partialRangeFrom(let prf), .partialRangeGreaterThan(let prgt)):
+      if prgt.lowerBound < prf.lowerBound {
+        return (.empty, nil)
+      } else {
+        return (.closedRange(prf.lowerBound...prgt.lowerBound), nil)
+      }
+    case (.partialRangeFrom(let prf), .partialRangeThrough(let prt)):
+      if prt.upperBound < prf.lowerBound {
+        return (self, nil)
+      } else {
+        return (.partialRangeGreaterThan(prt.upperBound<..), nil)
+      }
+    case (.partialRangeFrom(let prf), .partialRangeUpTo(let prut)):
+      if prut.upperBound <= prf.lowerBound {
+        return (self, nil)
+      } else {
+        return (.partialRangeFrom(prut.upperBound...), nil)
+      }
+      
+    // PartialRangeGreaterThan - ***
+    case (.partialRangeGreaterThan(let prgt), .closedRange(let cr)):
+      if cr.upperBound <= prgt.lowerBound {
+        return (self, nil)
+      } else if cr.lowerBound <= prgt.lowerBound {
+        return (.partialRangeGreaterThan(cr.upperBound<..), nil)
+      } else {
+        return (.openRange(prgt.lowerBound<.<cr.lowerBound), .partialRangeGreaterThan(cr.upperBound<..))
+      }
+    case (.partialRangeGreaterThan(let prgt), .leftOpenRange(let lor)):
+      if lor.upperBound <= prgt.lowerBound {
+        return (self, nil)
+      } else if lor.lowerBound <= prgt.lowerBound {
+        return (.partialRangeGreaterThan(lor.upperBound<..), nil)
+      } else {
+        return (.leftOpenRange(prgt.lowerBound<..lor.lowerBound), .partialRangeGreaterThan(lor.upperBound<..))
+      }
+    case (.partialRangeGreaterThan(let prgt), .openRange(let or)):
+      if or.upperBound <= prgt.lowerBound {
+        return (self, nil)
+      } else if or.lowerBound <= prgt.lowerBound {
+        return (.partialRangeFrom(or.upperBound...), nil)
+      } else {
+        return (.leftOpenRange(prgt.lowerBound<..or.lowerBound), .partialRangeFrom(or.upperBound...))
+      }
+    case (.partialRangeGreaterThan(let prgt), .range(let rr)):
+      if rr.upperBound <= prgt.lowerBound {
+        return (self, nil)
+      } else if rr.lowerBound <= prgt.lowerBound {
+        return (.partialRangeFrom(rr.upperBound...), nil)
+      } else {
+        return (.openRange(prgt.lowerBound<.<rr.lowerBound), .partialRangeFrom(rr.upperBound...))
+      }
+    case (.partialRangeGreaterThan(let prgt), .partialRangeFrom(let prf)):
+      if prf.lowerBound <= prgt.lowerBound {
+        return (.empty, nil)
+      } else {
+        return (.openRange(prgt.lowerBound<.<prf.lowerBound), nil)
+      }
+    case (.partialRangeGreaterThan(let prgt1), .partialRangeGreaterThan(let prgt2)):
+      if prgt2.lowerBound <= prgt1.lowerBound {
+        return (.empty, nil)
+      } else {
+        return (.leftOpenRange(prgt1.lowerBound<..prgt2.lowerBound), nil)
+      }
+    case (.partialRangeGreaterThan(let prgt), .partialRangeThrough(let prt)):
+      if prt.upperBound <= prgt.lowerBound {
+        return (self, nil)
+      } else {
+        return (.partialRangeGreaterThan(prt.upperBound<..), nil)
+      }
+    case (.partialRangeGreaterThan(let prgt), .partialRangeUpTo(let prut)):
+      if prut.upperBound <= prgt.lowerBound {
+        return (self, nil)
+      } else {
+        return (.partialRangeFrom(prut.upperBound...), nil)
+      }
+    
+    // PartialRangeThrough - ***
+    case (.partialRangeThrough(let prt), .closedRange(let cr)):
+      if cr.lowerBound > prt.upperBound {
+        return (self, nil)
+      } else if cr.upperBound >= prt.upperBound {
+        return (.partialRangeUpTo(..<cr.lowerBound), nil)
+      } else {
+        return (.partialRangeUpTo(..<cr.lowerBound), .leftOpenRange(cr.upperBound<..prt.upperBound))
+      }
+    case (.partialRangeThrough(let prt), .leftOpenRange(let lor)):
+      if lor.lowerBound >= prt.upperBound {
+        return (self, nil)
+      } else if lor.upperBound >= prt.upperBound {
+        return (.partialRangeThrough(...lor.lowerBound), nil)
+      } else {
+        return (.partialRangeThrough(...lor.lowerBound), .leftOpenRange(lor.upperBound<..prt.upperBound))
+      }
+    case (.partialRangeThrough(let prt), .openRange(let or)):
+      if or.lowerBound >= prt.upperBound {
+        return (self, nil)
+      } else if or.upperBound > prt.upperBound {
+        return (.partialRangeThrough(...or.lowerBound), nil)
+      } else {
+        return (.partialRangeThrough(...or.lowerBound), .closedRange(or.upperBound...prt.upperBound))
+      }
+    case (.partialRangeThrough(let prt), .range(let rr)):
+      if rr.lowerBound > prt.upperBound {
+        return (self, nil)
+      } else if rr.upperBound >= prt.upperBound {
+        return (.partialRangeUpTo(..<rr.lowerBound), nil)
+      } else {
+        return (.partialRangeUpTo(..<rr.lowerBound), .closedRange(rr.upperBound...prt.upperBound))
+      }
+    case (.partialRangeThrough(let prt), .partialRangeFrom(let prf)):
+      if prf.lowerBound > prt.upperBound {
+        return (self, nil)
+      } else {
+        return (.partialRangeUpTo(..<prf.lowerBound), nil)
+      }
+    case (.partialRangeThrough(let prt), .partialRangeGreaterThan(let prgt)):
+      if prgt.lowerBound >= prt.upperBound {
+        return (self, nil)
+      } else {
+        return (.partialRangeThrough(...prgt.lowerBound), nil)
+      }
+    case (.partialRangeThrough(let prt1), .partialRangeThrough(let prt2)):
+      if prt2.upperBound >= prt1.upperBound {
+        return (.empty, nil)
+      } else {
+        return (.leftOpenRange(prt2.upperBound<..prt1.upperBound), nil)
+      }
+    case (.partialRangeThrough(let prt), .partialRangeUpTo(let prut)):
+      if prut.upperBound > prt.upperBound {
+        return (.empty, nil)
+      } else {
+        return (.closedRange(prut.upperBound...prt.upperBound), nil)
+      }
+    
+    // PartialRangeUpTo - ***
+    case (.partialRangeUpTo(let prut), .closedRange(let cr)):
+      if cr.lowerBound >= prut.upperBound {
+        return (self, nil)
+      } else if cr.upperBound >= prut.upperBound {
+        return (.partialRangeUpTo(..<cr.lowerBound), nil)
+      } else {
+        return (.partialRangeUpTo(..<cr.lowerBound), .openRange(cr.upperBound<.<prut.upperBound))
+      }
+    case (.partialRangeUpTo(let prut), .leftOpenRange(let lor)):
+      if lor.lowerBound >= prut.upperBound {
+        return (self, nil)
+      } else if lor.upperBound >= prut.upperBound {
+        return (.partialRangeThrough(...lor.lowerBound), nil)
+      } else {
+        return (.partialRangeThrough(...lor.lowerBound), .openRange(lor.upperBound<.<prut.upperBound))
+      }
+    case (.partialRangeUpTo(let prut), .openRange(let or)):
+      if or.lowerBound >= prut.upperBound {
+        return (self, nil)
+      } else if or.upperBound >= prut.upperBound {
+        return (.partialRangeThrough(...or.lowerBound), nil)
+      } else {
+        return (.partialRangeThrough(...or.lowerBound), .range(or.upperBound..<prut.upperBound))
+      }
+    case (.partialRangeUpTo(let prut), .range(let rr)):
+      if rr.lowerBound >= prut.upperBound {
+        return (self, nil)
+      } else if rr.upperBound >= prut.upperBound {
+        return (.partialRangeUpTo(..<rr.lowerBound), nil)
+      } else {
+        return (.partialRangeUpTo(..<rr.lowerBound), .range(rr.upperBound..<prut.upperBound))
+      }
+    case (.partialRangeUpTo(let prut), .partialRangeFrom(let prf)):
+      if prf.lowerBound >= prut.upperBound {
+        return (self, nil)
+      } else {
+        return (.partialRangeUpTo(..<prf.lowerBound), nil)
+      }
+    case (.partialRangeUpTo(let prut), .partialRangeGreaterThan(let prgt)):
+      if prgt.lowerBound >= prut.upperBound {
+        return (self, nil)
+      } else {
+        return (.partialRangeThrough(...prgt.lowerBound), nil)
+      }
+    case (.partialRangeUpTo(let prut), .partialRangeThrough(let prt)):
+      if prt.upperBound >= prut.upperBound {
+        return (.empty, nil)
+      } else {
+        return (.openRange(prt.upperBound<.<prut.upperBound), nil)
+      }
+    case (.partialRangeUpTo(let prut1), .partialRangeUpTo(let prut2)):
+      if prut2.upperBound >= prut1.upperBound {
+        return (.empty, nil)
+      } else {
+        return (.range(prut2.upperBound..<prut1.upperBound), nil)
+      }
+      
+    
+    // Must not be reached.
+    default:
+      fatalError("Failed to subtract.")
+      
     }
   }
 }
