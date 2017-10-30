@@ -51,6 +51,26 @@ extension BonaFideCharacterSet {
 }
 
 extension BonaFideCharacterSet {
+  public mutating func insert(_ range:ClosedRange<Character>) { self._ranges.insert(range) }
+  public mutating func insert(_ range:LeftOpenRange<Character>) { self._ranges.insert(range) }
+  public mutating func insert(_ range:OpenRange<Character>) { self._ranges.insert(range) }
+  public mutating func insert(_ range:Range<Character>) { self._ranges.insert(range) }
+  public mutating func insert(_ range:PartialRangeFrom<Character>) { self._ranges.insert(range) }
+  public mutating func insert(_ range:PartialRangeGreaterThan<Character>) { self._ranges.insert(range) }
+  public mutating func insert(_ range:PartialRangeThrough<Character>) { self._ranges.insert(range) }
+  public mutating func insert(_ range:PartialRangeUpTo<Character>) { self._ranges.insert(range) }
+  
+  public init(_ range:ClosedRange<Character>) { self.init(); self.insert(range) }
+  public init(_ range:LeftOpenRange<Character>) { self.init(); self.insert(range) }
+  public init(_ range:OpenRange<Character>) { self.init(); self.insert(range) }
+  public init(_ range:Range<Character>) { self.init(); self.insert(range) }
+  public init(_ range:PartialRangeFrom<Character>) { self.init(); self.insert(range) }
+  public init(_ range:PartialRangeGreaterThan<Character>) { self.init(); self.insert(range) }
+  public init(_ range:PartialRangeThrough<Character>) { self.init(); self.insert(range) }
+  public init(_ range:PartialRangeUpTo<Character>) { self.init(); self.insert(range) }
+}
+
+extension BonaFideCharacterSet {
   public mutating func invert() {
     let univ: Multirange<Character> = [Multirange<Character>.Range(CertainRange<Character>.universal)]
     let inverted: Multirange<Character> = univ.subtracting(self._ranges)
