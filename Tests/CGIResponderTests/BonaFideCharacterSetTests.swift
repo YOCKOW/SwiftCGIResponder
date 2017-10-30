@@ -9,15 +9,16 @@ import XCTest
 @testable import CGIResponder
 
 class BonaFideCharacterSetTests: XCTestCase {
-  func testOneCharacter() {
-    let set = BonaFideCharacterSet(charactersIn:"\r\n")
-    XCTAssertFalse(set.contains("\r"))
-    XCTAssertFalse(set.contains("\n"))
-    XCTAssertTrue(set.contains("\r\n"))
+  func testNewlines() {
+    XCTAssertTrue(BonaFideCharacterSet.newlines.contains("\u{000B}"))
+    XCTAssertTrue(BonaFideCharacterSet.newlines.contains("\r"))
+    XCTAssertTrue(BonaFideCharacterSet.newlines.contains("\n"))
+    XCTAssertTrue(BonaFideCharacterSet.newlines.contains("\r\n"))
+    XCTAssertFalse(BonaFideCharacterSet.newlines.contains("\u{000E}"))
   }
   
   static var allTests: [(String, (BonaFideCharacterSetTests) -> () -> Void)] = [
-    ("testOneCharacter", testOneCharacter),
+    ("testNewlines", testNewlines),
   ]
 }
 

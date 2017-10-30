@@ -51,23 +51,23 @@ extension BonaFideCharacterSet {
 }
 
 extension BonaFideCharacterSet {
-  public mutating func insert(_ range:ClosedRange<Character>) { self._ranges.insert(range) }
-  public mutating func insert(_ range:LeftOpenRange<Character>) { self._ranges.insert(range) }
-  public mutating func insert(_ range:OpenRange<Character>) { self._ranges.insert(range) }
-  public mutating func insert(_ range:Range<Character>) { self._ranges.insert(range) }
-  public mutating func insert(_ range:PartialRangeFrom<Character>) { self._ranges.insert(range) }
-  public mutating func insert(_ range:PartialRangeGreaterThan<Character>) { self._ranges.insert(range) }
-  public mutating func insert(_ range:PartialRangeThrough<Character>) { self._ranges.insert(range) }
-  public mutating func insert(_ range:PartialRangeUpTo<Character>) { self._ranges.insert(range) }
+  public mutating func insert(charactersIn range:ClosedRange<Character>) { self._ranges.insert(range) }
+  public mutating func insert(charactersIn range:LeftOpenRange<Character>) { self._ranges.insert(range) }
+  public mutating func insert(charactersIn range:OpenRange<Character>) { self._ranges.insert(range) }
+  public mutating func insert(charactersIn range:Range<Character>) { self._ranges.insert(range) }
+  public mutating func insert(charactersIn range:PartialRangeFrom<Character>) { self._ranges.insert(range) }
+  public mutating func insert(charactersIn range:PartialRangeGreaterThan<Character>) { self._ranges.insert(range) }
+  public mutating func insert(charactersIn range:PartialRangeThrough<Character>) { self._ranges.insert(range) }
+  public mutating func insert(charactersIn range:PartialRangeUpTo<Character>) { self._ranges.insert(range) }
   
-  public init(_ range:ClosedRange<Character>) { self.init(); self.insert(range) }
-  public init(_ range:LeftOpenRange<Character>) { self.init(); self.insert(range) }
-  public init(_ range:OpenRange<Character>) { self.init(); self.insert(range) }
-  public init(_ range:Range<Character>) { self.init(); self.insert(range) }
-  public init(_ range:PartialRangeFrom<Character>) { self.init(); self.insert(range) }
-  public init(_ range:PartialRangeGreaterThan<Character>) { self.init(); self.insert(range) }
-  public init(_ range:PartialRangeThrough<Character>) { self.init(); self.insert(range) }
-  public init(_ range:PartialRangeUpTo<Character>) { self.init(); self.insert(range) }
+  public init(charactersIn range:ClosedRange<Character>) { self.init(); self.insert(charactersIn:range) }
+  public init(charactersIn range:LeftOpenRange<Character>) { self.init(); self.insert(charactersIn:range) }
+  public init(charactersIn range:OpenRange<Character>) { self.init(); self.insert(charactersIn:range) }
+  public init(charactersIn range:Range<Character>) { self.init(); self.insert(charactersIn:range) }
+  public init(charactersIn range:PartialRangeFrom<Character>) { self.init(); self.insert(charactersIn:range) }
+  public init(charactersIn range:PartialRangeGreaterThan<Character>) { self.init(); self.insert(charactersIn:range) }
+  public init(charactersIn range:PartialRangeThrough<Character>) { self.init(); self.insert(charactersIn:range) }
+  public init(charactersIn range:PartialRangeUpTo<Character>) { self.init(); self.insert(charactersIn:range) }
 }
 
 extension BonaFideCharacterSet {
