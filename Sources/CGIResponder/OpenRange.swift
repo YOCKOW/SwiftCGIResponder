@@ -42,6 +42,10 @@ public func <-< <T>(lhs:T, rhs:T) -> OpenRange<T> where T:Comparable {
   return lhs<•<rhs
 }
 
+extension OpenRange: UncountableRangeExpression {
+  typealias UncountableBound = Bound
+}
+
 extension OpenRange {
   public var isEmpty: Bool { return lowerBound >= upperBound }
 }
