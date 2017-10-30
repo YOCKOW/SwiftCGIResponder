@@ -3,6 +3,7 @@ import XCTest
 
 XCTMain([
   testCase(CGIResponderTests.allTests),
+  testCase(CustomRangesTests.allTests),
   testCase(HTTPHeaderFieldTests.allTests),
   testCase(HTTPHeaderFieldDelegateCacheControlTests.allTests),
   testCase(HTTPHeaderFieldDelegateContentLengthTests.allTests),
