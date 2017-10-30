@@ -14,7 +14,7 @@
 public struct Multirange<Bound> where Bound: Comparable {
   public struct Range {
     fileprivate var range: CertainRange<Bound>
-    fileprivate init(_ range:CertainRange<Bound>) { self.range = range }
+    internal init(_ range:CertainRange<Bound>) { self.range = range }
   }
   private var _ranges: [Range]
   public init() { self._ranges = [] }
@@ -52,6 +52,11 @@ extension Multirange.Range {
   
   public func contains(_ value:Bound) -> Bool {
     return self.range.contains(value)
+  }
+  
+  public func intersection(_ other:Multirange<Bound>.Range) -> Multirange<Bound>.Range {
+    let intersection = self.range.intersection(other.range)
+    return Multirange<Bound>.Range(intersection)
   }
 }
 
@@ -160,6 +165,34 @@ extension Multirange {
     var set = self
     set.formUnion(other)
     return set
+  }
+}
+
+extension Multirange {
+  public func intersection(_ other:Multirange<Bound>) -> Multirange<Bound> {
+    var intersection = Multirange<Bound>()
+    for otherRange in other.ranges {
+      var ir: [Multirange<Bound>.Range] = []
+      for myRange in self.ranges {
+        ir.append(myRange.intersection(otherRange))
+      }
+      intersection.ranges.append(contentsOf:ir)
+    }
+    return intersection
+  }
+  
+  public mutating func formIntersection(_ other:Multirange<Bound>) {
+    self.ranges = self.intersection(other).ranges
+  }
+}
+
+extension Multirange {
+  public func symmetricDifference(_ other:Multirange<Bound>) -> Multirange<Bound> {
+    // symmetric diferrence == union - intersection
+    return self.union(other).subtracting(self.intersection(other))
+  }
+  public mutating func formSymmetricDifference(_ other:Multirange<Bound>) {
+    self.ranges = self.symmetricDifference(other).ranges
   }
 }
 

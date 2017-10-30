@@ -430,11 +430,171 @@ extension CertainRange {
   /**
    
    - returns:
+     A new range with the elements that are common to both this range and the given range.
+   
+   */
+  func intersection(_ other:CertainRange<Bound>) -> CertainRange<Bound> {
+    if self == other { return self }
+    let sorted: (CertainRange<Bound>, CertainRange<Bound>) = self < other ? (self, other) : (other, self)
+    // -> Always sorted.0 < sorted.1
+    
+    switch (sorted.0, sorted.1) {
+      
+    // NEVER: case (.empty, _)
+    // NEVER: case (_, .universal)
+    case (_, .empty):
+      return .empty
+    case (.universal, _):
+      return sorted.1
+      
+    // ClosedRange ∩ ***
+    case (.closedRange(let cr1), .closedRange(let cr2)) where cr1.overlaps(cr2):
+      return .closedRange(cr1.lowerBound...min(cr1.upperBound, cr2.upperBound))
+    case (.closedRange(let cr), .leftOpenRange(let lor)) where cr.upperBound > lor.lowerBound:
+      return .leftOpenRange(lor.lowerBound<..min(cr.upperBound, lor.upperBound))
+    case (.closedRange(let cr), .openRange(let or)) where cr.upperBound > or.lowerBound:
+      if cr.upperBound >= or.upperBound { return sorted.1 }
+      else { return .leftOpenRange(or.lowerBound<..cr.upperBound) }
+    case (.closedRange(let cr), .range(let rr)) where cr.upperBound >= rr.lowerBound:
+      if cr.upperBound >= rr.upperBound { return sorted.1 }
+      else { return .closedRange(rr.lowerBound...cr.upperBound) }
+    case (.closedRange(let cr), .partialRangeFrom(let prf)) where cr.upperBound >= prf.lowerBound:
+      return .closedRange(prf.lowerBound...cr.upperBound)
+    case (.closedRange(let cr), .partialRangeGreaterThan(let prgt)) where cr.upperBound > prgt.lowerBound:
+      return .leftOpenRange(prgt.lowerBound<..cr.upperBound)
+      
+    // LeftOpenRange ∩ ***
+    case (.leftOpenRange(let lor), .closedRange(let cr)) where lor.upperBound >= cr.lowerBound:
+      return .closedRange(cr.lowerBound...min(lor.upperBound, cr.upperBound))
+    case (.leftOpenRange(let lor1), .leftOpenRange(let lor2)) where lor1.upperBound > lor2.lowerBound:
+      return .leftOpenRange(lor2.lowerBound<..min(lor1.upperBound, lor2.upperBound))
+    case (.leftOpenRange(let lor), .openRange(let or)) where lor.upperBound > or.lowerBound:
+      if lor.upperBound >= or.upperBound { return sorted.1 }
+      else { return .leftOpenRange(or.lowerBound<..lor.upperBound) }
+    case (.leftOpenRange(let lor), .range(let rr)) where lor.upperBound >= rr.lowerBound:
+      if lor.upperBound >= rr.upperBound { return sorted.1 }
+      else { return .closedRange(rr.lowerBound...lor.upperBound) }
+    case (.leftOpenRange(let lor), .partialRangeFrom(let prf)) where lor.upperBound >= prf.lowerBound:
+      return .closedRange(prf.lowerBound...lor.upperBound)
+    case (.leftOpenRange(let lor), .partialRangeGreaterThan(let prgt)) where lor.upperBound > prgt.lowerBound:
+      return .leftOpenRange(prgt.lowerBound<..lor.upperBound)
+      
+    // OpenRange ∩ ***
+    case (.openRange(let or), .closedRange(let cr)) where or.upperBound > cr.lowerBound:
+      if or.upperBound > cr.upperBound { return sorted.1 }
+      else { return .range(cr.lowerBound..<or.upperBound) }
+    case (.openRange(let or), .leftOpenRange(let lor)) where or.upperBound > lor.lowerBound:
+      if or.upperBound > lor.upperBound { return sorted.1 }
+      else { return .openRange(lor.lowerBound<.<or.upperBound) }
+    case (.openRange(let or1), .openRange(let or2)) where or1.overlaps(or2):
+      return .openRange(or2.lowerBound<.<min(or1.upperBound, or2.upperBound))
+    case (.openRange(let or), .range(let rr)) where or.upperBound > rr.lowerBound:
+      return .range(rr.lowerBound..<min(or.upperBound, rr.upperBound))
+    case (.openRange(let or), .partialRangeFrom(let prf)) where or.upperBound > prf.lowerBound:
+      return .range(prf.lowerBound..<or.upperBound)
+    case (.openRange(let or), .partialRangeGreaterThan(let prgt)) where or.upperBound > prgt.lowerBound:
+      return .openRange(prgt.lowerBound<.<or.upperBound)
+      
+    // Range ∩ ***
+    case (.range(let rr), .closedRange(let cr)) where rr.upperBound > cr.lowerBound:
+      if rr.upperBound > cr.upperBound { return sorted.1 }
+      else { return .range(cr.lowerBound..<rr.upperBound) }
+    case (.range(let rr), .leftOpenRange(let lor)) where rr.upperBound > lor.lowerBound:
+      if rr.upperBound > lor.upperBound { return sorted.1 }
+      else { return .openRange(lor.lowerBound<.<rr.upperBound) }
+    case (.range(let rr), .openRange(let or)) where rr.upperBound > or.lowerBound:
+      return .openRange(or.lowerBound<.<min(rr.upperBound, or.upperBound))
+    case (.range(let rr1), .range(let rr2)) where rr1.overlaps(rr2):
+      return .range(rr2.lowerBound..<min(rr1.upperBound, rr2.upperBound))
+    case (.range(let rr), .partialRangeFrom(let prf)) where rr.upperBound > prf.lowerBound:
+      return .closedRange(prf.lowerBound...rr.upperBound)
+    case (.range(let rr), .partialRangeGreaterThan(let prgt)) where rr.upperBound > prgt.lowerBound:
+      return .openRange(prgt.lowerBound<.<rr.upperBound)
+      
+    // PartialRangeFrom ∩ ***
+    case (.partialRangeFrom, .closedRange):
+      return sorted.1
+    case (.partialRangeFrom, .leftOpenRange):
+      return sorted.1
+    case (.partialRangeFrom, .openRange):
+      return sorted.1
+    case (.partialRangeFrom, .range):
+      return sorted.1
+    case (.partialRangeFrom, .partialRangeFrom):
+      return sorted.1
+    case (.partialRangeFrom, .partialRangeGreaterThan):
+      return sorted.1
+      
+    // PartialRangeGreaterThan ∩ ***
+    case (.partialRangeGreaterThan, .closedRange):
+      return sorted.1
+    case (.partialRangeGreaterThan, .leftOpenRange):
+      return sorted.1
+    case (.partialRangeGreaterThan, .openRange):
+      return sorted.1
+    case (.partialRangeGreaterThan, .range):
+      return sorted.1
+    case (.partialRangeGreaterThan, .partialRangeFrom):
+      return sorted.1
+    case (.partialRangeGreaterThan, .partialRangeGreaterThan):
+      return sorted.1
+      
+    // PartialRangeThrough ∩ ***
+    case (.partialRangeThrough(let prt), .closedRange(let cr)) where prt.upperBound >= cr.lowerBound:
+      return .closedRange(cr.lowerBound...min(prt.upperBound, cr.upperBound))
+    case (.partialRangeThrough(let prt), .leftOpenRange(let lor)) where prt.upperBound > lor.lowerBound:
+      return .leftOpenRange(lor.lowerBound<..min(prt.upperBound, lor.upperBound))
+    case (.partialRangeThrough(let prt), .openRange(let or)) where prt.upperBound > or.lowerBound:
+      if prt.upperBound >= or.upperBound { return sorted.1 }
+      else { return .leftOpenRange(or.lowerBound<..prt.upperBound) }
+    case (.partialRangeThrough(let prt), .range(let rr)) where prt.upperBound >= rr.lowerBound:
+      if prt.upperBound >= rr.upperBound { return sorted.1 }
+      else { return .closedRange(rr.lowerBound...prt.upperBound) }
+    case (.partialRangeThrough(let prt), .partialRangeFrom(let prf)) where prt.upperBound >= prf.lowerBound:
+      return .closedRange(prf.lowerBound...prt.upperBound)
+    case (.partialRangeThrough(let prt), .partialRangeGreaterThan(let prgt)) where prt.upperBound > prgt.lowerBound:
+      return .leftOpenRange(prgt.lowerBound<..prt.upperBound)
+    case (.partialRangeThrough, .partialRangeThrough):
+      return sorted.0
+    case (.partialRangeThrough, .partialRangeUpTo):
+      return sorted.0
+      
+    // PartialRangeUpTo ∩ ***
+    case (.partialRangeUpTo(let prut), .closedRange(let cr)) where prut.upperBound > cr.lowerBound:
+      if prut.upperBound > cr.upperBound { return sorted.1 }
+      else { return .range(cr.lowerBound..<prut.upperBound) }
+    case (.partialRangeUpTo(let prut), .leftOpenRange(let lor)) where prut.upperBound > lor.lowerBound:
+      if prut.upperBound > lor.upperBound { return sorted.1 }
+      else { return .openRange(lor.lowerBound<.<prut.upperBound) }
+    case (.partialRangeUpTo(let prut), .openRange(let or)) where prut.upperBound > or.lowerBound:
+      return .openRange(or.lowerBound<.<min(prut.upperBound, or.upperBound))
+    case (.partialRangeUpTo(let prut), .range(let rr)) where prut.upperBound > rr.lowerBound:
+      return .range(rr.lowerBound..<min(prut.upperBound, rr.upperBound))
+    case (.partialRangeUpTo(let prut), .partialRangeFrom(let prf)) where prut.upperBound > prf.lowerBound:
+      return .range(prf.lowerBound..<prut.upperBound)
+    case (.partialRangeUpTo(let prut), .partialRangeGreaterThan(let prgt)) where prut.upperBound > prgt.lowerBound:
+      return .openRange(prgt.lowerBound<.<prut.upperBound)
+    case (.partialRangeUpTo, .partialRangeThrough):
+      return sorted.0
+    case (.partialRangeUpTo, .partialRangeUpTo):
+      return sorted.0
+    
+    // else...
+    default:
+      return .empty
+    }
+  }
+}
+
+extension CertainRange {
+  /**
+   
+   - returns:
      Subtracted range(s).
      Under some conditions, `other` divides the range. That is why a tuple is returned.
    
    */
-  public func subtracting(_ other:CertainRange<Bound>) -> (CertainRange<Bound>, CertainRange<Bound>?) {
+ func subtracting(_ other:CertainRange<Bound>) -> (CertainRange<Bound>, CertainRange<Bound>?) {
     // The result must be .empty when...
     if self == other || self == .empty || other == .universal { return (.empty, nil) }
     if other == .empty { return (self, nil) }

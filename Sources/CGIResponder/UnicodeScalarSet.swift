@@ -8,7 +8,7 @@
 /**
  
  # UnicodeScalarSet
- Set of Unicode Scalars.
+ A set of Unicode Scalars.
  This will not be necessary in the future.
  
  ## Reference

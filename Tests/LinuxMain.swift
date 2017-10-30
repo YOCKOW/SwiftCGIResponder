@@ -2,6 +2,7 @@ import XCTest
 @testable import CGIResponderTests
 
 XCTMain([
+  testCase(BonaFideCharacterSetTests.allTests),
   testCase(CGIResponderTests.allTests),
   testCase(CustomRangesTests.allTests),
   testCase(HTTPHeaderFieldTests.allTests),
