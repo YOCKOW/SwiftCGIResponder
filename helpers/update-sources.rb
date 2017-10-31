@@ -17,6 +17,7 @@ $ROOT = File.realpath('..', File.dirname(__FILE__))
 Files = [
   :SwiftKeywords,
   :UnicodeLicenseAgreement,
+  :BonaFideCharacterSet_UnicodeGeneralCategory,
 #  :ContentDispositionParameterKey,
 #  :ContentDispositionValue,
   :HTTPHeaderFieldName_IANARegistered,
