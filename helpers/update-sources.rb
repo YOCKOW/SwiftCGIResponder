@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!/usr/bin/ruby
 
 =begin
  
@@ -16,6 +16,7 @@ $ROOT = File.realpath('..', File.dirname(__FILE__))
 
 Files = [
   :SwiftKeywords,
+  :UnicodeLicenseAgreement,
 #  :ContentDispositionParameterKey,
 #  :ContentDispositionValue,
   :HTTPHeaderFieldName_IANARegistered,
@@ -59,6 +60,9 @@ OptionParser.new(__FILE__){|parser|
     failed(ee.message + "\n" + parser.help)
   end
 }
+
+Targets[:SwiftKeywords] = true
+Targets[:UnicodeLicenseAgreement] = true
 
 Files.each{|key|
   if !Targets[key]
