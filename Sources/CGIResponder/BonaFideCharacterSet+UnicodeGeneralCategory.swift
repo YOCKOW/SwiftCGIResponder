@@ -2,7 +2,7 @@
  BonaFideCharacterSet+UnicodeGeneralCategory.swift
    This file was created automatically
    from https://www.unicode.org/Public/UCD/latest/ucd/extracted/DerivedGeneralCategory.txt
-   at 2017-10-31T10:22:51+09:00
+   at 2017-10-31T11:50:44+09:00
  **************************************************************************************************/
 
 /*
@@ -68,7 +68,7 @@
 
 extension BonaFideCharacterSet {
   /// General Category "Lu"
-  internal static let uppercaseLetter: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _uppercaseLetter: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert(charactersIn:"\u{0041}"..."\u{005A}")
     set.insert(charactersIn:"\u{00C0}"..."\u{00D6}")
@@ -700,7 +700,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Ll"
-  internal static let lowercaseLetter: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _lowercaseLetter: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert(charactersIn:"\u{0061}"..."\u{007A}")
     set.insert("\u{00B5}")
@@ -1338,7 +1338,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Lt"
-  internal static let titlecaseLetter: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _titlecaseLetter: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{01C5}")
     set.insert("\u{01C8}")
@@ -1353,7 +1353,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Lm"
-  internal static let modifierLetter: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _modifierLetter: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert(charactersIn:"\u{02B0}"..."\u{02C1}")
     set.insert(charactersIn:"\u{02C6}"..."\u{02D1}")
@@ -1415,7 +1415,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Lo"
-  internal static let otherLetter: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _otherLetter: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{00AA}")
     set.insert("\u{00BA}")
@@ -1879,7 +1879,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Mn"
-  internal static let nonspacingMark: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _nonspacingMark: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert(charactersIn:"\u{0300}"..."\u{036F}")
     set.insert(charactersIn:"\u{0483}"..."\u{0487}")
@@ -2185,7 +2185,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Me"
-  internal static let enclosingMark: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _enclosingMark: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert(charactersIn:"\u{0488}"..."\u{0489}")
     set.insert("\u{1ABE}")
@@ -2195,7 +2195,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Mc"
-  internal static let spacingMark: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _spacingMark: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{0903}")
     set.insert("\u{093B}")
@@ -2360,7 +2360,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Nd"
-  internal static let decimalNumber: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _decimalNumber: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert(charactersIn:"\u{0030}"..."\u{0039}")
     set.insert(charactersIn:"\u{0660}"..."\u{0669}")
@@ -2420,7 +2420,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Nl"
-  internal static let letterNumber: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _letterNumber: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert(charactersIn:"\u{16EE}"..."\u{16F0}")
     set.insert(charactersIn:"\u{2160}"..."\u{2182}")
@@ -2437,7 +2437,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "No"
-  internal static let otherNumber: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _otherNumber: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert(charactersIn:"\u{00B2}"..."\u{00B3}")
     set.insert("\u{00B9}")
@@ -2502,7 +2502,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Zs"
-  internal static let spaceSeparator: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _spaceSeparator: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{0020}")
     set.insert("\u{00A0}")
@@ -2514,26 +2514,26 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Zl"
-  internal static let lineSeparator: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _lineSeparator: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{2028}")
     return set
   })()
   /// General Category "Zp"
-  internal static let paragraphSeparator: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _paragraphSeparator: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{2029}")
     return set
   })()
   /// General Category "Cc"
-  internal static let control: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _control: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert(charactersIn:"\u{0000}"..."\u{001F}")
     set.insert(charactersIn:"\u{007F}"..."\u{009F}")
     return set
   })()
   /// General Category "Cf"
-  internal static let format: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _format: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{00AD}")
     set.insert(charactersIn:"\u{0600}"..."\u{0605}")
@@ -2556,7 +2556,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Co"
-  internal static let privateUse: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _privateUse: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert(charactersIn:"\u{E000}"..."\u{F8FF}")
     set.insert(charactersIn:"\u{F0000}"..."\u{FFFFD}")
@@ -2564,7 +2564,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Pd"
-  internal static let dashPunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _dashPunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{002D}")
     set.insert("\u{058A}")
@@ -2586,7 +2586,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Ps"
-  internal static let openPunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _openPunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{0028}")
     set.insert("\u{005B}")
@@ -2666,7 +2666,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Pe"
-  internal static let closePunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _closePunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{0029}")
     set.insert("\u{005D}")
@@ -2743,7 +2743,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Pc"
-  internal static let connectorPunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _connectorPunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{005F}")
     set.insert(charactersIn:"\u{203F}"..."\u{2040}")
@@ -2754,7 +2754,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Po"
-  internal static let otherPunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _otherPunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert(charactersIn:"\u{0021}"..."\u{0023}")
     set.insert(charactersIn:"\u{0025}"..."\u{0027}")
@@ -2928,7 +2928,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Sm"
-  internal static let mathSymbol: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _mathSymbol: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{002B}")
     set.insert(charactersIn:"\u{003C}"..."\u{003E}")
@@ -2997,7 +2997,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Sc"
-  internal static let currencySymbol: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _currencySymbol: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{0024}")
     set.insert(charactersIn:"\u{00A2}"..."\u{00A5}")
@@ -3019,7 +3019,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Sk"
-  internal static let modifierSymbol: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _modifierSymbol: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{005E}")
     set.insert("\u{0060}")
@@ -3053,7 +3053,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "So"
-  internal static let otherSymbol: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _otherSymbol: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{00A6}")
     set.insert("\u{00A9}")
@@ -3231,7 +3231,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Pi"
-  internal static let initialPunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _initialPunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{00AB}")
     set.insert("\u{2018}")
@@ -3247,7 +3247,7 @@ extension BonaFideCharacterSet {
     return set
   })()
   /// General Category "Pf"
-  internal static let finalPunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
+  internal static let _finalPunctuation: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in
     var set = BonaFideCharacterSet()
     set.insert("\u{00BB}")
     set.insert("\u{2019}")

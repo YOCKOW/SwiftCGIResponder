@@ -17,8 +17,18 @@ class BonaFideCharacterSetTests: XCTestCase {
     XCTAssertFalse(BonaFideCharacterSet.newlines.contains("\u{000E}"))
   }
   
+  func testEmojiFlags() {
+    XCTAssertTrue(BonaFideCharacterSet.emojiFlags.contains("🇯🇵"))
+  }
+  
+  func testEmojiKeycaps() {
+    XCTAssertTrue(BonaFideCharacterSet.emojiKeycaps.contains("3️⃣"))
+  }
+  
   static var allTests: [(String, (BonaFideCharacterSetTests) -> () -> Void)] = [
     ("testNewlines", testNewlines),
+    ("testEmojiFlags", testEmojiFlags),
+    ("testEmojiKeycaps", testEmojiKeycaps),
   ]
 }
 

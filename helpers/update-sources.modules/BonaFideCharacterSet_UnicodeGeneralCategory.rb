@@ -77,7 +77,7 @@ module BonaFideCharacterSet_UnicodeGeneralCategory
       name = names[category]
       raise "Unknown category: #{category}" if !name
       file.puts("  /// General Category \"#{category}\"")
-      file.puts("  internal static let #{name}: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in")
+      file.puts("  internal static let _#{name}: BonaFideCharacterSet = ({ () -> BonaFideCharacterSet in")
       file.puts("    var set = BonaFideCharacterSet()")
       info[category].each {|range|
         if range =~ /^[0-9A-Fa-f]+$/
