@@ -17,7 +17,7 @@ $ROOT = File.realpath('..', File.dirname(__FILE__))
 Files = [
   :SwiftKeywords,
   :UnicodeLicenseAgreement,
-  :BonaFideCharacterSet_UnicodeGeneralCategory,
+#  :BonaFideCharacterSet_UnicodeGeneralCategory,
 #  :ContentDispositionParameterKey,
 #  :ContentDispositionValue,
   :HTTPHeaderFieldName_IANARegistered,
@@ -63,7 +63,7 @@ OptionParser.new(__FILE__){|parser|
 }
 
 Targets[:SwiftKeywords] = true
-Targets[:UnicodeLicenseAgreement] = true
+# Targets[:UnicodeLicenseAgreement] = true
 
 Files.each{|key|
   if !Targets[key]

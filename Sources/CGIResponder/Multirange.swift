@@ -29,7 +29,7 @@ extension Multirange.Range {
   public init(_ range:PartialRangeGreaterThan<Bound>) { self.init(CertainRange<Bound>(range)) }
   public init(_ range:PartialRangeThrough<Bound>) { self.init(CertainRange<Bound>(range)) }
   public init(_ range:PartialRangeUpTo<Bound>) { self.init(CertainRange<Bound>(range)) }
-  public init(_ value:Bound) { self.init(CertainRange<Bound>(value)) }
+  public init(singleValue value:Bound) { self.init(CertainRange<Bound>(singleValue:value)) }
 }
 
 extension Multirange.Range: Equatable {
@@ -152,7 +152,7 @@ extension Multirange {
   }
   
   public mutating func insert(_ newValue:Bound) {
-    self.insert(Multirange<Bound>.Range(newValue))
+    self.insert(Multirange<Bound>.Range(singleValue:newValue))
   }
 }
 
@@ -287,10 +287,10 @@ extension Multirange {
   }
   
   public mutating func subtract(_ value:Bound) {
-    self.subtract(Multirange<Bound>.Range(value))
+    self.subtract(Multirange<Bound>.Range(singleValue:value))
   }
   public func subtracting(_ value:Bound) -> Multirange<Bound> {
-    return self.subtracting(Multirange<Bound>.Range(value))
+    return self.subtracting(Multirange<Bound>.Range(singleValue:value))
   }
   
   public mutating func subtract(_ other:Multirange<Bound>) {

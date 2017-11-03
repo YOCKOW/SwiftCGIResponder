@@ -132,4 +132,14 @@ extension UnicodeScalarSet {
   public var bitmapRepresentation: Data {
     return self._legacyCharacterSet.bitmapRepresentation
   }
+  
+  public mutating func invert() {
+    self._legacyCharacterSet.invert()
+  }
+  
+  public func inverted() -> UnicodeScalarSet {
+    var set = self
+    set.invert()
+    return set
+  }
 }

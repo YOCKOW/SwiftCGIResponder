@@ -131,8 +131,9 @@ public struct MIMEType {
     if parametersString == nil {
       parameters = nil
     } else {
-      parameters = Dictionary<String, String>(keyValuePairs:parametersString!/*,
-                                              allowedUnquotedCharacters:CharacterSet.MIMEType.token*/)
+      parameters = try? Dictionary<String, String>(keyValuePairs:parametersString!,
+                                                   allowedUnquotedCharacters:.mimeTypeTokenAllowed)
+      
       guard parameters != nil else { return nil }
     }
     

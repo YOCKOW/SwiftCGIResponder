@@ -9,6 +9,12 @@ import XCTest
 @testable import CGIResponder
 
 class BonaFideCharacterSetTests: XCTestCase {
+  func testAlphanumerics() {
+    // wmm...
+    XCTAssertTrue(BonaFideCharacterSet.alphanumerics.contains("A"))
+    XCTAssertTrue(BonaFideCharacterSet.alphanumerics.contains("Ａ"))
+  }
+  
   func testNewlines() {
     XCTAssertTrue(BonaFideCharacterSet.newlines.contains("\u{000B}"))
     XCTAssertTrue(BonaFideCharacterSet.newlines.contains("\r"))
@@ -25,7 +31,13 @@ class BonaFideCharacterSetTests: XCTestCase {
     XCTAssertTrue(BonaFideCharacterSet.emojiKeycaps.contains("3️⃣"))
   }
   
+  func testMIMETypeTokens() {
+    XCTAssertTrue(BonaFideCharacterSet.mimeTypeTokenAllowed.contains("8"))
+    XCTAssertTrue(BonaFideCharacterSet.mimeTypeTokenAllowed.contains("U"))
+  }
+  
   static var allTests: [(String, (BonaFideCharacterSetTests) -> () -> Void)] = [
+    ("testAlphanumerics", testAlphanumerics),
     ("testNewlines", testNewlines),
     ("testEmojiFlags", testEmojiFlags),
     ("testEmojiKeycaps", testEmojiKeycaps),

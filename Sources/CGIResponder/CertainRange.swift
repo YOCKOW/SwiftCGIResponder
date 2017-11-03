@@ -39,7 +39,7 @@ internal enum CertainRange<Bound> where Bound: Comparable {
     }
   }
   
-  init(_ value:Bound) {
+  init(singleValue value:Bound) {
     self.init(ClosedRange<Bound>(uncheckedBounds:(lower:value, upper:value)))
   }
   
