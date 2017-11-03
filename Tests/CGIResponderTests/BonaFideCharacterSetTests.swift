@@ -41,6 +41,7 @@ class BonaFideCharacterSetTests: XCTestCase {
     ("testNewlines", testNewlines),
     ("testEmojiFlags", testEmojiFlags),
     ("testEmojiKeycaps", testEmojiKeycaps),
+    ("testMIMETypeTokens", testMIMETypeTokens)
   ]
 }
 
