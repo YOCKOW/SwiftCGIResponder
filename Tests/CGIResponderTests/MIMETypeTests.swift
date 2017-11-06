@@ -21,7 +21,7 @@ class MIMETypeTests: XCTestCase {
     XCTAssertEqual(text_plain!, text_plain2!)
   }
   
-  static var allTests = [
+  static var allTests:[(String, (MIMETypeTests) -> () -> Void)] = [
     ("testInitialization", testInitialization),
   ]
 }

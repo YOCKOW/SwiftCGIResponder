@@ -13,4 +13,5 @@ XCTMain([
   testCase(MIMETypeTests.allTests),
   testCase(String_PartialMatchTests.allTests),
   testCase(String_UnicodeScalarSetTests.allTests),
+  testCase(StringEncodings_IANACharacterSetNameTests.allTests),
 ])
