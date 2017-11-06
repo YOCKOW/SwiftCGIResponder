@@ -12,8 +12,6 @@
 import CoreFoundation
 import Foundation
 
-/// TODO: Workarounds are required for [SR-5986](https://bugs.swift.org/browse/SR-5986)
-
 extension CFString {
   public struct Encoding: RawRepresentable {
     public let rawValue: CFStringEncoding // aka UInt32
