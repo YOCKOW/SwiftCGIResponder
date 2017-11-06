@@ -8,6 +8,8 @@
 import XCTest
 @testable import CGIResponder
 
+import CoreFoundation
+
 class StringEncodings_IANACharacterSetNameTests: XCTestCase {
   func testEncodings() {
     enum Convertibility {
