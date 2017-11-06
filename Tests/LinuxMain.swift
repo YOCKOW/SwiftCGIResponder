@@ -9,6 +9,7 @@ XCTMain([
   testCase(HTTPHeaderFieldTests.allTests),
   testCase(HTTPHeaderFieldDelegateCacheControlTests.allTests),
   testCase(HTTPHeaderFieldDelegateContentLengthTests.allTests),
+  testCase(HTTPHeaderFieldDelegateContentTypeTests.allTests),
   testCase(MultirangeTests.allTests),
   testCase(MIMETypeTests.allTests),
   testCase(String_PartialMatchTests.allTests),

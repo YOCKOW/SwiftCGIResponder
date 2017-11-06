@@ -9,8 +9,12 @@
 extension HTTPHeaderField {
   private static let specifiedFields: [HTTPHeaderFieldName:SpecifiedHTTPHeaderFieldDelegate.Type] = [
     .cacheControl:HTTPHeaderFieldDelegate.CacheControl.self,
-    .contentLength:HTTPHeaderFieldDelegate.ContentLength.self
+    .contentLength:HTTPHeaderFieldDelegate.ContentLength.self,
+    .contentType:HTTPHeaderFieldDelegate.ContentType.self,
   ]
+  
+  /// Initialize from `name` and `value`
+  /// An appropriate delegate will be chosen if `name` can specify its delegate.
   public init?(name:HTTPHeaderFieldName, value:HTTPHeaderFieldValue) {
     if let metatype = HTTPHeaderField.specifiedFields[name] {
       guard let delegate = metatype.init(value:value) else { return nil }
