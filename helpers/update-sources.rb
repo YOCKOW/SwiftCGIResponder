@@ -23,7 +23,7 @@ Files = [
   :HTTPHeaderFieldName_IANARegistered,
 #  :HTTPMethod,
   :HTTPStatusCode,
-#  :MIMEType_PathExtension,
+  :MIMEType_PathExtension,
 #  :PublicSuffix,
 #  :UnicodeScalar_IDNA
 ]

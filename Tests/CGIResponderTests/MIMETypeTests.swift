@@ -21,8 +21,19 @@ class MIMETypeTests: XCTestCase {
     XCTAssertEqual(text_plain!, text_plain2!)
   }
   
+  func testPathExtensions() {
+    let xhtmlType = MIMEType(pathExtension:.xhtml, parameters:["charset":"UTF-8"])
+    XCTAssertNotNil(xhtmlType)
+    XCTAssertEqual(xhtmlType!.type, .application)
+    XCTAssertEqual(xhtmlType!.tree, nil)
+    XCTAssertEqual(xhtmlType!.subtype, "xhtml")
+    XCTAssertEqual(xhtmlType!.suffix, .xml)
+    XCTAssertEqual(xhtmlType!.parameters!, ["charset":"UTF-8"])
+  }
+  
   static var allTests:[(String, (MIMETypeTests) -> () -> Void)] = [
     ("testInitialization", testInitialization),
+    ("testPathExtensions", testPathExtensions),
   ]
 }
 
