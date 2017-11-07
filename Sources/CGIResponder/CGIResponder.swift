@@ -51,3 +51,39 @@ extension CGIResponder {
     try self.appendHTTPHeaderField(field)
   }
 }
+
+extension CGIResponder {
+  /// Get and set Content-Type directly.
+  public var contentType: MIMEType {
+    get {
+      guard let field = self.header.fields(forName:.contentType).first else {
+        return MIMEType(type:.application, subtype:"octet-stream")!
+      }
+      return (field.delegate as! SpecifiedHTTPHeaderFieldDelegate.ContentType).contentType
+    }
+    set {
+      self.setHTTPHeaderField(HTTPHeaderField(contentType:newValue))
+    }
+  }
+  
+  /// Get and set "charset" directly.
+  public var stringEncoding: String.Encoding? {
+    get {
+      guard let params = self.contentType.parameters else { return nil }
+      guard let name = params["charset"] else { return nil }
+      guard let encoding = String.Encoding(ianaCharacterSetName:name) else { return nil }
+      return encoding
+    }
+    set {
+      var contentType = self.contentType
+      var params: [String:String] = contentType.parameters != nil ? contentType.parameters! : [:]
+      if let encoding = newValue {
+        params["charset"] = encoding.ianaCharacterSetName! // error may occur
+      } else {
+        params.removeValue(forKey:"charset")
+      }
+      contentType.parameters = params
+      self.contentType = contentType
+    }
+  }
+}
