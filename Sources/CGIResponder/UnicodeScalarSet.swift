@@ -8,7 +8,7 @@
 /**
  
  # UnicodeScalarSet
- Set of Unicode Scalars.
+ A set of Unicode Scalars.
  This will not be necessary in the future.
  
  ## Reference
@@ -131,5 +131,15 @@ extension UnicodeScalarSet: SetAlgebra {
 extension UnicodeScalarSet {
   public var bitmapRepresentation: Data {
     return self._legacyCharacterSet.bitmapRepresentation
+  }
+  
+  public mutating func invert() {
+    self._legacyCharacterSet.invert()
+  }
+  
+  public func inverted() -> UnicodeScalarSet {
+    var set = self
+    set.invert()
+    return set
   }
 }

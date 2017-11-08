@@ -8,7 +8,7 @@
 import XCTest
 @testable import CGIResponder
 
-class StringUnicodeScalarSetTests: XCTestCase {
+class String_UnicodeScalarSetTests: XCTestCase {
   func testTrimming() {
     let expected = "ABC DEF GHI JKL"
     let string = "   \t \(expected) \r\n"
@@ -16,7 +16,7 @@ class StringUnicodeScalarSetTests: XCTestCase {
     XCTAssertEqual(expected, trimmed)
   }
   
-  static var allTests: [(String, (StringUnicodeScalarSetTests) -> () -> Void)] = [
+  static var allTests: [(String, (String_UnicodeScalarSetTests) -> () -> Void)] = [
     ("testTrimming", testTrimming),
   ]
 }
