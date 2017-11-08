@@ -20,6 +20,8 @@ matrix:
       language: objective-c
 
 script:
+  - sudo mkdir -p /opt/SwiftCGIResponder
   - ./build-install.rb --debug 
-  - ./build-install.rb --release --skip-test
+  - sudo ./build-install.rb --release --skip-test --install-prefix=/opt/SwiftCGIResponder
+  - ls -lA /opt/SwiftCGIResponder/*
 
