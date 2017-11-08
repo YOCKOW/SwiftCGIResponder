@@ -22,6 +22,7 @@ matrix:
 script:
   - sudo mkdir -p /opt/SwiftCGIResponder
   - ./build-install.rb --debug 
-  - sudo ./build-install.rb --release --skip-test --install-prefix=/opt/SwiftCGIResponder
-  - ls -lA /opt/SwiftCGIResponder/*
+  - ./build-install.rb --release --skip-test --install-prefix=/opt/SwiftCGIResponder
+  - ls -lA /opt/SwiftCGIResponder/lib
+  - ls -lA /opt/SwiftCGIResponder/include
 
