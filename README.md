@@ -10,6 +10,8 @@ It's an experimental library under development, and useless so far. (I rebuild t
 # Usage
 
 ```
+import CGIResponder
+
 var responder = CGIResponder()
 responder.status = .ok
 responder.contentType = MIMEType(pathExtension:.txt, parameters:["charset":"UTF-8"])!
