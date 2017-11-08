@@ -4,6 +4,7 @@ import XCTest
 XCTMain([
   testCase(BonaFideCharacterSetTests.allTests),
   testCase(CGIResponderTests.allTests),
+  testCase(CGIContentOutputStreamTests.allTests),
   testCase(CustomRangesTests.allTests),
   testCase(Dictionary_KeyValuePairsStringTests.allTests),
   testCase(HTTPHeaderFieldTests.allTests),
