@@ -14,11 +14,14 @@
 public struct CGIResponder {
   public var status: HTTPStatusCode
   public var header: HTTPHeader // response header
+  public var content: CGIContent
   
   public init(status: HTTPStatusCode = .ok,
-              header: HTTPHeader = HTTPHeader(fields:[])) {
+              header: HTTPHeader = HTTPHeader(fields:[]),
+              content: CGIContent = .string("", encoding:.utf8)) {
     self.status = status
     self.header = header
+    self.content = content
   }
 }
 
