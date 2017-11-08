@@ -30,7 +30,7 @@ responder.content = .string("Hello, World!\n", encoding:.utf8)
 ```
 git clone https://github.com/YOCKOW/SwiftCGIResponder.git
 cd SwiftCGIResponder
-sudo ./build-install.rb --install-prefix=/path/to/your/system --install
+./build-install.rb --install-prefix=/path/to/your/system --install
 swiftc ./your/project/main.swift -I/path/to/your/system/include -L/path/to/your/system/lib -lSwiftCGIResponder
 ```
 
