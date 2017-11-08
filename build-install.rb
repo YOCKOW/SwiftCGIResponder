@@ -8,7 +8,7 @@ build-install.rb
 =end
 
 ModuleName = 'CGIResponder'
-ModuleVersion = "0.0.0"
+ModuleVersion = "0.1.0-dev20171108"
 
 # Requirements #####################################################################################
 require 'fileutils'
@@ -214,10 +214,10 @@ modulePath = binPath + moduleFilename
 swiftBuildArguments = [
   "--build-path #{Options[:build_directory].escaped()}",
   "--configuration #{configuration}",
-  "-Xswiftc -emit-library -Xswiftc -o#{libPath.escaped()}",
-  "-Xswiftc -module-link-name -Xswiftc #{ModuleLinkName}",
-  "-Xswiftc -module-name -Xswiftc #{ModuleName}",
-  "-Xswiftc -emit-module-path -Xswiftc #{modulePath.escaped()}"
+#  "-Xswiftc -emit-library -Xswiftc -o#{libPath.escaped()}",
+#  "-Xswiftc -module-link-name -Xswiftc #{ModuleLinkName}",
+#  "-Xswiftc -module-name -Xswiftc #{ModuleName}",
+#  "-Xswiftc -emit-module-path -Xswiftc #{modulePath.escaped()}"
 ].join(" ")
 
 # Build
@@ -268,12 +268,12 @@ if Options[:install]
     originalLibInstallPath = libInstallDirPath + originalLibFilename
     originalModuleInstallPath = moduleInstallDirPath + originalModuleFilename
     
-    try_exec("mkdir -p #{libInstallDirPath.escaped()}", 2)
-    try_exec("rm -f #{originalLibInstallPath.escaped()}", 2)
-    try_exec("cp -f #{libPath.escaped()} #{originalLibInstallPath.escaped()}", 2)
-    try_exec("mkdir -p #{moduleInstallDirPath.escaped()}", 2)
-    try_exec("rm -f #{originalModuleInstallPath.escaped()}", 2)
-    try_exec("cp -f #{modulePath.escaped()} #{originalModuleInstallPath.escaped()}", 2)
+    try_exec("sudo mkdir -p #{libInstallDirPath.escaped()}", 2)
+    try_exec("sudo rm -f #{originalLibInstallPath.escaped()}", 2)
+    try_exec("sudo cp -f #{libPath.escaped()} #{originalLibInstallPath.escaped()}", 2)
+    try_exec("sudo mkdir -p #{moduleInstallDirPath.escaped()}", 2)
+    try_exec("sudo rm -f #{originalModuleInstallPath.escaped()}", 2)
+    try_exec("sudo cp -f #{modulePath.escaped()} #{originalModuleInstallPath.escaped()}", 2)
     
     suffixes.each_with_index{|suffix, ii|
       sourceSuffix = (ii == 0) ? ('.' + ModuleVersion) : suffixes[ii - 1]
@@ -288,8 +288,8 @@ if Options[:install]
       libDestPath = libInstallDirPath + libDestFilename
       moduleDestPath = moduleInstallDirPath + moduleDestFilename
       
-      try_exec("ln -fs #{libSourcePath.escaped()} #{libDestPath.escaped}", 2)
-      try_exec("ln -fs #{moduleSourcePath.escaped()} #{moduleDestPath.escaped}", 2)
+      try_exec("sudo ln -fs #{libSourcePath.escaped()} #{libDestPath.escaped}", 2)
+      try_exec("sudo ln -fs #{moduleSourcePath.escaped()} #{moduleDestPath.escaped}", 2)
     }
   else
     $stderr.puts("Invalid Version")
