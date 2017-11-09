@@ -262,7 +262,19 @@ if Options[:install]
       suffixes.unshift(".#{majorVersion}.#{minorVersion}.#{patchVersion}")
     end
     
-    sudoRequired = File::Stat.new(Options[:prefix].to_s).owned? ? false : true
+    sudoRequired = true
+    _root = Pathname.new("/")
+    _prefix = Options[:prefix]
+    while _prefix != _root
+      if !_prefix.exist?
+        _prefix = _prefix.parent
+      else
+        sudoRequired = File::Stat.new(_prefix.to_s).owned? ? false : true
+        break
+      end
+    end
+    
+    
     $stderr.puts("* `sudo` is required to install products.") if sudoRequired
     
     libInstallDirPath = Options[:prefix] + Pathname('lib')
