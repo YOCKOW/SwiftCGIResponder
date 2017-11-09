@@ -8,7 +8,7 @@ build-install.rb
 =end
 
 ModuleName = 'CGIResponder'
-ModuleVersion = "0.1.0-dev20171108"
+ModuleVersion = "0.1.0-dev20171108.next"
 
 # Requirements #####################################################################################
 require 'fileutils'
@@ -70,7 +70,8 @@ def failed(message)
 end
 
 ## Run Shell Script
-def try_exec(command, indent = 0)
+def try_exec(command, indent = 0, sudo = false)
+  command = "sudo " + command if sudo
   puts(' ' * indent + "Execute: #{command}")
   Open3.popen3(command) {|stdin, stdout, stderr, wait_thread|
     stdin.close
@@ -261,6 +262,9 @@ if Options[:install]
       suffixes.unshift(".#{majorVersion}.#{minorVersion}.#{patchVersion}")
     end
     
+    sudoRequired = File::Stat.new(Options[:prefix].to_s).owned? ? false : true
+    $stderr.puts("* `sudo` is required to install products.") if sudoRequired
+    
     libInstallDirPath = Options[:prefix] + Pathname('lib')
     moduleInstallDirPath = Options[:prefix] + Pathname('include')
     originalLibFilename = Pathname(SharedLibraryPrefix + ModuleLinkName + SharedLibrarySuffix + '.' + ModuleVersion)
@@ -268,12 +272,12 @@ if Options[:install]
     originalLibInstallPath = libInstallDirPath + originalLibFilename
     originalModuleInstallPath = moduleInstallDirPath + originalModuleFilename
     
-    try_exec("sudo mkdir -p #{libInstallDirPath.escaped()}", 2)
-    try_exec("sudo rm -f #{originalLibInstallPath.escaped()}", 2)
-    try_exec("sudo cp -f #{libPath.escaped()} #{originalLibInstallPath.escaped()}", 2)
-    try_exec("sudo mkdir -p #{moduleInstallDirPath.escaped()}", 2)
-    try_exec("sudo rm -f #{originalModuleInstallPath.escaped()}", 2)
-    try_exec("sudo cp -f #{modulePath.escaped()} #{originalModuleInstallPath.escaped()}", 2)
+    try_exec("mkdir -p #{libInstallDirPath.escaped()}", 2, sudoRequired)
+    try_exec("rm -f #{originalLibInstallPath.escaped()}", 2, sudoRequired)
+    try_exec("cp -f #{libPath.escaped()} #{originalLibInstallPath.escaped()}", 2, sudoRequired)
+    try_exec("mkdir -p #{moduleInstallDirPath.escaped()}", 2, sudoRequired)
+    try_exec("rm -f #{originalModuleInstallPath.escaped()}", 2, sudoRequired)
+    try_exec("cp -f #{modulePath.escaped()} #{originalModuleInstallPath.escaped()}", 2, sudoRequired)
     
     suffixes.each_with_index{|suffix, ii|
       sourceSuffix = (ii == 0) ? ('.' + ModuleVersion) : suffixes[ii - 1]
@@ -288,8 +292,8 @@ if Options[:install]
       libDestPath = libInstallDirPath + libDestFilename
       moduleDestPath = moduleInstallDirPath + moduleDestFilename
       
-      try_exec("sudo ln -fs #{libSourcePath.escaped()} #{libDestPath.escaped}", 2)
-      try_exec("sudo ln -fs #{moduleSourcePath.escaped()} #{moduleDestPath.escaped}", 2)
+      try_exec("ln -fs #{libSourcePath.escaped()} #{libDestPath.escaped}", 2, sudoRequired)
+      try_exec("ln -fs #{moduleSourcePath.escaped()} #{moduleDestPath.escaped}", 2, sudoRequired)
     }
   else
     $stderr.puts("Invalid Version")
