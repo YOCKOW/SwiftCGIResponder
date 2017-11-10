@@ -136,6 +136,13 @@ extension CGIResponder {
   public func respond<Respondee: CGIContentOutputStream>(to output:inout Respondee) throws {
     let status = self.status
     
+    // Check if there's mismatch about string encoding.
+    if case let .string(_, encoding:encoding) = self.content,
+       let expectedEncoding = self.stringEncoding,
+       encoding != expectedEncoding {
+      viewMessage(.stringEncodingInconsistency(encoding, expectedEncoding))
+    }
+    
     // TODO: Check if `status` is an expected value or not using ETag or Last-Modified
     
     // Status

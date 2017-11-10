@@ -18,9 +18,13 @@ extension FileHandle: TextOutputStream {
   }
 }
 
+extension FileHandle {
+  internal static var changeableStandardError: FileHandle = FileHandle.standardError
+}
+
 /// Print objects to standard error
 internal func warn(_ items: Any..., separator: String = " ", terminator: String = "\n") {
-  var stderr = FileHandle.standardError
+  var stderr = FileHandle.changeableStandardError
   let numberOfItems = items.count
   if numberOfItems == 0 {
     print("", separator:separator, terminator:terminator, to:&stderr)
@@ -36,3 +40,4 @@ internal func warn(_ items: Any..., separator: String = " ", terminator: String 
     }
   }
 }
+
