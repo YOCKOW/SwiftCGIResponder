@@ -44,7 +44,8 @@ class CGIResponderTests: XCTestCase {
     responder.content = .string("?", encoding:.utf8)
     
     let path = NSTemporaryDirectory() + UUID().uuidString
-    FileManager.default.createFile(atPath:path, contents:nil, attributes:nil)
+    XCTAssertTrue(FileManager.default.createFile(atPath:path, contents:nil, attributes:nil))
+    
     let tmpFile = FileHandle(forUpdatingAtPath:path)!
     FileHandle.changeableStandardError = tmpFile
     XCTAssertNoThrow(try responder.respond(to:&output))
