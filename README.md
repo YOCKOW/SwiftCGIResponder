@@ -10,6 +10,7 @@ It's an experimental library under development, and useless so far. (I rebuild t
 # Usage
 
 ```
+import Foundation
 import CGIResponder
 
 var responder = CGIResponder()
@@ -31,7 +32,7 @@ responder.content = .string("Hello, World!\n", encoding:.utf8)
 git clone https://github.com/YOCKOW/SwiftCGIResponder.git
 cd SwiftCGIResponder
 ./build-install.rb --install-prefix=/path/to/your/system --install
-swiftc ./your/project/main.swift -I/path/to/your/system/include -L/path/to/your/system/lib -lSwiftCGIResponder
+swiftc ~/your/project/main.swift -I/path/to/your/system/include -L/path/to/your/system/lib -lSwiftCGIResponder
 ```
 
 ... or you can also use [Swift Package Manager](https://github.com/apple/swift-package-manager) easily to import `CGIResponder` to your project.
