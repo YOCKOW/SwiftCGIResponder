@@ -8,7 +8,7 @@ build-install.rb
 =end
 
 ModuleName = 'CGIResponder'
-ModuleVersion = "0.1.0-dev20171108.next"
+ModuleVersion = "0.1.0-dev20171110"
 
 # Requirements #####################################################################################
 require 'fileutils'
