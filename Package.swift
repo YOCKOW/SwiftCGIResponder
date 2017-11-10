@@ -12,7 +12,7 @@ let linux = false
 var targets: [Target] = [
   // Targets are the basic building blocks of a package. A target can define a module or a test suite.
   // Targets can depend on other targets in this package, and on products in packages which this package depends on.
-  .target(name:"CGIResponder", dependencies:[]),
+  .target(name:"CGIResponder", dependencies:linux ? ["SR_5986"] : []),
 ]
 if linux {
   targets.append(.target(name:"SR_5986", dependencies:[], path:"Tests/SR-5986"))
