@@ -9,7 +9,7 @@ import Foundation
 
 /**
  
- # ETagValue
+ # HTTPETag
  Reporesents for value of ETag
  
  */
@@ -22,7 +22,7 @@ public enum HTTPETag {
 extension HTTPETag {
   /// Initialize from `string`
   /// e.g.) "foo", W/"bar"
-  public init?(string:String) {
+  public init?(_ string:String) {
     if string == "*" {
       self = .any
       return
@@ -63,3 +63,64 @@ extension HTTPETag {
     }
   }
 }
+
+extension HTTPETag: CustomStringConvertible {
+  public var description: String {
+    let escape: (String) -> String = {
+      $0.replacingOccurrences(of:"\\", with:"\\\\").replacingOccurrences(of:"\"", with:"\\\"")
+    }
+    switch self {
+    case .weak(let string):
+      return "W/\"" + escape(string) + "\""
+    case .strong(let string):
+      return "\"" + escape(string) + "\""
+    case .any:
+      return "*"
+    }
+  }
+}
+
+extension HTTPETag: Hashable {
+  public static func ==(lhs:HTTPETag, rhs:HTTPETag) -> Bool {
+    switch (lhs, rhs) {
+    case (.weak(let lstr), .weak(let rstr)) where lstr == rstr: return true
+    case (.strong(let lstr), .strong(let rstr)) where lstr == rstr: return true
+    case (.any, .any): return true
+    default: return false
+    }
+  }
+  public var hashValue: Int {
+    switch self {
+    case .weak(let string): return ~string.hashValue
+    case .strong(let string): return string.hashValue
+    case .any: return 0
+    }
+  }
+}
+
+infix operator =~: ComparisonPrecedence
+extension HTTPETag {
+  public static func =~(lhs:HTTPETag, rhs:HTTPETag) -> Bool {
+    if lhs == rhs { return true }
+    switch (lhs, rhs) {
+    case (.weak(let lstr), .strong(let rstr)) where lstr == rstr: return true
+    case (.strong(let lstr), .weak(let rstr)) where lstr == rstr: return true
+    default: return false
+    }
+  }
+  
+  public func matches(in list:Array<HTTPETag>) -> Bool {
+    for tag in list {
+      if tag == .any || self == tag { return true }
+    }
+    return false
+  }
+  
+  public func weaklyMatches(in list:Array<HTTPETag>) -> Bool {
+    for tag in list {
+      if tag == .any || self =~ tag { return true }
+    }
+    return false
+  }
+}
+
