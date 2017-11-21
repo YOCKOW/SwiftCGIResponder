@@ -20,9 +20,20 @@ class HTTPETagTests: XCTestCase {
     XCTAssertTrue(HTTPETag("\"ETag\"")! =~ HTTPETag("W/\"ETag\"")!)
   }
   
+  func testList() {
+    XCTAssertNil(Array<HTTPETag>(string:"\"A\", \"B...?")) // not closed
+    
+    let list = Array<HTTPETag>(string:"\"A\", \"B\", W/\"C\",  \"D\" ")!
+    XCTAssertEqual(list[0], .strong("A"))
+    XCTAssertEqual(list[1], .strong("B"))
+    XCTAssertEqual(list[2], .weak("C"))
+    XCTAssertEqual(list[3], .strong("D"))
+  }
+  
   static var allTests:[(String, (HTTPETagTests) -> () -> Void)] = [
     ("testInitialization", testInitialization),
     ("testComparison", testComparison),
+    ("testList", testList),
   ]
 }
 
