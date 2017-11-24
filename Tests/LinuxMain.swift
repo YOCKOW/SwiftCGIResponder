@@ -13,6 +13,7 @@ XCTMain([
   testCase(HTTPHeaderFieldDelegateContentLengthTests.allTests),
   testCase(HTTPHeaderFieldDelegateContentTypeTests.allTests),
   testCase(HTTPHeaderFieldDelegateETagTests.allTests),
+  testCase(HTTPHeaderFieldDelegateLastModifiedTests.allTests),
   testCase(MultirangeTests.allTests),
   testCase(MIMETypeTests.allTests),
   testCase(String_PartialMatchTests.allTests),

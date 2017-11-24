@@ -10,7 +10,7 @@ import Foundation
 
 /**
  
- # DateFormatter
+ # DateFormatter (extension)
  Some convinient date formatters for CGI programming
  
  */

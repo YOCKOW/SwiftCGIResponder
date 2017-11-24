@@ -42,7 +42,7 @@ extension HTTPHeaderFieldDelegate {
   }
 }
 
-/// Extend `HTTPHeaderField` to be initialized with `directives`
+/// Extend `HTTPHeaderField` to be initialized with `eTag`
 public extension HTTPHeaderField {
   public init(eTag:HTTPETag) {
     self.init(delegate:HTTPHeaderFieldDelegate.ETag(eTag))
