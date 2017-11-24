@@ -9,7 +9,7 @@ import XCTest
 @testable import CGIResponder
 import Foundation
 
-class DateForamttersTests: XCTestCase {
+class DateFormattersTests: XCTestCase {
   func testConversion() {
     let string = "Sat, 08 Jun 2013 05:32:10 GMT"
     let invalid = "?"
