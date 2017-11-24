@@ -62,9 +62,64 @@ class CGIResponderTests: XCTestCase {
     
   }
   
+  func testExpectedStatus() {
+    let eTag1 = HTTPETag.strong("ETag1")
+    let eTag2 = HTTPETag.strong("ETag2")
+    let theDayBeforeYesterday = Date(timeIntervalSinceNow:TimeInterval(-48 * 60 * 60))
+    let yesterday = Date(timeIntervalSinceNow:TimeInterval(-24 * 60 * 60))
+    let now = Date()
+    
+    let env = EnvironmentVariables.default
+    
+    var responder1 = CGIResponder()
+    var responder2 = CGIResponder()
+    
+    // ETag
+    
+    //// If-Match
+    env[EnvironmentVariables.Name.httpIfMatch.rawValue] = eTag1.description
+    responder1.setHTTPHeaderField(HTTPHeaderField(eTag:eTag2))
+    XCTAssertEqual(responder1.expectedStatus, .preconditionFailed)
+    
+    responder1.setHTTPHeaderField(HTTPHeaderField(eTag:eTag1))
+    XCTAssertEqual(responder1.expectedStatus, nil)
+    
+    env.removeValue(forName:EnvironmentVariables.Name.httpIfMatch.rawValue)
+    
+    //// If-None-Match
+    env[EnvironmentVariables.Name.httpIfNoneMatch.rawValue] = eTag1.description
+    XCTAssertEqual(responder1.expectedStatus, .notModified)
+    
+    env[EnvironmentVariables.Name.httpIfNoneMatch.rawValue] = eTag2.description
+    XCTAssertEqual(responder1.expectedStatus, nil)
+    
+    env.removeValue(forName:EnvironmentVariables.Name.httpIfNoneMatch.rawValue)
+    
+    // Last-Modified
+    
+    //// If-Unmofidied-Since
+    env[EnvironmentVariables.Name.httpIfUnmodifiedSince.rawValue] = DateFormatter.rfc1123.string(from:yesterday)
+    responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:now))
+    XCTAssertEqual(responder2.expectedStatus, .preconditionFailed)
+    
+    responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:theDayBeforeYesterday))
+    XCTAssertEqual(responder2.expectedStatus, nil)
+    
+    env.removeValue(forName:EnvironmentVariables.Name.httpIfUnmodifiedSince.rawValue)
+    
+    //// If-Modified-Since
+    env[EnvironmentVariables.Name.httpIfModifiedSince.rawValue] = DateFormatter.rfc1123.string(from:yesterday)
+    responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:now))
+    XCTAssertEqual(responder2.expectedStatus, nil)
+    
+    responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:theDayBeforeYesterday))
+    XCTAssertEqual(responder2.expectedStatus, .notModified)
+  }
+  
   static var allTests: [(String, (CGIResponderTests) -> () -> Void)] = [
     ("testContentType", testContentType),
     ("testOutput", testOutput),
     ("testStringEncoding", testStringEncoding),
+    ("testExpectedStatus", testExpectedStatus),
   ]
 }

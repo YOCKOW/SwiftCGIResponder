@@ -19,7 +19,7 @@ extension DateFormatter {
     // e.g.) Sun, 06 Nov 1994 08:49:37 GMT
     var formatter = DateFormatter()
     formatter.locale = Locale(identifier: "en_US_POSIX")
-    formatter.dateFormat = "EEE, dd MMM YYYY HH:mm:ss 'GMT'"
+    formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss 'GMT'"
     formatter.timeZone = TimeZone(secondsFromGMT: 0)
     return formatter
   })()
@@ -28,7 +28,7 @@ extension DateFormatter {
     // e.g.) Fri, 24-Jan-2003 16:41:00 GMT
     var formatter = DateFormatter()
     formatter.locale = Locale(identifier: "en_US_POSIX")
-    formatter.dateFormat = "EEE, dd-MMM-YYYY HH:mm:ss 'GMT'"
+    formatter.dateFormat = "EEE, dd-MMM-yyyy HH:mm:ss 'GMT'"
     formatter.timeZone = TimeZone(secondsFromGMT: 0)
     return formatter
   })()

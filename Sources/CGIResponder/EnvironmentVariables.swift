@@ -13,7 +13,7 @@ import Foundation
  Represents for Environment Variables
  
  */
-public struct EnvironmentVariables {
+final public class EnvironmentVariables {
   public static let `default` = EnvironmentVariables()
   fileprivate var _environmentVariables: [String:String] = ProcessInfo.processInfo.environment
   private init() {}
@@ -52,7 +52,7 @@ public struct EnvironmentVariables {
   }
   
   /// Remove a value for `name`
-  @discardableResult public mutating func removeValue(forName name:String) -> String? {
+  @discardableResult public func removeValue(forName name:String) -> String? {
     let value = self[name]
     self[name] = nil
     return value

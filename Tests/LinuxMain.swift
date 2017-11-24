@@ -6,6 +6,7 @@ XCTMain([
   testCase(CGIResponderTests.allTests),
   testCase(CGIContentOutputStreamTests.allTests),
   testCase(CustomRangesTests.allTests),
+  testCase(DateFormattersTests.allTests),
   testCase(Dictionary_KeyValuePairsStringTests.allTests),
   testCase(EnvironmentVariablesTests.allTests),
   testCase(HTTPETagTests.allTests),
