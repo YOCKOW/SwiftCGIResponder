@@ -168,7 +168,10 @@ extension CGIResponder {
       viewMessage(.stringEncodingInconsistency(encoding, expectedEncoding))
     }
     
-    // TODO: Check if `status` is an expected value or not using ETag or Last-Modified
+    // Check if `status` is an expected value or not using ETag or Last-Modified
+    if let expectedStatus = self.expectedStatus, status != expectedStatus {
+      viewMessage(.statusCodeInconsistency(status, expectedStatus))
+    }
     
     // Status
     try output.write(CGIContent(string:"Status: \(status.rawValue) \(status.reasonPhrase)\r\n"))

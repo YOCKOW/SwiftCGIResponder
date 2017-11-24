@@ -43,26 +43,13 @@ class CGIResponderTests: XCTestCase {
     responder.contentType = MIMEType(pathExtension:.txt, parameters:["charset":"US-ASCII"])!
     responder.content = .string("?", encoding:.utf8)
     
-    let path = NSTemporaryDirectory() + UUID().uuidString
-    XCTAssertTrue(FileManager.default.createFile(atPath:path, contents:nil, attributes:nil))
-    
-    let tmpFile = FileHandle(forUpdatingAtPath:path)!
-    FileHandle.changeableStandardError = tmpFile
-    XCTAssertNoThrow(try responder.respond(to:&output))
-    FileHandle.changeableStandardError = FileHandle.standardError
-    
-    tmpFile.seek(toFileOffset:0)
-    let data = tmpFile.availableData
-    tmpFile.closeFile()
-    
-    let message = String(data:data, encoding:.utf8)!.trimmingCharacters(in:.whitespacesAndNewlines)
-    
-    XCTAssertEqual(ErrorMessage.stringEncodingInconsistency(.utf8, String.Encoding(ianaCharacterSetName:"US-ASCII")!).rawValue,
-                   message)
-    
+    let expected: ErrorMessage = .stringEncodingInconsistency(.utf8, String.Encoding(ianaCharacterSetName:"US-ASCII")!)
+    XCTAssertTrue(try checkWarning(expected){ try responder.respond(to:&output) })
   }
   
   func testExpectedStatus() {
+    var output = FileHandle.nullDevice
+    
     let eTag1 = HTTPETag.strong("ETag1")
     let eTag2 = HTTPETag.strong("ETag2")
     let theDayBeforeYesterday = Date(timeIntervalSinceNow:TimeInterval(-48 * 60 * 60))
@@ -80,6 +67,9 @@ class CGIResponderTests: XCTestCase {
     env[EnvironmentVariables.Name.httpIfMatch.rawValue] = eTag1.description
     responder1.setHTTPHeaderField(HTTPHeaderField(eTag:eTag2))
     XCTAssertEqual(responder1.expectedStatus, .preconditionFailed)
+    XCTAssertTrue(try checkWarning(.statusCodeInconsistency(.ok, .preconditionFailed)) {
+      try responder1.respond(to:&output)
+    })
     
     responder1.setHTTPHeaderField(HTTPHeaderField(eTag:eTag1))
     XCTAssertEqual(responder1.expectedStatus, nil)
@@ -89,6 +79,9 @@ class CGIResponderTests: XCTestCase {
     //// If-None-Match
     env[EnvironmentVariables.Name.httpIfNoneMatch.rawValue] = eTag1.description
     XCTAssertEqual(responder1.expectedStatus, .notModified)
+    XCTAssertTrue(try checkWarning(.statusCodeInconsistency(.ok, .notModified)) {
+      try responder1.respond(to:&output)
+    })
     
     env[EnvironmentVariables.Name.httpIfNoneMatch.rawValue] = eTag2.description
     XCTAssertEqual(responder1.expectedStatus, nil)
@@ -101,6 +94,9 @@ class CGIResponderTests: XCTestCase {
     env[EnvironmentVariables.Name.httpIfUnmodifiedSince.rawValue] = DateFormatter.rfc1123.string(from:yesterday)
     responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:now))
     XCTAssertEqual(responder2.expectedStatus, .preconditionFailed)
+    XCTAssertTrue(try checkWarning(.statusCodeInconsistency(.ok, .preconditionFailed)) {
+      try responder2.respond(to:&output)
+    })
     
     responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:theDayBeforeYesterday))
     XCTAssertEqual(responder2.expectedStatus, nil)
@@ -114,6 +110,9 @@ class CGIResponderTests: XCTestCase {
     
     responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:theDayBeforeYesterday))
     XCTAssertEqual(responder2.expectedStatus, .notModified)
+    XCTAssertTrue(try checkWarning(.statusCodeInconsistency(.ok, .notModified)) {
+      try responder2.respond(to:&output)
+    })
   }
   
   static var allTests: [(String, (CGIResponderTests) -> () -> Void)] = [

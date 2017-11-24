@@ -10,7 +10,7 @@ import XCTest
 
 class EnvironmentVariablesTests: XCTestCase {
   func testSetAndGet() {
-    var env = EnvironmentVariables.default
+    let env = EnvironmentVariables.default
     env["CGI_RESPONDER_TESTS"] = "YES"
     XCTAssertEqual(env["CGI_RESPONDER_TESTS"], "YES")
   }
