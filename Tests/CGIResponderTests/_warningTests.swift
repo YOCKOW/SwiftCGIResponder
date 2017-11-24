@@ -13,7 +13,7 @@ import Foundation
 func checkWarning(_ expected:ErrorMessage, _ body:() throws -> Void) rethrows -> Bool {
   let path = NSTemporaryDirectory() + UUID().uuidString
   
-  FileManager.default.createFile(atPath:path, contents:nil, attributes:nil)
+  _ = FileManager.default.createFile(atPath:path, contents:nil, attributes:nil)
   
   let tmpFile = FileHandle(forUpdatingAtPath:path)!
   FileHandle.changeableStandardError = tmpFile

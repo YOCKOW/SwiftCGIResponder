@@ -21,7 +21,7 @@ class DateFormattersTests: XCTestCase {
   }
   
   
-  static var allTests: [(String, (DateForamttersTests) -> () -> Void)] = [
+  static var allTests: [(String, (DateFormattersTests) -> () -> Void)] = [
     ("testConversion", testConversion),
   ]
 }
