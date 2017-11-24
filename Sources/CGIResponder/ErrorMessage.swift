@@ -33,6 +33,10 @@ extension ErrorMessage: CustomStringConvertible, CustomDebugStringConvertible {
 }
 
 extension ErrorMessage {
+  static func statusCodeInconsistency(_ actual:HTTPStatusCode, _ expected:HTTPStatusCode) -> ErrorMessage {
+    return ErrorMessage("The current status code is \(actual), although expected status code is \(expected).")
+  }
+  
   static func stringEncodingInconsistency(_ actual:String.Encoding, _ expected:String.Encoding) -> ErrorMessage {
     return ErrorMessage("\(actual) has been passed, although expected encoding is \(expected).")
   }

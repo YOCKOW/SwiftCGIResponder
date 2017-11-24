@@ -43,28 +43,82 @@ class CGIResponderTests: XCTestCase {
     responder.contentType = MIMEType(pathExtension:.txt, parameters:["charset":"US-ASCII"])!
     responder.content = .string("?", encoding:.utf8)
     
-    let path = NSTemporaryDirectory() + UUID().uuidString
-    XCTAssertTrue(FileManager.default.createFile(atPath:path, contents:nil, attributes:nil))
+    let expected: ErrorMessage = .stringEncodingInconsistency(.utf8, String.Encoding(ianaCharacterSetName:"US-ASCII")!)
+    XCTAssertTrue(try checkWarning(expected){ try responder.respond(to:&output) })
+  }
+  
+  func testExpectedStatus() {
+    var output = FileHandle.nullDevice
     
-    let tmpFile = FileHandle(forUpdatingAtPath:path)!
-    FileHandle.changeableStandardError = tmpFile
-    XCTAssertNoThrow(try responder.respond(to:&output))
-    FileHandle.changeableStandardError = FileHandle.standardError
+    let eTag1 = HTTPETag.strong("ETag1")
+    let eTag2 = HTTPETag.strong("ETag2")
+    let theDayBeforeYesterday = Date(timeIntervalSinceNow:TimeInterval(-48 * 60 * 60))
+    let yesterday = Date(timeIntervalSinceNow:TimeInterval(-24 * 60 * 60))
+    let now = Date()
     
-    tmpFile.seek(toFileOffset:0)
-    let data = tmpFile.availableData
-    tmpFile.closeFile()
+    let env = EnvironmentVariables.default
     
-    let message = String(data:data, encoding:.utf8)!.trimmingCharacters(in:.whitespacesAndNewlines)
+    var responder1 = CGIResponder()
+    var responder2 = CGIResponder()
     
-    XCTAssertEqual(ErrorMessage.stringEncodingInconsistency(.utf8, String.Encoding(ianaCharacterSetName:"US-ASCII")!).rawValue,
-                   message)
+    // ETag
     
+    //// If-Match
+    env[EnvironmentVariables.Name.httpIfMatch.rawValue] = eTag1.description
+    responder1.setHTTPHeaderField(HTTPHeaderField(eTag:eTag2))
+    XCTAssertEqual(responder1.expectedStatus, .preconditionFailed)
+    XCTAssertTrue(try checkWarning(.statusCodeInconsistency(.ok, .preconditionFailed)) {
+      try responder1.respond(to:&output)
+    })
+    
+    responder1.setHTTPHeaderField(HTTPHeaderField(eTag:eTag1))
+    XCTAssertEqual(responder1.expectedStatus, nil)
+    
+    env.removeValue(forName:EnvironmentVariables.Name.httpIfMatch.rawValue)
+    
+    //// If-None-Match
+    env[EnvironmentVariables.Name.httpIfNoneMatch.rawValue] = eTag1.description
+    XCTAssertEqual(responder1.expectedStatus, .notModified)
+    XCTAssertTrue(try checkWarning(.statusCodeInconsistency(.ok, .notModified)) {
+      try responder1.respond(to:&output)
+    })
+    
+    env[EnvironmentVariables.Name.httpIfNoneMatch.rawValue] = eTag2.description
+    XCTAssertEqual(responder1.expectedStatus, nil)
+    
+    env.removeValue(forName:EnvironmentVariables.Name.httpIfNoneMatch.rawValue)
+    
+    // Last-Modified
+    
+    //// If-Unmofidied-Since
+    env[EnvironmentVariables.Name.httpIfUnmodifiedSince.rawValue] = DateFormatter.rfc1123.string(from:yesterday)
+    responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:now))
+    XCTAssertEqual(responder2.expectedStatus, .preconditionFailed)
+    XCTAssertTrue(try checkWarning(.statusCodeInconsistency(.ok, .preconditionFailed)) {
+      try responder2.respond(to:&output)
+    })
+    
+    responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:theDayBeforeYesterday))
+    XCTAssertEqual(responder2.expectedStatus, nil)
+    
+    env.removeValue(forName:EnvironmentVariables.Name.httpIfUnmodifiedSince.rawValue)
+    
+    //// If-Modified-Since
+    env[EnvironmentVariables.Name.httpIfModifiedSince.rawValue] = DateFormatter.rfc1123.string(from:yesterday)
+    responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:now))
+    XCTAssertEqual(responder2.expectedStatus, nil)
+    
+    responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:theDayBeforeYesterday))
+    XCTAssertEqual(responder2.expectedStatus, .notModified)
+    XCTAssertTrue(try checkWarning(.statusCodeInconsistency(.ok, .notModified)) {
+      try responder2.respond(to:&output)
+    })
   }
   
   static var allTests: [(String, (CGIResponderTests) -> () -> Void)] = [
     ("testContentType", testContentType),
     ("testOutput", testOutput),
     ("testStringEncoding", testStringEncoding),
+    ("testExpectedStatus", testExpectedStatus),
   ]
 }

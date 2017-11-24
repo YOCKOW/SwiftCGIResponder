@@ -94,6 +94,31 @@ extension CGIResponder {
 }
 
 extension CGIResponder {
+  /// Check ETag or Last-Modified
+  public var expectedStatus: HTTPStatusCode? {
+    let header = self.header
+    let env = EnvironmentVariables.default
+    
+    if let eTagHeaderField = header.fields(forName:.eTag).first {
+      let eTag = (eTagHeaderField.delegate as! HTTPHeaderFieldDelegate.ETag).eTag
+      if case let ifMatch as [HTTPETag] = env[.httpIfMatch] {
+        if !eTag.matches(in:ifMatch) { return .preconditionFailed }
+      } else if case let ifNoneMatch as [HTTPETag] = env[.httpIfNoneMatch] {
+        if eTag.weaklyMatches(in:ifNoneMatch) { return .notModified }
+      }
+    } else if let lastModifiedHeaderField = header.fields(forName:.lastModified).first {
+      let lastModified = (lastModifiedHeaderField.delegate as! HTTPHeaderFieldDelegate.LastModified).date
+      if case let ifUnmodifiedSince as Date = env[.httpIfUnmodifiedSince] {
+        if lastModified > ifUnmodifiedSince { return .preconditionFailed }
+      } else if case let ifModifiedSince as Date = env[.httpIfModifiedSince] {
+        if lastModified <= ifModifiedSince { return .notModified }
+      }
+    }
+    return nil
+  }
+}
+
+extension CGIResponder {
   /**
    
    Respond to client; Print HTTP headers (including "Status") and contents to standard output.
@@ -143,7 +168,10 @@ extension CGIResponder {
       viewMessage(.stringEncodingInconsistency(encoding, expectedEncoding))
     }
     
-    // TODO: Check if `status` is an expected value or not using ETag or Last-Modified
+    // Check if `status` is an expected value or not using ETag or Last-Modified
+    if let expectedStatus = self.expectedStatus, status != expectedStatus {
+      viewMessage(.statusCodeInconsistency(status, expectedStatus))
+    }
     
     // Status
     try output.write(CGIContent(string:"Status: \(status.rawValue) \(status.reasonPhrase)\r\n"))

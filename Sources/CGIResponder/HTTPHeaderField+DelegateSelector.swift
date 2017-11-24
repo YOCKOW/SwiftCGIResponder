@@ -11,6 +11,8 @@ extension HTTPHeaderField {
     .cacheControl:HTTPHeaderFieldDelegate.CacheControl.self,
     .contentLength:HTTPHeaderFieldDelegate.ContentLength.self,
     .contentType:HTTPHeaderFieldDelegate.ContentType.self,
+    .eTag:HTTPHeaderFieldDelegate.ETag.self,
+    .lastModified:HTTPHeaderFieldDelegate.LastModified.self,
   ]
   
   /// Initialize from `name` and `value`
