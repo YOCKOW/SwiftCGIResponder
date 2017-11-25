@@ -17,8 +17,21 @@ class HTTPCookieItemTests: XCTestCase {
     XCTAssertEqual(item!.value, "値")
   }
   
+  func testArray() {
+    let pairs = "name=value0; name=value1; name=value2; anotherName=anotherValue "
+    let items = Array<HTTPCookieItem>(string:pairs)
+    XCTAssertNotNil(items)
+    
+    let values = items!.values(forName:"name")
+    XCTAssertEqual(values[0], "value0")
+    XCTAssertEqual(values[1], "value1")
+    XCTAssertEqual(values[2], "value2")
+    XCTAssertFalse(values.contains("anotherValue"))
+  }
+  
   static var allTests:[(String, (HTTPCookieItemTests) -> () -> Void)] = [
     ("testInitialization", testInitialization),
+    ("testArray", testArray),
   ]
 }
 
