@@ -5,6 +5,9 @@
      See "LICENSE.txt" for more information.
  **************************************************************************************************/
 
+import Foundation
+private typealias LegacyCharacterSet = Foundation.CharacterSet
+
 /**
  
  # UnicodeScalarSet
@@ -20,10 +23,6 @@
  > functionality for extended grapheme clusters.
  
  */
-
-import Foundation
-private typealias LegacyCharacterSet = Foundation.CharacterSet
-
 public struct UnicodeScalarSet {
   fileprivate var _legacyCharacterSet: LegacyCharacterSet
   private init(_ legacyCharacterSet: LegacyCharacterSet) {

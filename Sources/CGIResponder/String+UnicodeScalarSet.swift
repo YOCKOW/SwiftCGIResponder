@@ -19,7 +19,28 @@ extension String {
   }
 }
 
+/// Similar methods working with `Foundation.CharacterSet`
 extension String {
+  /// like `func components(separatedBy separator: CharacterSet) -> [String]`
+  public func components(separatedBy separator:UnicodeScalarSet) -> [String] {
+    var components: [String] = []
+    var component = String.UnicodeScalarView()
+    
+    let scalars = self.unicodeScalars
+    for scalar in scalars {
+      if separator.contains(scalar) {
+        components.append(String(component))
+        component.removeAll(keepingCapacity:true)
+      } else {
+        component.append(scalar)
+      }
+    }
+    components.append(String(component))
+    
+    return components
+  }
+  
+  /// like `func trimmingCharacters(in set: CharacterSet) -> String`
   public func trimmingUnicodeScalars(in set: UnicodeScalarSet) -> String {
     let scalars = self.unicodeScalars
     

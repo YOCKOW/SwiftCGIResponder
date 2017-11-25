@@ -22,9 +22,9 @@ public struct HTTPCookieItem {
     self.value = value
   }
   
-//  public init<Cookie: RFC6265Cookie>(cookie:Cookie) {
-//    self.init(name:cookie.name, value:cookie.value)
-//  }
+  public init<Cookie: RFC6265Cookie>(cookie:Cookie) {
+    self.init(name:cookie.name, value:cookie.value)
+  }
   
   public init?(string:String, removingPercentEncoding:Bool = true) {
     guard case let (name, value?) = string.splitOnce(separator:"=") else { return nil }
