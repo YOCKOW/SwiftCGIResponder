@@ -5,6 +5,8 @@ XCTMain([
   testCase(BonaFideCharacterSetTests.allTests),
   testCase(CGIResponderTests.allTests),
   testCase(CGIContentOutputStreamTests.allTests),
+  testCase(CIPv4AddressTests.allTests),
+  testCase(CIPv6AddressTests.allTests),
   testCase(CustomRangesTests.allTests),
   testCase(DateFormattersTests.allTests),
   testCase(Dictionary_KeyValuePairsStringTests.allTests),
