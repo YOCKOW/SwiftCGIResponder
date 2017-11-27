@@ -45,7 +45,7 @@ extension RFC6265Cookie {
       .path:self.path
     ]
     
-    // Extended Dictionary in HTTPCookiePropertyKey+RFC6265Cookie.swift
+    // Extended Dictionary in "Dictionary+HTTPCookiePropertyKey.swift"
     properties.creationDate = self.creationDate
     properties.expiresDate = self.expiresDate
     properties.lastAccessDate = self.lastAccessDate
