@@ -19,6 +19,7 @@ XCTMain([
   testCase(HTTPHeaderFieldDelegateLastModifiedTests.allTests),
   testCase(MultirangeTests.allTests),
   testCase(MIMETypeTests.allTests),
+  testCase(String_BonaFideCharacterSetTests.allTests),
   testCase(String_PartialMatchTests.allTests),
   testCase(String_UnicodeScalarSetTests.allTests),
   testCase(StringEncodings_IANACharacterSetNameTests.allTests),
