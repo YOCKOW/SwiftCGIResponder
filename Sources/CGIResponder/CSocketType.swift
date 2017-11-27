@@ -6,6 +6,7 @@
  **************************************************************************************************/
  
 import CoreFoundation
+import Foundation
 
 /// Wrapper for `__socket_type`
 public struct CSocketType: RawRepresentable {

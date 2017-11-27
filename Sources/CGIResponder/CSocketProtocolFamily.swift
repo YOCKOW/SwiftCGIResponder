@@ -6,6 +6,7 @@
  **************************************************************************************************/
  
 import CoreFoundation
+import Foundation
 
 /// Wrapper for socket protocol.
 public struct CSocketProtocolFamily: RawRepresentable {

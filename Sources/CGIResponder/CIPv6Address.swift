@@ -6,6 +6,7 @@
  **************************************************************************************************/
  
 import CoreFoundation
+import Foundation
 
 /// Extend `CIPv6Address`(a.k.a. `in6_addr`)
 extension CIPv6Address: CIPAddress {

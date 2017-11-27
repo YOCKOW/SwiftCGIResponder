@@ -6,6 +6,7 @@
  **************************************************************************************************/
 
 import CoreFoundation
+import Foundation
 
 /// Wrapper for `sa_family_t`
 public struct CAddressFamily: RawRepresentable {
