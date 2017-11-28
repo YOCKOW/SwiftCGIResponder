@@ -3,6 +3,7 @@ import XCTest
 
 XCTMain([
   testCase(BonaFideCharacterSetTests.allTests),
+  testCase(BootstringTests.allTests),
   testCase(CGIResponderTests.allTests),
   testCase(CGIContentOutputStreamTests.allTests),
   testCase(CIPv4AddressTests.allTests),
