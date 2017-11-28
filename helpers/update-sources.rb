@@ -24,7 +24,7 @@ Files = [
 #  :HTTPMethod,
   :HTTPStatusCode,
   :MIMEType_PathExtension,
-#  :PublicSuffix,
+  :PublicSuffix,
   :UnicodeScalar_IDNA
 ]
 
