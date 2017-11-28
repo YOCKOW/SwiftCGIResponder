@@ -1,13 +1,12 @@
 /***************************************************************************************************
- String+SplitOnce.swift
+ Substring+SplitOnce.swift
    © 2017 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  **************************************************************************************************/
  
-import Foundation
-
-extension String {
+ 
+extension Substring {
   /// shortcut for `split(separator:separator, maxSplits:1, omittingEmptySubsequences:false)`
   internal func splitOnce(separator:Character) -> (Substring, Substring?) {
     let splitted = self.split(separator:separator, maxSplits:1, omittingEmptySubsequences:false)

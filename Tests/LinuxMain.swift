@@ -26,4 +26,5 @@ XCTMain([
   testCase(String_PartialMatchTests.allTests),
   testCase(String_UnicodeScalarSetTests.allTests),
   testCase(StringEncodings_IANACharacterSetNameTests.allTests),
+  testCase(URL_IDNATests.allTests),
 ])
