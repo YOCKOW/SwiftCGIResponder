@@ -20,6 +20,7 @@ XCTMain([
   testCase(HTTPHeaderFieldDelegateContentTypeTests.allTests),
   testCase(HTTPHeaderFieldDelegateETagTests.allTests),
   testCase(HTTPHeaderFieldDelegateLastModifiedTests.allTests),
+  testCase(IPAddressTests.allTests),
   testCase(MultirangeTests.allTests),
   testCase(MIMETypeTests.allTests),
   testCase(String_BonaFideCharacterSetTests.allTests),
