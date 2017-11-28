@@ -54,8 +54,13 @@ class IPAddressTests: XCTestCase {
     XCTAssertEqual(v4!, v4Mapped!)
   }
   
+  func testDNSLookup() {
+    // how to test..?
+  }
+  
   static var allTests: [(String, (IPAddressTests) -> () -> Void)] = [
     ("testStringConversion", testStringConversion),
+    ("testDNSLookup", testDNSLookup),
   ]
 }
 

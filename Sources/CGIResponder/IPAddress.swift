@@ -5,6 +5,8 @@
      See "LICENSE.txt" for more information.
  **************************************************************************************************/
 
+import Foundation
+
 /**
  
  # IPAddress
@@ -145,3 +147,25 @@ extension IPAddress: CustomStringConvertible {
     return self._cIPAddress.description
   }
 }
+
+extension IPAddress {
+  /// DNS Reverse Lookup
+  public var hostName: Hostname? {
+    let host_p = UnsafeMutablePointer<CChar>.allocate(capacity:Int(NI_MAXHOST))
+    defer { host_p.deallocate(capacity:Int(NI_MAXHOST)) }
+    
+    var mySockAddr = self._cIPSocketAddress
+    guard ({
+      return withUnsafePointer(to:&mySockAddr) {
+        return $0.withMemoryRebound(to:CSocketAddress.self, capacity:2) {
+          return getnameinfo($0, CSocketLength(mySockAddr.size),
+                             host_p, CSocketLength(NI_MAXHOST),
+                             nil, 0, NI_NAMEREQD)
+        }
+      }
+    })() == 0 else { return nil }
+    guard let host = String(utf8String:host_p), !host.isEmpty else { return nil }
+    return Hostname(host)
+  }
+}
+
