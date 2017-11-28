@@ -80,3 +80,48 @@ extension Hostname {
   }
 }
 
+extension Hostname {
+  internal func matches(list:Set<PublicSuffix.Node>) -> Bool {
+    let labels = self.internationalDomainName.components(separatedBy:".")
+    let nn = labels.count
+    var listNow: Set<PublicSuffix.Node> = list
+    for ii in (0 ..< nn).reversed() {
+      if ii == 0 && listNow.contains(.any) { return true }
+      
+      let label = labels[ii]
+      guard let jj = listNow.index(of:.label(label, next:[])) else { return false }
+      let node = listNow[jj]
+      
+      switch (ii, node) {
+      case (0, .label(_, next:let list)):
+        return list.contains(.termination)
+      case (_, .label(_, next:let list)):
+        // continue
+        listNow = list
+      default: return false
+      }
+    }
+    return false
+  }
+  
+  /// Check whether it's "public suffix" or not
+  public var isPublicSuffix: Bool {
+    get {
+      if self.matches(list:PublicSuffix.whitelist) { return false }
+      if self.matches(list:PublicSuffix.blacklist) { return true }
+      return false
+    }
+  }
+  
+  /// Extract public suffix.
+  public var publicSuffix: Hostname? {
+    if self.isPublicSuffix { return self }
+    let components = self._domainName.components(separatedBy:".")
+    for ii in 1..<components.count {
+      let name = Hostname(components[ii..<components.count].joined(separator:"."))!
+      if name.isPublicSuffix { return name }
+    }
+    return nil
+  }
+}
+

@@ -12,6 +12,7 @@ XCTMain([
   testCase(DateFormattersTests.allTests),
   testCase(Dictionary_KeyValuePairsStringTests.allTests),
   testCase(EnvironmentVariablesTests.allTests),
+  testCase(HostnameTests.allTests),
   testCase(HTTPCookieItemTests.allTests),
   testCase(HTTPETagTests.allTests),
   testCase(HTTPHeaderFieldTests.allTests),
