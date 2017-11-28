@@ -57,6 +57,15 @@ extension UnicodeScalarSet {
   public static let whitespacesAndNewlines = UnicodeScalarSet(LegacyCharacterSet.whitespacesAndNewlines)
 }
 
+extension UnicodeScalarSet {
+  public static let urlFragmentAllowed = UnicodeScalarSet(LegacyCharacterSet.urlFragmentAllowed)
+  public static let urlHostAllowed = UnicodeScalarSet(LegacyCharacterSet.urlHostAllowed)
+  public static let urlPasswordAllowed = UnicodeScalarSet(LegacyCharacterSet.urlPasswordAllowed)
+  public static let urlPathAllowed = UnicodeScalarSet(LegacyCharacterSet.urlPathAllowed)
+  public static let urlQueryAllowed = UnicodeScalarSet(LegacyCharacterSet.urlQueryAllowed)
+  public static let urlUserAllowed = UnicodeScalarSet(LegacyCharacterSet.urlUserAllowed)
+}
+
 extension UnicodeScalarSet: CustomDebugStringConvertible, CustomStringConvertible {
   public var debugDescription: String {
     return self._legacyCharacterSet.debugDescription

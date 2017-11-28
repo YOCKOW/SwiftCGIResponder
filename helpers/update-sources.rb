@@ -25,7 +25,7 @@ Files = [
   :HTTPStatusCode,
   :MIMEType_PathExtension,
 #  :PublicSuffix,
-#  :UnicodeScalar_IDNA
+  :UnicodeScalar_IDNA
 ]
 
 Targets = {}
@@ -63,7 +63,7 @@ OptionParser.new(__FILE__){|parser|
 }
 
 Targets[:SwiftKeywords] = true
-# Targets[:UnicodeLicenseAgreement] = true
+Targets[:UnicodeLicenseAgreement] = true
 
 Files.each{|key|
   if !Targets[key]
