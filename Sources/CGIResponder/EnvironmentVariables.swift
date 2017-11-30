@@ -136,21 +136,17 @@ extension EnvironmentVariables {
   private static let dateConverter: (String) -> Date? = { DateFormatter.rfc1123.date(from:$0) }
   private static let eTagListConverter: (String) -> [HTTPETag]? = { Array<HTTPETag>(string:$0) }
   private static let fileURLConverter: (String) -> URL? = { URL(fileURLWithPath:$0) }
-//  private static let hostNameConverter: (String) -> Network.HostName? = {
-//    let actualHost:String = ({ (nameAndPort:String) -> String in
-//      if let indexOfColon = nameAndPort.range(of:":", options:.backwards)?.lowerBound {
-//        #if swift(>=4.0)
-//          return String(nameAndPort[nameAndPort.startIndex ..< indexOfColon])
-//        #else
-//          return nameAndPort[nameAndPort.startIndex ..< indexOfColon]
-//        #endif
-//      } else {
-//        return nameAndPort
-//      }
-//    })($0)
-//    return Network.HostName(actualHost)
-//  }
-//  private static let ipAddressConverter: (String) -> Network.IPAddress? = { Network.IPAddress(string:$0) }
+  private static let hostnameConverter: (String) -> Hostname? = {
+    let actualHost:String = ({ (nameAndPort:String) -> String in
+      if let indexOfColon = nameAndPort.lastIndex(of:":") {
+        return String(nameAndPort[nameAndPort.startIndex ..< indexOfColon])
+      } else {
+        return nameAndPort
+      }
+    })($0)
+    return Hostname(actualHost)
+  }
+  private static let ipAddressConverter: (String) -> IPAddress? = { IPAddress(string:$0) }
   private static let intConverter: (String) -> Int? = { Int($0) }
   private static let urlConverter: (String) -> URL? = { URL(string:$0) }
   public static var converters: [EnvironmentVariables.Name:(String) -> Any?] = [
@@ -158,7 +154,7 @@ extension EnvironmentVariables {
     .contentType:contentTypeConverter,
     .documentRoot:fileURLConverter,
 //    .httpCookie:cookieConverter,
-//    .httpHost:hostNameConverter,
+    .httpHost:hostnameConverter,
     .httpIfMatch:eTagListConverter,
     .httpIfModifiedSince:dateConverter,
     .httpIfNoneMatch:eTagListConverter,
@@ -167,13 +163,13 @@ extension EnvironmentVariables {
     .https:{ $0.lowercased() == "on" },
     .path:{ $0.components(separatedBy:":").map{ URL(fileURLWithPath:$0) } },
     .pathTranslated:fileURLConverter,
-//    .remoteAddress:ipAddressConverter,
-//    .remoteHost:hostNameConverter,
+    .remoteAddress:ipAddressConverter,
+    .remoteHost:hostnameConverter,
     .remotePort:intConverter,
 //    .requestMethod:{ HTTPMethod(rawValue:$0.uppercased()) },
     .scriptFilename:fileURLConverter,
-//    .serverAddress:ipAddressConverter,
-//    .serverName:hostNameConverter,
+    .serverAddress:ipAddressConverter,
+    .serverName:hostnameConverter,
     .serverPort:intConverter
   ]
 }
