@@ -150,7 +150,7 @@ extension IPAddress: CustomStringConvertible {
 
 extension IPAddress {
   /// DNS Reverse Lookup
-  public var hostName: Hostname? {
+  public var hostname: Hostname? {
     let host_p = UnsafeMutablePointer<CChar>.allocate(capacity:Int(NI_MAXHOST))
     defer { host_p.deallocate(capacity:Int(NI_MAXHOST)) }
     
