@@ -130,9 +130,9 @@ extension EnvironmentVariables.Name {
 
 extension EnvironmentVariables {
   private static let contentTypeConverter: (String) -> MIMEType? = { MIMEType($0) }
-//  private static let cookieConverter: (String) -> [HTTPCookieItem]? = {
-//    Array<HTTPCookieItem>(string:$0)
-//  }
+  private static let cookieConverter: (String) -> [HTTPCookieItem]? = {
+    Array<HTTPCookieItem>(string:$0)
+  }
   private static let dateConverter: (String) -> Date? = { DateFormatter.rfc1123.date(from:$0) }
   private static let eTagListConverter: (String) -> [HTTPETag]? = { Array<HTTPETag>(string:$0) }
   private static let fileURLConverter: (String) -> URL? = { URL(fileURLWithPath:$0) }
@@ -153,7 +153,7 @@ extension EnvironmentVariables {
     .contentLength:intConverter,
     .contentType:contentTypeConverter,
     .documentRoot:fileURLConverter,
-//    .httpCookie:cookieConverter,
+    .httpCookie:cookieConverter,
     .httpHost:hostnameConverter,
     .httpIfMatch:eTagListConverter,
     .httpIfModifiedSince:dateConverter,
