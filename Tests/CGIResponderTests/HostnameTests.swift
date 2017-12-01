@@ -9,6 +9,12 @@ import XCTest
 @testable import CGIResponder
 
 class HostnameTests: XCTestCase {
+  func testInitialization() {
+    XCTAssertNil(Hostname(""))
+    XCTAssertNil(Hostname("-invalid"))
+    XCTAssertNotNil(Hostname("日本。ＪＰ"))
+  }
+  
   func testPublicSuffix() {
     // TODO: append more test cases...
     let list: [(String, String?)] = [
@@ -30,6 +36,7 @@ class HostnameTests: XCTestCase {
   }
   
   static var allTests: [(String, (HostnameTests) -> () -> Void)] = [
+    ("testInitialization", testInitialization),
     ("testPublicSuffix", testPublicSuffix),
   ]
 }

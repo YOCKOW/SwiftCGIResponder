@@ -1,5 +1,5 @@
 /***************************************************************************************************
- URL+IDNA.swift
+ URL+IDNATests.swift
    © 2017 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
@@ -9,6 +9,10 @@ import XCTest
 @testable import CGIResponder
 
 class URL_IDNATests: XCTestCase {
+  func testConversion() {
+    XCTAssertNil(URL.convert(domain:""))
+  }
+  
   func testInitialization() {
     let string = "http://user:password@ドメインの例。ＪＰ/パス?クエリ=文字列#ハッシュ！"
     
@@ -23,6 +27,7 @@ class URL_IDNATests: XCTestCase {
   }
   
   static var allTests:[(String, (URL_IDNATests) -> () -> Void)] = [
+    ("testConversion", testConversion),
     ("testInitialization", testInitialization),
   ]
 }
