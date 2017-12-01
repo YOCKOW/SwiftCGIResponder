@@ -23,6 +23,8 @@ extension RFC6265Cookie {
 
 // Request Header.
 extension RFC6265Cookie {
+  /// Create an instance of `HTTPHeaderFieldValue` for request header from a single cookie.
+  /// Returns `nil` if `self` should not be sent to `url`.
   public func requestHeaderFieldValue(for url:URL,
                                       addingPercentEncoding:Bool = true) -> HTTPHeaderFieldValue? {
     if let expires = self.expiresDate {
@@ -57,5 +59,21 @@ extension RFC6265Cookie {
     }
     
     return HTTPHeaderFieldValue(rawValue:string)
+  }
+  
+  /// Create an instance of `HTTPHeaderFieldValue` for request header from multiple cookies.
+  /// Call `func requestHeaderFieldValue(for url:URL, addingPercentEncoding:Bool) -> HTTPHeaderFieldValue?` internally.
+  public static func requestHeaderFieldValue<Cookie: RFC6265Cookie>(with cookies:[Cookie],
+                                                                    for url:URL,
+                                                                    addingPercentEncoding:Bool = true) -> HTTPHeaderFieldValue {
+    var values: [HTTPHeaderFieldValue] = []
+    for cookie in cookies {
+      guard let fieldValue = cookie.requestHeaderFieldValue(for:url,
+                                                            addingPercentEncoding:addingPercentEncoding) else {
+          continue
+      }
+      values.append(fieldValue)
+    }
+    return HTTPHeaderFieldValue(rawValue:values.map{ $0.rawValue }.joined(separator:"; "))!
   }
 }
