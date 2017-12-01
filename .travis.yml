@@ -21,7 +21,7 @@ matrix:
 
 script:
   - ./build-install.rb --debug 
-  - ./build-install.rb --release --skip-test --install-prefix=/opt/SwiftCGIResponder
+  - travis_wait ./build-install.rb --release --skip-test --install-prefix=/opt/SwiftCGIResponder
   - ls -lA /opt/SwiftCGIResponder/lib
   - ls -lA /opt/SwiftCGIResponder/include
 
