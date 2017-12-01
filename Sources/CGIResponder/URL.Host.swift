@@ -11,7 +11,8 @@ extension URL {
   /**
    
    # URL.Host
-   Wraps the host component of URL
+   Wraps the host component of URL.
+   It can be `Hostname` or `IPAddress`.
    
    */
   public enum Host: Hashable, CustomStringConvertible {
@@ -51,6 +52,7 @@ extension URL {
     }
   }
   
+  /// returns an instance of `URL.Host` if `self.host` is not `nil`.
   public var hostComponent: Host? {
     guard let host = self.host else { return nil }
     return Host(string:host)

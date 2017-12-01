@@ -24,6 +24,7 @@ XCTMain([
   testCase(IPAddressTests.allTests),
   testCase(MultirangeTests.allTests),
   testCase(MIMETypeTests.allTests),
+  testCase(RFC6265Cookie_HTTPHeaderFieldValueTests.allTests),
   testCase(String_BonaFideCharacterSetTests.allTests),
   testCase(String_PartialMatchTests.allTests),
   testCase(String_UnicodeScalarSetTests.allTests),
