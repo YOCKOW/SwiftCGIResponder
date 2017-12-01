@@ -59,7 +59,40 @@ class RFC6265Cookie_HTTPHeaderFieldValueTests: XCTestCase {
     }
   }
   
+  func testResponseHeaderFieldValue() {
+    let cookie = CGICookie(properties:[
+      .name:"name", .value:"value",
+      .domain:"example.com", .path:"/a/b/c",
+      .secure:true
+    ])!
+    let fieldValue = cookie.responseHeaderFieldValue()
+    
+    XCTAssertNotNil(fieldValue)
+    XCTAssertEqual(fieldValue!.rawValue, "name=value; Domain=example.com; Path=/a/b/c; Secure")
+    
+    let _attr = CGICookie._itemAndAttributes(fromResponseHeaderFieldValue:fieldValue!,
+                                             removingPercentEncoding:true)
+    XCTAssertNotNil(_attr)
+    XCTAssertEqual(_attr!.0.name, "name")
+    XCTAssertEqual(_attr!.0.value, "value")
+    XCTAssertEqual(_attr!.1["domain"], "example.com")
+    XCTAssertEqual(_attr!.1["path"], "/a/b/c")
+    XCTAssertNotNil(_attr!.1["secure"])
+    XCTAssertNil(_attr!.1["httponly"])
+    
+    let cookieFromResponseFieldValue = CGICookie(withResponseHeaderFieldValue:fieldValue!,
+                                                 for:URL(string:"https://www.example.com/a/b/c/d")!)
+    XCTAssertNotNil(cookieFromResponseFieldValue)
+    XCTAssertEqual(cookieFromResponseFieldValue!.name, "name")
+    XCTAssertEqual(cookieFromResponseFieldValue!.value, "value")
+    XCTAssertEqual(cookieFromResponseFieldValue!.domain, "example.com")
+    XCTAssertEqual(cookieFromResponseFieldValue!.path, "/a/b/c")
+    XCTAssertTrue(cookieFromResponseFieldValue!.isSecure)
+    XCTAssertFalse(cookieFromResponseFieldValue!.isHTTPOnly)
+  }
+  
   static var allTests:[(String, (RFC6265Cookie_HTTPHeaderFieldValueTests) -> () -> Void)] = [
     ("testRequestHeaderFieldValue", testRequestHeaderFieldValue),
+    ("testResponseHeaderFieldValue", testResponseHeaderFieldValue),
   ]
 }

@@ -77,3 +77,150 @@ extension RFC6265Cookie {
     return HTTPHeaderFieldValue(rawValue:values.map{ $0.rawValue }.joined(separator:"; "))!
   }
 }
+
+extension RFC6265Cookie {
+  /// Create value of "Set-Cookie:"
+  public func responseHeaderFieldValue(addingPercentEncoding:Bool = true) -> HTTPHeaderFieldValue? {
+    guard var string = self.nameValuePair(addingPercentEncoding:addingPercentEncoding) else { return nil }
+    
+    if let expires = self.expiresDate {
+      string += "; Expires=" + DateFormatter.rfc1123.string(from:expires)
+    }
+    
+    string += "; Domain=" + self.domain
+    string += "; Path=" + self.path
+    
+    if self.isSecure { string += "; Secure" }
+    if self.isHTTPOnly { string += "; HttpOnly" }
+    
+    return HTTPHeaderFieldValue(rawValue:string)!
+  }
+}
+
+extension RFC6265Cookie {
+  /// Create stuff to make properties of cookies.
+  internal static func _itemAndAttributes(
+    fromResponseHeaderFieldValue value:HTTPHeaderFieldValue,
+    removingPercentEncoding:Bool
+  ) -> (HTTPCookieItem, [String:String])? {
+    // First, split
+    var parameters = value.rawValue.components(separatedBy:";").map {
+      $0.trimmingCharacters(in:.whitespaces)
+    }
+    
+    // cookie's name and value
+    guard let cookieItem = HTTPCookieItem(string:parameters.removeFirst(),
+                                          removingPercentEncoding:removingPercentEncoding)
+      else {
+        return nil
+    }
+    
+    // handle remaining attributes
+    var attributeList: [String:String] = [:]
+    for parameter in parameters {
+      let nameAndValue = parameter.splitOnce(separator:"=")
+      
+      let name = String(nameAndValue.0).trimmingCharacters(in:.whitespaces).lowercased()
+      let value:String = (nameAndValue.1 != nil) ? String(nameAndValue.1!).trimmingCharacters(in:.whitespaces) : ""
+      
+      attributeList[name] = value
+    }
+    
+    return (cookieItem, attributeList)
+  }
+}
+
+extension RFC6265Cookie {
+  /// Initialize from an instance of `HTTPHeaderFieldValue`
+  public init?(withResponseHeaderFieldValue value:HTTPHeaderFieldValue,
+               for url:URL,
+               removingPercentEncoding:Bool = true) {
+    guard let requestHostComponent = url.hostComponent else { return nil }
+    
+    guard let attributes = Self._itemAndAttributes(fromResponseHeaderFieldValue:value,
+                                                   removingPercentEncoding:removingPercentEncoding) else {
+      return nil
+    }
+    
+    let (cookieItem, attributeList) = attributes
+    
+    // Expires
+    var expires: Date? = nil
+    var persistent: Bool = true
+    if let maxAgeString = attributeList["max-age"], let maxAge = TimeInterval(maxAgeString) {
+      expires = Date(timeIntervalSinceNow:maxAge)
+    } else if let expiresString = attributeList["expires"] {
+      expires = Date(cookieDateString:expiresString)
+      if expires == nil { return nil } // unknown format
+    } else {
+      persistent = false
+    }
+    
+    // Domain
+    var domain: String = ""
+    var hostOnly: Bool = true
+    if let attrDomain = attributeList["domain"] {
+      domain = attrDomain.trimmingCharacters(in:BonaFideCharacterSet(charactersIn:"."))
+    }
+    guard let attrHostComponent = URL.Host(string:domain) else { return nil }
+    if case .name(let attrHostname) = attrHostComponent {
+      if attrHostname.isPublicSuffix {
+        guard attrHostComponent == requestHostComponent else { return nil }
+        domain = ""
+      } else {
+        guard case .name(let requestHostname) = requestHostComponent else { return nil }
+        guard requestHostname.domainMatches(attrHostname) else { return nil }
+        domain = attrHostname._domainName
+        hostOnly = false
+      }
+    } else {
+      // It is an IP Address
+      guard attrHostComponent == requestHostComponent else { return nil }
+    }
+    if domain.isEmpty {
+      // `domain` is empty if:
+      //   * There is no attribute named "Domain",
+      //   * The value of "Domain" is an IP Address, or
+      //   * The value of "Domain" is the public suffix and is equal to request host-name
+      domain = requestHostComponent.description
+      hostOnly = true
+    }
+    
+    // Path
+    var path: String = "/"
+    if let attrPath = attributeList["path"] {
+      path = attrPath
+    } else {
+      path = ({ (requestPath:String) -> String in
+        guard !requestPath.isEmpty && requestPath.hasPrefix("/") else { return "/" }
+        let indexOfLastSlash = requestPath.range(of:"/", options:.backwards)!.lowerBound
+        if indexOfLastSlash == requestPath.startIndex { return "/" }
+        return String(requestPath[requestPath.startIndex ..< indexOfLastSlash])
+      })(url.path)
+    }
+    
+    // Secure
+    let secure: Bool = attributeList.keys.contains("secure") ? true : false
+    
+    // HttpOnly
+    let httpOnly: Bool = attributeList.keys.contains("httponly") ? true : false
+    
+    let now = Date()
+    
+    var properties: [HTTPCookiePropertyKey:Any] = [
+      .name:cookieItem.name,
+      .value:cookieItem.value,
+      .domain:domain,
+      .path:path
+    ]
+    properties.creationDate = now
+    properties.expiresDate = expires
+    properties.lastAccessDate = now
+    properties.persistent = persistent
+    properties.hostOnly = hostOnly
+    properties.secure = secure
+    properties.httpOnly = httpOnly
+    
+    self.init(properties:properties)
+  }
+}
