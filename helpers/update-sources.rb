@@ -21,7 +21,7 @@ Files = [
 #  :ContentDispositionParameterKey,
 #  :ContentDispositionValue,
   :HTTPHeaderFieldName_IANARegistered,
-#  :HTTPMethod,
+  :HTTPMethod,
   :HTTPStatusCode,
   :MIMEType_PathExtension,
   :PublicSuffix,
