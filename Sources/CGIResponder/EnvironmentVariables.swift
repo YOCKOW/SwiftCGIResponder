@@ -166,7 +166,7 @@ extension EnvironmentVariables {
     .remoteAddress:ipAddressConverter,
     .remoteHost:hostnameConverter,
     .remotePort:intConverter,
-//    .requestMethod:{ HTTPMethod(rawValue:$0.uppercased()) },
+    .requestMethod:{ HTTPMethod(rawValue:$0.uppercased()) },
     .scriptFilename:fileURLConverter,
     .serverAddress:ipAddressConverter,
     .serverName:hostnameConverter,

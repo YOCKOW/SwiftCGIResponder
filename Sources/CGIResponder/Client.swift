@@ -43,4 +43,9 @@ extension Client {
   public var ipAddress: IPAddress? {
     return EnvironmentVariables.default[.remoteAddress] as! IPAddress?
   }
+  
+  /// Returns an instance of `HTTPMethod` generated from the value of `REQUEST_METHOD`
+  public var requestMethod: HTTPMethod? {
+    return EnvironmentVariables.default[.requestMethod] as! HTTPMethod?
+  }
 }
