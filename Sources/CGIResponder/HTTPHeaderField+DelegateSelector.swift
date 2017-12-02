@@ -13,6 +13,7 @@ extension HTTPHeaderField {
     .contentType:HTTPHeaderFieldDelegate.ContentType.self,
     .eTag:HTTPHeaderFieldDelegate.ETag.self,
     .lastModified:HTTPHeaderFieldDelegate.LastModified.self,
+    .setCookie:HTTPHeaderFieldDelegate.SetCookie<CGICookie>.self,
   ]
   
   /// Initialize from `name` and `value`
