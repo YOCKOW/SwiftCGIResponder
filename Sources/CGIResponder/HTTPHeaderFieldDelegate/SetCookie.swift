@@ -49,12 +49,12 @@ extension HTTPHeaderFieldDelegate {
             // !!
             if let hostname = Client.client.hostname {
               return URL.Host.name(hostname)
-//            } else if let serverName = Server.server.name {
-//              return URL.Host.name(serverName)
+            } else if let serverName = Server.server.hostname {
+              return URL.Host.name(serverName)
             } else if let requestIP = Client.client.ipAddress {
               return URL.Host.ipAddress(requestIP)
-//            } else if let serverIP = Server.server.ipAddress {
-//              return URL.Host.ipAddress(serverIP)
+            } else if let serverIP = Server.server.ipAddress {
+              return URL.Host.ipAddress(serverIP)
             }
           }
         }
