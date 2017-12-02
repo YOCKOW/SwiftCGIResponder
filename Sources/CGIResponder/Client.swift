@@ -23,6 +23,16 @@ extension Client {
     return secure
   }
   
+  /// Retuns client's content-length if request method is "POST" or something.
+  public var contentLength: Int? {
+    return EnvironmentVariables.default[.contentLength] as! Int?
+  }
+  
+  /// Retuns client's content-type if request method is "POST" or something.
+  public var contentType: MIMEType? {
+    return EnvironmentVariables.default[.contentType] as! MIMEType?
+  }
+  
   /// Returns array of instances of `HTTPCookieItem`
   /// generated from `HTTP_COOKIE` of environment variables.
   public var cookies: [HTTPCookieItem]? {
@@ -47,5 +57,10 @@ extension Client {
   /// Returns an instance of `HTTPMethod` generated from the value of `REQUEST_METHOD`
   public var requestMethod: HTTPMethod? {
     return EnvironmentVariables.default[.requestMethod] as! HTTPMethod?
+  }
+  
+  /// Returns user agent.
+  public var userAgent: String? {
+    return EnvironmentVariables.default[.httpUserAgent] as! String?
   }
 }
