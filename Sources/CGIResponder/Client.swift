@@ -17,6 +17,12 @@ public class Client {
 }
 
 extension Client {
+  /// Returns whether connection is secure or not.
+  public var connectionIsSecure: Bool {
+    guard case let secure as Bool = EnvironmentVariables.default[.https] else { return false }
+    return secure
+  }
+  
   /// Returns array of instances of `HTTPCookieItem`
   /// generated from `HTTP_COOKIE` of environment variables.
   public var cookies: [HTTPCookieItem]? {
