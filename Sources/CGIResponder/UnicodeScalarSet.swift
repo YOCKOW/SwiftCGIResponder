@@ -5,6 +5,9 @@
      See "LICENSE.txt" for more information.
  **************************************************************************************************/
 
+import Foundation
+private typealias LegacyCharacterSet = Foundation.CharacterSet
+
 /**
  
  # UnicodeScalarSet
@@ -20,10 +23,6 @@
  > functionality for extended grapheme clusters.
  
  */
-
-import Foundation
-private typealias LegacyCharacterSet = Foundation.CharacterSet
-
 public struct UnicodeScalarSet {
   fileprivate var _legacyCharacterSet: LegacyCharacterSet
   private init(_ legacyCharacterSet: LegacyCharacterSet) {
@@ -56,6 +55,15 @@ extension UnicodeScalarSet {
   public static let uppercaseLetters = UnicodeScalarSet(LegacyCharacterSet.uppercaseLetters)
   public static let whitespaces = UnicodeScalarSet(LegacyCharacterSet.whitespaces)
   public static let whitespacesAndNewlines = UnicodeScalarSet(LegacyCharacterSet.whitespacesAndNewlines)
+}
+
+extension UnicodeScalarSet {
+  public static let urlFragmentAllowed = UnicodeScalarSet(LegacyCharacterSet.urlFragmentAllowed)
+  public static let urlHostAllowed = UnicodeScalarSet(LegacyCharacterSet.urlHostAllowed)
+  public static let urlPasswordAllowed = UnicodeScalarSet(LegacyCharacterSet.urlPasswordAllowed)
+  public static let urlPathAllowed = UnicodeScalarSet(LegacyCharacterSet.urlPathAllowed)
+  public static let urlQueryAllowed = UnicodeScalarSet(LegacyCharacterSet.urlQueryAllowed)
+  public static let urlUserAllowed = UnicodeScalarSet(LegacyCharacterSet.urlUserAllowed)
 }
 
 extension UnicodeScalarSet: CustomDebugStringConvertible, CustomStringConvertible {

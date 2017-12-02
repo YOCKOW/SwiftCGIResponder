@@ -19,6 +19,21 @@ extension String {
 }
 
 extension String {
+  public func addingPercentEncoding(withAllowedCharacters allowedCharacters:BonaFideCharacterSet) -> String? {
+    var result = ""
+    for character in self {
+      if allowedCharacters.contains(character) {
+        result.append(character)
+      } else {
+        for value in String(character).utf8 {
+          result += "%"
+          result += String(value, radix:16).uppercased()
+        }
+      }
+    }
+    return result
+  }
+  
   public func trimmingCharacters(in set: BonaFideCharacterSet) -> String {
     var ii: String.Index
     
