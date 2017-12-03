@@ -22,6 +22,7 @@ XCTMain([
   testCase(HTTPHeaderFieldDelegateCacheControlTests.allTests),
   testCase(HTTPHeaderFieldDelegateContentDispositionTests.allTests),
   testCase(HTTPHeaderFieldDelegateContentLengthTests.allTests),
+  testCase(HTTPHeaderFieldDelegateContentTransferEncodingTests.allTests),
   testCase(HTTPHeaderFieldDelegateContentTypeTests.allTests),
   testCase(HTTPHeaderFieldDelegateETagTests.allTests),
   testCase(HTTPHeaderFieldDelegateLastModifiedTests.allTests),
