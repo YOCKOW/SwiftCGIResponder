@@ -12,7 +12,8 @@ class TemporaryDirectoryTests: XCTestCase {
   func testCreation() {
     let tmpDir = TemporaryDirectory.temporaryDirectory()
     XCTAssertNotNil(tmpDir)
-    XCTAssertTrue(tmpDir!.path.hasPrefix(FileManager.default.temporaryDirectoryURL.path + "/"))
+    XCTAssertTrue(tmpDir!.url.path.hasPrefix(FileManager.default.temporaryDirectoryURL.path + "/"))
+    tmpDir!.close()
   }
   
   static var allTests: [(String, (TemporaryDirectoryTests) -> () -> Void)] = [

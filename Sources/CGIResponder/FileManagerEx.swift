@@ -32,19 +32,14 @@ extension FileManager {
   internal func fileExists(at url:URL) -> (exists:Bool, isDirectory:Bool)? {
     guard url.isFileURL else { return nil }
     
-    // `func resourceValues(forKeys keys: Set<URLResourceKey>) throws -> URLResourceValues` is not
-    // implemented on Linux...
+    var isDir: ObjCBool = false
+    guard self.fileExists(atPath:url.path, isDirectory:&isDir) else {
+      return (false, false)
+    }
     #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS)
-      guard let values = try? url.resourceValues(forKeys:[.isDirectoryKey]) else {
-        return (false, false)
-      }
-      return (true, values.isDirectory!)
+    return (true, isDir.boolValue)
     #else
-      var isDir: ObjCBool = false
-      guard self.fileExists(atPath:url.path, isDirectory:&isDir) else {
-        return (false, false)
-      }
-      return (true, Bool(isDir))
+    return (true, Bool(isDir))
     #endif
   }
 }

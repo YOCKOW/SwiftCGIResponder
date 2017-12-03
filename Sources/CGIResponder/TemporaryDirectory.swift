@@ -14,33 +14,67 @@ import Foundation
  
  */
 public class TemporaryDirectory {
-  public private(set) var url: URL
+  private static var _list: [String:TemporaryDirectory] = [:]
+  
+  internal private(set) var url: URL
   public private(set) var isClosed: Bool
+  internal var temporaryFiles:Set<TemporaryFile>
   
-  private var files:[FileHandle:URL]
-  
-  public var path: String { return self.url.path }
-  
+  /// Regard the directory at `url` as temporary directory.
   private init?(directoryAt url:URL) {
     guard url.isLocalDirectory else { return nil }
     self.url = url
     self.isClosed = false
-    self.files = [:]
+    self.temporaryFiles = []
+  }
+  
+  /// Remove all temporary files which are
+  /// created in `TemporaryFile.init(in:prefix:suffix:contents:)`
+  public func removeAllTemporaryFiles() {
+    while self.temporaryFiles.count > 0 {
+      let file = self.temporaryFiles.first!
+      file.close() // `file` will be removed from `temporaryFiles` in this method.
+    }
+  }
+  
+  /// Close all temporary files in the direcoty.
+  /// The directory itself will be also removed if the directory is empty.
+  /// Returns `true` if the directory is removed, otherwise `false`.
+  @discardableResult public func close() -> Bool{
+    guard !self.isClosed else { return false }
+    
+    self.isClosed = true
+    TemporaryDirectory._list.removeValue(forKey:self.url.path)
+    self.removeAllTemporaryFiles()
+    
+    let manager = FileManager.default
+    do {
+      let urls = try manager.contentsOfDirectory(at:self.url,
+                                                 includingPropertiesForKeys:nil,
+                                                 options:[])
+      guard urls.count == 0 else { return false }
+    } catch {
+      return false
+    }
+    guard let _ = try? manager.removeItem(at:self.url) else { return false }
+    return true
+  }
+  
+  deinit {
+    self.close()
   }
 }
 
 extension TemporaryDirectory {
-  private static var _list: [String:TemporaryDirectory] = [:]
-  
   /// Returns an instance of `TemporaryDirectory`.
   /// It may be existing object if temporary directory has been already created at `url`.
-  public static func temporaryDirectory(at url:URL) -> TemporaryDirectory? {
+  private static func temporaryDirectory(at url:URL) -> TemporaryDirectory? {
     guard url.isFileURL else { return nil }
     
     let resolvedURL = url.resolvingSymlinksInPath()
     if resolvedURL.isLocalFile { return nil } // not directory
     
-    if let tmpDir = _list[resolvedURL.path] {
+    if let tmpDir = TemporaryDirectory._list[resolvedURL.path] {
       return tmpDir
     } else {
       if !resolvedURL.isLocalDirectory {
@@ -55,11 +89,12 @@ extension TemporaryDirectory {
         }
       }
       let tmpDir = TemporaryDirectory(directoryAt:resolvedURL)
-      _list[resolvedURL.path] = tmpDir
+      TemporaryDirectory._list[resolvedURL.path] = tmpDir
       return tmpDir
     }
   }
   
+  /// Shared Temporary Directory
   public static var shared = TemporaryDirectory.temporaryDirectory(at:FileManager.default.temporaryDirectoryURL)!
 }
 
@@ -75,5 +110,17 @@ extension TemporaryDirectory {
     let tmpURL = parentDirectory.appendingPathComponent("\(prefix)\(uuid.uuidString)\(suffix)", isDirectory:true)
     
     return TemporaryDirectory.temporaryDirectory(at:tmpURL)
+  }
+}
+
+extension TemporaryDirectory {
+  /// Create a file in the directory
+  internal func createFile(atRelativePath relativePath: String,
+                           contents data: Data?,
+                           attributes: [FileAttributeKey: Any]? = nil) -> Bool {
+    if self.isClosed { return false }
+    return FileManager.default.createFile(atPath:self.url.appendingPathComponent(relativePath).path,
+                                          contents:data,
+                                          attributes:attributes)
   }
 }

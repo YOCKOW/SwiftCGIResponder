@@ -32,6 +32,7 @@ XCTMain([
   testCase(String_UnicodeScalarSetTests.allTests),
   testCase(StringEncodings_IANACharacterSetNameTests.allTests),
   testCase(TemporaryDirectoryTests.allTests),
+  testCase(TemporaryFileTests.allTests),
   testCase(URL_IDNATests.allTests),
   testCase(URLHostTests.allTests),
 ])
