@@ -9,6 +9,7 @@ XCTMain([
   testCase(CGIContentOutputStreamTests.allTests),
   testCase(CIPv4AddressTests.allTests),
   testCase(CIPv6AddressTests.allTests),
+  testCase(ContentDispositionRepresentationTests.allTests),
   testCase(CustomRangesTests.allTests),
   testCase(Data_QuotedPrintableTests.allTests),
   testCase(DateFormattersTests.allTests),

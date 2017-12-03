@@ -43,12 +43,13 @@ private enum Processing {
   }
 }
 extension Dictionary where Key == String, Value == String {
+  /// Initialize from `string` such as "A=B; C=D; E=F"
   internal init(keyValuePairs string:String,
-                 allowedUnquotedCharacters token:BonaFideCharacterSet = .alphanumerics,
-                 ignorableCharacters ignorables:BonaFideCharacterSet = .whitespacesAndNewlines,
-                 keyAndValueAreSeparatedBy kvSeparator:String = "=",
-                 pairsAreSeparatedBy pSeparator:String = ";",
-                 allowMissingValues: Bool = true) throws {
+                allowedUnquotedCharacters token:BonaFideCharacterSet = .alphanumerics,
+                ignorableCharacters ignorables:BonaFideCharacterSet = .whitespacesAndNewlines,
+                keyAndValueAreSeparatedBy kvSeparator:String = "=",
+                pairsAreSeparatedBy pSeparator:String = ";",
+                allowMissingValues: Bool = true) throws {
     if string.isEmpty {
       throw DictionaryParsingError.emptyString
     }
