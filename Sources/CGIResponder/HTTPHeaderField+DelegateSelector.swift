@@ -9,6 +9,7 @@
 extension HTTPHeaderField {
   private static let specifiedFields: [HTTPHeaderFieldName:SpecifiedHTTPHeaderFieldDelegate.Type] = [
     .cacheControl:HTTPHeaderFieldDelegate.CacheControl.self,
+    .contentDisposition:HTTPHeaderFieldDelegate.ContentDisposition.self,
     .contentLength:HTTPHeaderFieldDelegate.ContentLength.self,
     .contentType:HTTPHeaderFieldDelegate.ContentType.self,
     .eTag:HTTPHeaderFieldDelegate.ETag.self,
