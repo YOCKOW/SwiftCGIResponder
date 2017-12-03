@@ -2,6 +2,7 @@ import XCTest
 @testable import CGIResponderTests
 
 XCTMain([
+  testCase(Array_URLQueryItemTests.allTests),
   testCase(BonaFideCharacterSetTests.allTests),
   testCase(BootstringTests.allTests),
   testCase(CGIResponderTests.allTests),
