@@ -2,13 +2,16 @@ import XCTest
 @testable import CGIResponderTests
 
 XCTMain([
+  testCase(Array_URLQueryItemTests.allTests),
   testCase(BonaFideCharacterSetTests.allTests),
   testCase(BootstringTests.allTests),
   testCase(CGIResponderTests.allTests),
   testCase(CGIContentOutputStreamTests.allTests),
   testCase(CIPv4AddressTests.allTests),
   testCase(CIPv6AddressTests.allTests),
+  testCase(ContentDispositionRepresentationTests.allTests),
   testCase(CustomRangesTests.allTests),
+  testCase(Data_QuotedPrintableTests.allTests),
   testCase(DateFormattersTests.allTests),
   testCase(Dictionary_KeyValuePairsStringTests.allTests),
   testCase(EnvironmentVariablesTests.allTests),
@@ -17,7 +20,9 @@ XCTMain([
   testCase(HTTPETagTests.allTests),
   testCase(HTTPHeaderFieldTests.allTests),
   testCase(HTTPHeaderFieldDelegateCacheControlTests.allTests),
+  testCase(HTTPHeaderFieldDelegateContentDispositionTests.allTests),
   testCase(HTTPHeaderFieldDelegateContentLengthTests.allTests),
+  testCase(HTTPHeaderFieldDelegateContentTransferEncodingTests.allTests),
   testCase(HTTPHeaderFieldDelegateContentTypeTests.allTests),
   testCase(HTTPHeaderFieldDelegateETagTests.allTests),
   testCase(HTTPHeaderFieldDelegateLastModifiedTests.allTests),
@@ -30,6 +35,8 @@ XCTMain([
   testCase(String_PartialMatchTests.allTests),
   testCase(String_UnicodeScalarSetTests.allTests),
   testCase(StringEncodings_IANACharacterSetNameTests.allTests),
+  testCase(TemporaryDirectoryTests.allTests),
+  testCase(TemporaryFileTests.allTests),
   testCase(URL_IDNATests.allTests),
   testCase(URLHostTests.allTests),
 ])

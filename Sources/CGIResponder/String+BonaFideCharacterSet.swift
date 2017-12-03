@@ -34,6 +34,24 @@ extension String {
     return result
   }
   
+  /// like `func components(separatedBy separator: CharacterSet) -> [String]`
+  public func components(separatedBy separator:BonaFideCharacterSet) -> [String] {
+    var components: [String] = []
+    
+    var component = ""
+    for character in self {
+      if separator.contains(character) {
+        components.append(component)
+        component.removeAll(keepingCapacity:true)
+      } else {
+        component.append(character)
+      }
+    }
+    components.append(component)
+    
+    return components
+  }
+  
   public func trimmingCharacters(in set: BonaFideCharacterSet) -> String {
     var ii: String.Index
     
