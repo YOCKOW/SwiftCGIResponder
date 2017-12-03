@@ -41,7 +41,7 @@ extension FileManager {
       return (true, values.isDirectory!)
     #else
       var isDir: ObjCBool = false
-      guard FileManager.default.fileExists(atPath:self.path, isDirectory:&isDir) else {
+      guard self.fileExists(atPath:url.path, isDirectory:&isDir) else {
         return (false, false)
       }
       return (true, Bool(isDir))
