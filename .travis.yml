@@ -1,3 +1,6 @@
+branches:
+  except:
+    - /^\d+\.\d+\.\d+(-\S*)?$/
 matrix:
   include:
     - os: linux
@@ -18,7 +21,6 @@ matrix:
       osx_image: xcode9.1
       sudo: required
       language: objective-c
-
 script:
   - ./build-install.rb --debug 
   - travis_wait ./build-install.rb --release --skip-test --install-prefix=/opt/SwiftCGIResponder
