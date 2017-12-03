@@ -5,6 +5,8 @@
      See "LICENSE.txt" for more information.
  **************************************************************************************************/
 
+import Foundation
+
 /**
  
  # Client
@@ -52,6 +54,32 @@ extension Client {
   /// Returns an instance of `IPAddress` generated from the value of `REMOTE_ADDR`.
   public var ipAddress: IPAddress? {
     return EnvironmentVariables.default[.remoteAddress] as! IPAddress?
+  }
+  
+  /// Retuns array of `URLQueryItem` generated from "QUERY_STRING" and
+  /// posted data (if content type is "application/x-www-form-urlencoded").
+  /// Inadequate items may be returned if other functions have already read standard input.
+  public var queryItems: [URLQueryItem]? {
+    guard case let queryString as String = EnvironmentVariables.default[.queryString] else { return nil }
+    var result = Array<URLQueryItem>(string:queryString)
+    
+    // Handle Posted Data
+    if let method = self.requestMethod, method == .post,
+      let type = self.contentType, type.type == .application, type.subtype == "x-www-form-urlencoded",
+      let size = self.contentLength, size > 0
+    {
+      let data = FileHandle.standardInput.readData(ofLength:size)
+      if let string = String(data:data, encoding:.utf8) {
+        let additionals = Array<URLQueryItem>(string:string)
+        if result == nil {
+          return additionals
+        } else if additionals != nil {
+          result!.append(contentsOf:additionals!)
+        }
+      }
+    }
+    
+    return result
   }
   
   /// Returns an instance of `HTTPMethod` generated from the value of `REQUEST_METHOD`
