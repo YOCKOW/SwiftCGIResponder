@@ -10,6 +10,7 @@ XCTMain([
   testCase(CIPv4AddressTests.allTests),
   testCase(CIPv6AddressTests.allTests),
   testCase(CustomRangesTests.allTests),
+  testCase(Data_QuotedPrintableTests.allTests),
   testCase(DateFormattersTests.allTests),
   testCase(Dictionary_KeyValuePairsStringTests.allTests),
   testCase(EnvironmentVariablesTests.allTests),
