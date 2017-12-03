@@ -8,10 +8,11 @@
 import Foundation
 
 extension FileManager {
-  // `FileManager.temporaryDirectory` is implemented
-  //   on iOS 10.0+, macOS 10.12+, tvOS 10.0+, and watchOS 3.0+.
-  // And it had not been implemented on non-Darwin until
-  //   [PR#1234](https://github.com/apple/swift-corelibs-foundation/pull/1234).
+  /// Returns URL for the temporary directory.
+  /// `FileManager.temporaryDirectory` is implemented on
+  ///   iOS 10.0+, macOS 10.12+, tvOS 10.0+, and watchOS 3.0+.
+  /// And it had not been implemented on non-Darwin until
+  ///   [PR#1234 of Foundation](https://github.com/apple/swift-corelibs-foundation/pull/1234).
   public var temporaryDirectoryURL: URL {
     #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS)
       if #available(iOS 10.0, macOS 10.12, tvOS 10.0, watchOS 3.0, *) {
