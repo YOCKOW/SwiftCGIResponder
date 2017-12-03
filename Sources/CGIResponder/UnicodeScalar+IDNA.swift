@@ -2,7 +2,7 @@
  UnicodeScalar+IDNA.swift
    This file was created automatically
    from http://www.unicode.org/Public/idna/latest/IdnaMappingTable.txt
-   at 2017-11-28T09:15:55+09:00
+   at 2017-12-04T02:48:19+09:00
  **************************************************************************************************/
 
 /*
@@ -8522,7 +8522,7 @@ extension UnicodeScalar {
       default: break
     }
     switch self.isDeviation {
-      case (true, let scalars): return .mapped(scalars)
+      case (true, let scalars): return .deviation(scalars)
       default: break
     }
     switch self.isDisallowedButMappedUsingSTD3ASCIIRules {
