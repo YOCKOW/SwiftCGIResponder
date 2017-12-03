@@ -1,5 +1,5 @@
 /***************************************************************************************************
- ContentTypeTests.swift
+ ContentDispositionTests.swift
    © 2017 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.

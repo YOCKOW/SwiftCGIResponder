@@ -11,6 +11,7 @@ extension HTTPHeaderField {
     .cacheControl:HTTPHeaderFieldDelegate.CacheControl.self,
     .contentDisposition:HTTPHeaderFieldDelegate.ContentDisposition.self,
     .contentLength:HTTPHeaderFieldDelegate.ContentLength.self,
+    .contentTransferEncoding:HTTPHeaderFieldDelegate.ContentTransferEncoding.self,
     .contentType:HTTPHeaderFieldDelegate.ContentType.self,
     .eTag:HTTPHeaderFieldDelegate.ETag.self,
     .lastModified:HTTPHeaderFieldDelegate.LastModified.self,
