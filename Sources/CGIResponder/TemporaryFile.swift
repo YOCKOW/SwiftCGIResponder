@@ -110,7 +110,12 @@ extension TemporaryFile {
   }
   
   public func truncateFile(atOffset offset: UInt64) {
+    /// Workaround for [SR-6524](https://bugs.swift.org/browse/SR-6524)
+    #if os(iOS) || os(macOS) || os(tvOS) || os(watchOS)
     self.fileHandle.truncateFile(atOffset:offset)
+    #else
+    ftruncate(self.fileHandle.fileDescriptor, off_t(offset))
+    #endif
   }
   
   public func write(_ data: Data) {
