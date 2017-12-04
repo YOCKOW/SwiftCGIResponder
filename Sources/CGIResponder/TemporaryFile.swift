@@ -14,7 +14,7 @@ import Foundation
  
  */
 public class TemporaryFile {
-  private var fileHandle: FileHandle
+  internal private(set) var fileHandle: FileHandle
   internal private(set) var url: URL
   private weak var temporaryDirectory: TemporaryDirectory!
   
