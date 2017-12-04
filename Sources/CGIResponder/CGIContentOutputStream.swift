@@ -43,6 +43,8 @@ extension CGIContentOutputStream {
       writeFH(fh, &self)
     case .path(let path):
       try writePath(path, &self)
+    case .temporaryFile(let temporaryFile):
+      writeFH(temporaryFile.fileHandle, &self)
     case .onCall(let creator):
       try self.write(creator())
     case .url(let url):

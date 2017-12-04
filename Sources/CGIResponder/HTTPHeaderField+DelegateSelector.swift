@@ -1,6 +1,6 @@
 /***************************************************************************************************
  HTTPHeaderField+DelegateSelector.swift
-   © 2017年 YOCKOW.
+   © 2017 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  **************************************************************************************************/

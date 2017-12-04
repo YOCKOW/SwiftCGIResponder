@@ -199,7 +199,7 @@ extension UnicodeScalar {
       default: break
     }
     switch self.isDeviation {
-      case (true, let scalars): return .mapped(scalars)
+      case (true, let scalars): return .deviation(scalars)
       default: break
     }
     switch self.isDisallowedButMappedUsingSTD3ASCIIRules {

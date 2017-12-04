@@ -26,6 +26,9 @@ public enum CGIContent {
   case string(String, encoding:String.Encoding)
   public init(string:String, encoding:String.Encoding = .utf8) { self = .string(string, encoding:encoding) }
   
+  case temporaryFile(TemporaryFile)
+  public init(temporaryFile:TemporaryFile) { self = .temporaryFile(temporaryFile) }
+  
   case url(URL)
   public init(url:URL) { self = .url(url) }
   
@@ -47,6 +50,8 @@ extension CGIContent {
       return try? Data(contentsOf:url)
     case .string(let string, encoding:let encoding):
       return string.data(using:encoding)
+    case .temporaryFile(let temporaryFile):
+      return temporaryFile.availableData
     case .url(let url):
       return try? Data(contentsOf:url)
     case .onCall(let creator):
@@ -63,6 +68,7 @@ extension CGIContent: Equatable {
     case (.fileHandle(let lfh), .fileHandle(let rfh)): return lfh == rfh
     case (.path(let lpath), .path(let rpath)): return CGIContent(url:URL(fileURLWithPath:lpath)) == CGIContent(url:URL(fileURLWithPath:rpath))
     case (.string(let lstring), .string(let rstring)): return lstring == rstring
+    case (.temporaryFile(let ltmp), .temporaryFile(let rtmp)): return ltmp == rtmp
     case (.url(let lurl), .url(let rurl)): return lurl.resolvingSymlinksInPath() == rurl.resolvingSymlinksInPath()
     default: return false
     }
