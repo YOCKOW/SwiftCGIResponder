@@ -23,7 +23,7 @@ class AnyIterator_FormDataItemTests: XCTestCase {
       "--\(boundary)\r\n" +
       "Content-Disposition: form-data; name=\"File\"; filename=\"Filename.txt\"\r\n" +
       "Content-Type: text/plain; charset=\"UTF-8\"\r\n" +
-      "Content-Transfer-Encoding: binary\r\n"
+      "Content-Transfer-Encoding: binary\r\n" +
       "\r\n" +
       "Hello, World!\n" +
       "\r\n" +
