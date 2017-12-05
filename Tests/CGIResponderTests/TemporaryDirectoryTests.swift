@@ -9,15 +9,21 @@ import XCTest
 @testable import CGIResponder
 
 class TemporaryDirectoryTests: XCTestCase {
-  func testCreation() {
+  func testCreationAndClose() {
     let tmpDir = TemporaryDirectory.temporaryDirectory()
     XCTAssertNotNil(tmpDir)
-    XCTAssertTrue(tmpDir!.url.path.hasPrefix(FileManager.default.temporaryDirectoryURL.path + "/"))
+    
+    let url = tmpDir!.url
+    XCTAssertTrue(url.isLocalDirectory)
+    XCTAssertTrue(url.path.hasPrefix(FileManager.default.temporaryDirectoryURL.path + "/"))
+    
     tmpDir!.close()
+    XCTAssertFalse(url.isLocalDirectory)
+    XCTAssertFalse(url.isLocalFile)
   }
   
   static var allTests: [(String, (TemporaryDirectoryTests) -> () -> Void)] = [
-    ("testCreation", testCreation),
+    ("testCreationAndClose", testCreationAndClose),
   ]
 }
 
