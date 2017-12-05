@@ -114,9 +114,6 @@ extension TemporaryDirectory {
       return tmpDir
     }
   }
-  
-  /// Shared Temporary Directory
-  public static var shared = TemporaryDirectory.temporaryDirectory(at:FileManager.default.temporaryDirectoryURL)!
 }
 
 extension TemporaryDirectory {
@@ -132,6 +129,14 @@ extension TemporaryDirectory {
     
     return TemporaryDirectory.temporaryDirectory(at:tmpURL)
   }
+}
+
+extension TemporaryDirectory {
+  /// Shared Temporary Directory
+  public static let shared = TemporaryDirectory.temporaryDirectory(at:FileManager.default.temporaryDirectoryURL)!
+  
+  /// Temporary directory that may be shared in one program.
+  public static let `default` = TemporaryDirectory.temporaryDirectory()!
 }
 
 extension TemporaryDirectory {
