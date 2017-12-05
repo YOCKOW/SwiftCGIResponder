@@ -20,6 +20,8 @@ public class TemporaryDirectory {
   public private(set) var isClosed: Bool
   internal var temporaryFiles:Set<TemporaryFile>
   
+  private var path: String { return self.url.path }
+  
   /// Regard the directory at `url` as temporary directory.
   private init?(directoryAt url:URL) {
     guard url.isLocalDirectory else { return nil }
@@ -30,39 +32,58 @@ public class TemporaryDirectory {
   
   /// Remove all temporary files which are
   /// created in `TemporaryFile.init(in:prefix:suffix:contents:)`
-  public func removeAllTemporaryFiles() {
+  @discardableResult public func removeAllTemporaryFiles() -> Bool {
+    var result: UInt8 = 1
     while self.temporaryFiles.count > 0 {
       let file = self.temporaryFiles.first!
-      file.close() // `file` will be removed from `temporaryFiles` in this method.
+      // `file` will be removed from `temporaryFiles` in this method.
+      result *= file.close() ? 1 : 0
     }
+    return result > 0 ? true : false
   }
   
-  /// Close all temporary files in the direcoty.
+  /// Close all temporary files in the direcoty. (`removeAllTemporaryFiles()` is called internally.)
   /// The directory itself will be also removed if the directory is empty.
   /// Returns `true` if the directory is removed, otherwise `false`.
-  @discardableResult public func close() -> Bool{
+  /// ## note
+  /// Although the files created in `TemporaryFile.init(in:prefix:suffix:contents:)` will be removed,
+  /// **the directory will be NEVER closed if self is equal to .shared.**
+  /// In that case, this function returns `true` when `removeAllTemporaryFiles()` returns `true`.
+  @discardableResult public func close() -> Bool {
     guard !self.isClosed else { return false }
     
-    self.isClosed = true
-    TemporaryDirectory._list.removeValue(forKey:self.url.path)
-    self.removeAllTemporaryFiles()
+    guard self.removeAllTemporaryFiles() else { return false }
     
-    let manager = FileManager.default
-    do {
-      let urls = try manager.contentsOfDirectory(at:self.url,
-                                                 includingPropertiesForKeys:nil,
-                                                 options:[])
-      guard urls.count == 0 else { return false }
-    } catch {
-      return false
+    // .shared is never closed.
+    if self != .shared {
+      self.isClosed = true
+      TemporaryDirectory._list.removeValue(forKey:self.url.path)
+      
+      let manager = FileManager.default
+      do {
+        // check whether there are no files in the directory
+        let urls = try manager.contentsOfDirectory(at:self.url,
+                                                   includingPropertiesForKeys:nil,
+                                                   options:[])
+        guard urls.count == 0 else { return false }
+      } catch {
+        return false
+      }
+      guard let _ = try? manager.removeItem(at:self.url) else { return false }
     }
-    guard let _ = try? manager.removeItem(at:self.url) else { return false }
     return true
   }
   
   deinit {
     self.close()
   }
+}
+
+extension TemporaryDirectory: Hashable {
+  public static func ==(lhs: TemporaryDirectory, rhs: TemporaryDirectory) -> Bool {
+    return lhs.path == rhs.path
+  }
+  public var hashValue: Int { return self.path.hashValue }
 }
 
 extension TemporaryDirectory {
