@@ -18,6 +18,8 @@ responder.status = .ok
 responder.contentType = MIMEType(pathExtension:.txt, parameters:["charset":"UTF-8"])!
 responder.content = .string("Hello, World!\n", encoding:.utf8)
 
+responder.respond()
+
 // -- Output --
 // Status: 200 OK
 // Content-Type: text/plain; charset=UTF-8
