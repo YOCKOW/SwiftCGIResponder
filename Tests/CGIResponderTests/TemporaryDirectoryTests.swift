@@ -15,7 +15,7 @@ class TemporaryDirectoryTests: XCTestCase {
     
     let url = tmpDir!.url
     XCTAssertTrue(url.isLocalDirectory)
-    XCTAssertTrue(url.path.hasPrefix(FileManager.default.temporaryDirectoryURL.path + "/"))
+    XCTAssertTrue(url.path.hasPrefix(URL.temporaryDirectory.path + "/"))
     
     tmpDir!.close()
     XCTAssertFalse(url.isLocalDirectory)

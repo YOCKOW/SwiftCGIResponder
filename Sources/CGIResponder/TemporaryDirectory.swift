@@ -119,7 +119,7 @@ extension TemporaryDirectory {
 extension TemporaryDirectory {
   /// Create a new temporary directory with random name in `parentDirectory`.
   /// You can specify `prefix` and `suffix` for the directory name.
-  public static func temporaryDirectory(in parentDirectory:URL = FileManager.default.temporaryDirectoryURL,
+  public static func temporaryDirectory(in parentDirectory:URL = .temporaryDirectory,
                                         prefix:String = "jp.YOCKOW.SwiftCGIResponder.TemporaryDirectory/",
                                         suffix:String = "") -> TemporaryDirectory? {
     guard parentDirectory.isLocalDirectory else { return nil }
@@ -133,7 +133,7 @@ extension TemporaryDirectory {
 
 extension TemporaryDirectory {
   /// Shared Temporary Directory
-  public static let shared = TemporaryDirectory.temporaryDirectory(at:FileManager.default.temporaryDirectoryURL)!
+  public static let shared = TemporaryDirectory.temporaryDirectory(at:.temporaryDirectory)!
   
   /// Temporary directory that may be shared in one program.
   public static let `default` = TemporaryDirectory.temporaryDirectory()!
