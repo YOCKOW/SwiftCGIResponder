@@ -10,7 +10,7 @@ import Foundation
 /**
  
  # TemporaryFile
- Represents for temporary file.
+ Represents temporary file.
  
  */
 public class TemporaryFile {

@@ -10,7 +10,7 @@ import Foundation
 /**
  
  # EnvironmentVariables
- Represents for Environment Variables
+ Represents Environment Variables
  
  */
 final public class EnvironmentVariables {

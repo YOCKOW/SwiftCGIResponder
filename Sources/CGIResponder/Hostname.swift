@@ -10,7 +10,7 @@ import Foundation
 /**
  
  # Hostname
- Represents for hostname.
+ Represents hostname.
  
  */
 public struct Hostname {

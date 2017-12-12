@@ -10,7 +10,7 @@ import Foundation
 /**
  
  # Server
- Represents for the server.
+ Represents the server.
  
  */
 public class Server {

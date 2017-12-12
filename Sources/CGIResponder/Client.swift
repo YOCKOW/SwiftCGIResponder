@@ -10,7 +10,7 @@ import Foundation
 /**
  
  # Client
- Represents for the client.
+ Represents the client.
  
  */
 public class Client {

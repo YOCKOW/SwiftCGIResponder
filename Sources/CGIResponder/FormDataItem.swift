@@ -8,12 +8,12 @@
 /**
  
  # FormDataItem
- Represents for item of contents of "multipart/form-data"
+ Represents item of contents of "multipart/form-data"
  
  */
 public struct FormDataItem {
   /// ## FormDataItem.Value
-  /// Represents for value of item.
+  /// Represents value of item.
   /// `content` may be expressed by `String` or `URL`, so its type is `CGIContent`.
   public struct Value {
     public var content: CGIContent

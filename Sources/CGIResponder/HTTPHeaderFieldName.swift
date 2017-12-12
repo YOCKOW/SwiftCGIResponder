@@ -8,7 +8,7 @@
  /**
  
  # HTTPHeaderFieldName
- Represents for HTTP Header Field Name
+ Represents HTTP Header Field Name
  
  */
 

@@ -11,7 +11,7 @@ import Foundation
 /**
  
  # MIMEType
- Represents for MIME Type (a.k.a. media type and content type)
+ Represents MIME Type (a.k.a. media type and content type)
  Reference: https://en.wikipedia.org/wiki/Media_type
  
  ## Properties
