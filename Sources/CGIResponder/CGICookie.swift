@@ -10,7 +10,7 @@ import Foundation
 /**
  
  # CGICookie
- Represents for HTTP Cookie.
+ Represents HTTP Cookie.
  It may be better to use `HTTPCookie` of `Foundation` rather than this in some cases...
  
  */

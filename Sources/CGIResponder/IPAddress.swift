@@ -10,7 +10,7 @@ import Foundation
 /**
  
  # IPAddress
- Represents for IP Address
+ Represents IP Address
  
  */
 public enum IPAddress {

@@ -10,7 +10,7 @@ import Foundation
 /**
  
  # ContentDispositionRepresentation
- Represents for "Content-Disposition".
+ Represents "Content-Disposition".
  It may not be used directly, but you can use with `HTTPHeaderFieldDelegate.ContentDisposition`.
  
  */

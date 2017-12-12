@@ -8,7 +8,7 @@
 /**
  
  # HTTPHeader
- Represents for HTTP Header
+ Represents HTTP Header
  
  === HTTPHeader ===
  +-----------------++---------------------+----------------------+

@@ -9,7 +9,7 @@
 /**
  
  # CacheControlDirective
- Reporesents for directives of Cache-Control
+ Reporesents directives of Cache-Control
  
  ## References
  * [RFC7234](https://tools.ietf.org/html/rfc7234)

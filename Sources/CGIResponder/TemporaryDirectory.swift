@@ -10,7 +10,7 @@ import Foundation
 /**
  
  # TemporaryDirectory
- Represents for temporary directory.
+ Represents temporary directory.
  
  */
 public class TemporaryDirectory {

@@ -8,7 +8,7 @@
 /**
  
  # ContentTransferEncodingRepresentation
- Represents for "Content-Transfer-Encoding".
+ Represents "Content-Transfer-Encoding".
  It may not be used directly, but you can use with `HTTPHeaderFieldDelegate.ContentTransferEncoding`.
  
  */

@@ -8,7 +8,7 @@
 /**
  
  # Multirange
- Represents for multiple ranges.
+ Represents multiple ranges.
  
  */
 public struct Multirange<Bound> where Bound: Comparable {
