@@ -114,11 +114,11 @@ extension CertainRange: Equatable {
 }
 
 extension CertainRange: Comparable {
-  // How to compare?
-  // * First, compare lower bounds. Next, compare upper bounds if the lower bounds are equal.
-  // * .universal < [others] < .empty
-  // * `PartialRange(From|GreaterThan)`'s upper bound is +∞
-  // * `PartialRange(Through|UpTo)`'s lower bound is -∞
+  /// How to compare?
+  /// * First, compare lower bounds. Next, compare upper bounds if the lower bounds are equal.
+  /// * .universal < [others] < .empty
+  /// * `PartialRange(From|GreaterThan)`'s upper bound is +∞
+  /// * `PartialRange(Through|UpTo)`'s lower bound is -∞
   static func <(lhs: CertainRange<Bound>, rhs: CertainRange<Bound>) -> Bool {
     guard lhs != rhs else { return false }
     
@@ -587,13 +587,9 @@ extension CertainRange {
 }
 
 extension CertainRange {
-  /**
    
-   - returns:
-     Subtracted range(s).
-     Under some conditions, `other` divides the range. That is why a tuple is returned.
-   
-   */
+ /// Returns subtracted range(s).
+ /// Under some conditions, `other` divides the range. That is why a tuple is returned.
  func subtracting(_ other:CertainRange<Bound>) -> (CertainRange<Bound>, CertainRange<Bound>?) {
     // The result must be .empty when...
     if self == other || self == .empty || other == .universal { return (.empty, nil) }

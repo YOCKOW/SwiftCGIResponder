@@ -14,6 +14,9 @@ private typealias LegacyCharacterSet = Foundation.CharacterSet
  A set of Unicode Scalars.
  This will not be necessary in the future.
  
+ ## Feature
+ `UnicodeScalarSet` is just a wrapper of [`Foundation.CharacterSet`](https://developer.apple.com/documentation/foundation/characterset).
+ 
  ## Reference
  [Character and CharacterSet](https://github.com/apple/swift/blob/swift-4.0-RELEASE/docs/StringManifesto.md#character-and-characterset)
  > Despite its name, CharacterSet currently operates on the Swift UnicodeScalar type.
@@ -137,14 +140,18 @@ extension UnicodeScalarSet: SetAlgebra {
 }
 
 extension UnicodeScalarSet {
+  /// Returns a representation of the `UnicodeScalarSet` in binary format.
+  /// It is equal to `var bitmapRepresentation: Data { get }` of `Foundation.CharacterSet`.
   public var bitmapRepresentation: Data {
     return self._legacyCharacterSet.bitmapRepresentation
   }
   
+  /// Invert the contents of the `UnicodeScalarSet`.
   public mutating func invert() {
     self._legacyCharacterSet.invert()
   }
   
+  /// Returns an inverted copy of the `UnicodeScalarSet`.
   public func inverted() -> UnicodeScalarSet {
     var set = self
     set.invert()
