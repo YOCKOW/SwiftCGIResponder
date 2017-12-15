@@ -4,12 +4,22 @@
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  **************************************************************************************************/
- 
+
 /**
  
  # BonaFideCharacterSet
  A set of characters.
  This will not be necessary in the future.
+ 
+ ## Feature
+ Unlike `Foundation.Character`, this may be really a set of `Character`s.
+ However, in order to ensure compatibility, it can be initialized with `Multirange<Character>` or
+ `UnicodeScalar`. When it is initialized with `UnicodeScalar`, each of its members (`Character`s) is
+ assumed to have only one `Unicode.Scalar`.
+ 
+ ### Note
+ Although you can convert `UnicodeScalarSet` to `BonaFideCharacterSet` whose container is
+ `Multirange<Character>`, it will take a while.
  
  ## Reference
  [Character and CharacterSet](https://github.com/apple/swift/blob/swift-4.0-RELEASE/docs/StringManifesto.md#character-and-characterset)
@@ -21,7 +31,8 @@
  
  */
 public struct BonaFideCharacterSet {
-  // For the purpose of some compatibility with `UnicodeScalarSet`
+  /// For the purpose of some compatibility with `UnicodeScalarSet`,
+  /// there are two kinds of containers for `Character`.
   fileprivate enum Container {
     case multirange(Multirange<Character>)
     case unicodeScalarSet(UnicodeScalarSet)
@@ -56,7 +67,7 @@ extension BonaFideCharacterSet.Container {
       self = .multirange(ranges)
     case .unicodeScalarSet(var set):
       let scalars = character.unicodeScalars
-      guard scalars.count == 1 else { fatalError("\(#function): `character` must be contain only one Unicode Scalar when `self` has been initialized with UnicodeScalarSet") }
+      guard scalars.count == 1 else { fatalError("\(#function): `character` must contain only one Unicode Scalar when `self` has been initialized with UnicodeScalarSet") }
       set.insert(scalars.first!)
       self = .unicodeScalarSet(set)
     }
@@ -74,7 +85,7 @@ extension BonaFideCharacterSet.Container {
     case .multirange(let ranges): return ranges.contains(character)
     case .unicodeScalarSet(let set):
       let scalars = character.unicodeScalars
-      guard scalars.count == 1 else { fatalError("\(#function): `character` must be contain only one Unicode Scalar when `self` has been initialized with UnicodeScalarSet") }
+      guard scalars.count == 1 else { fatalError("\(#function): `character` must contain only one Unicode Scalar when `self` has been initialized with UnicodeScalarSet") }
       return set.contains(scalars.first!)
     }
   }
@@ -86,7 +97,7 @@ extension BonaFideCharacterSet.Container {
       self = .multirange(ranges)
     case .unicodeScalarSet(var set):
       let scalars = character.unicodeScalars
-      guard scalars.count == 1 else { fatalError("\(#function): `character` must be contain only one Unicode Scalar when `self` has been initialized with UnicodeScalarSet") }
+      guard scalars.count == 1 else { fatalError("\(#function): `character` must contain only one Unicode Scalar when `self` has been initialized with UnicodeScalarSet") }
       set.remove(scalars.first!)
       self = .unicodeScalarSet(set)
     }
@@ -108,6 +119,7 @@ extension BonaFideCharacterSet {
     self.init(.multirange(ranges))
   }
   
+  /// Initialize with the characters in the given string.
   public init(charactersIn string:String) {
     var characters: [Character] = []
     var index = string.startIndex
@@ -118,6 +130,10 @@ extension BonaFideCharacterSet {
     self.init(characters)
   }
   
+  /// Initialize with `UnicodeScalarSet`. When an instance is initialized with this initializer,
+  /// each of its members (`Character`s) is assumed to have only one `Unicode.Scalar`.
+  /// Although you can convert `UnicodeScalarSet` to `Multirange<Character>` passing `true` to
+  /// `convertingToMultirange`, it will take a while.
   internal init(_ unicodeScalarSet:UnicodeScalarSet,
                 convertingToMultirange convert: Bool = false) {
     if convert {
@@ -150,26 +166,43 @@ extension BonaFideCharacterSet {
 }
 
 extension BonaFideCharacterSet {
+  /// Insert the values from the specified `range` into the `BonaFideCharacterSet`.
   public mutating func insert(charactersIn range:ClosedRange<Character>) { self.container.insert(range) }
+  /// Insert the values from the specified `range` into the `BonaFideCharacterSet`.
   public mutating func insert(charactersIn range:LeftOpenRange<Character>) { self.container.insert(range) }
+  /// Insert the values from the specified `range` into the `BonaFideCharacterSet`.
   public mutating func insert(charactersIn range:OpenRange<Character>) { self.container.insert(range) }
+  /// Insert the values from the specified `range` into the `BonaFideCharacterSet`.
   public mutating func insert(charactersIn range:Range<Character>) { self.container.insert(range) }
+  /// Insert the values from the specified `range` into the `BonaFideCharacterSet`.
   public mutating func insert(charactersIn range:PartialRangeFrom<Character>) { self.container.insert(range) }
+  /// Insert the values from the specified `range` into the `BonaFideCharacterSet`.
   public mutating func insert(charactersIn range:PartialRangeGreaterThan<Character>) { self.container.insert(range) }
+  /// Insert the values from the specified `range` into the `BonaFideCharacterSet`.
   public mutating func insert(charactersIn range:PartialRangeThrough<Character>) { self.container.insert(range) }
+  /// Insert the values from the specified `range` into the `BonaFideCharacterSet`.
   public mutating func insert(charactersIn range:PartialRangeUpTo<Character>) { self.container.insert(range) }
   
+  /// Initialize with the characters in the given `range`.
   public init(charactersIn range:ClosedRange<Character>) { self.init(); self.insert(charactersIn:range) }
+  /// Initialize with the characters in the given `range`.
   public init(charactersIn range:LeftOpenRange<Character>) { self.init(); self.insert(charactersIn:range) }
+  /// Initialize with the characters in the given `range`.
   public init(charactersIn range:OpenRange<Character>) { self.init(); self.insert(charactersIn:range) }
+  /// Initialize with the characters in the given `range`.
   public init(charactersIn range:Range<Character>) { self.init(); self.insert(charactersIn:range) }
+  /// Initialize with the characters in the given `range`.
   public init(charactersIn range:PartialRangeFrom<Character>) { self.init(); self.insert(charactersIn:range) }
+  /// Initialize with the characters in the given `range`.
   public init(charactersIn range:PartialRangeGreaterThan<Character>) { self.init(); self.insert(charactersIn:range) }
+  /// Initialize with the characters in the given `range`.
   public init(charactersIn range:PartialRangeThrough<Character>) { self.init(); self.insert(charactersIn:range) }
+  /// Initialize with the characters in the given `range`.
   public init(charactersIn range:PartialRangeUpTo<Character>) { self.init(); self.insert(charactersIn:range) }
 }
 
 extension BonaFideCharacterSet {
+  /// Invert the contents of the `BonaFideCharacterSet`.
   public mutating func invert() {
     switch self.container {
     case .multirange(let ranges):
@@ -181,13 +214,15 @@ extension BonaFideCharacterSet {
     }
   }
   
+  /// Returns an inverted copy of the `BonaFideCharacterSet`.
   public func inverted() -> BonaFideCharacterSet {
     var set = self
     set.invert()
     return set
   }
   
-  /// If `self` has been initialized with UnicodeScalarSet and `other` has not, or vise versa,
+  /// Removes the elements of the given set from this set.
+  /// If this set has been initialized with `UnicodeScalarSet` and `other` has not, or vise versa,
   /// this method will take a long time.
   public mutating func subtract(_ other: BonaFideCharacterSet) {
     switch (self.container, other.container) {
@@ -205,7 +240,8 @@ extension BonaFideCharacterSet {
     }
   }
   
-  /// If `self` has been initialized with UnicodeScalarSet and `other` has not, or vise versa,
+  /// Returns a new set containing the elements of this set that do not occur in the given set.
+  /// If this set has been initialized with `UnicodeScalarSet` and `other` has not, or vise versa,
   /// this method will take a long time.
   public func subtracting(_ other: BonaFideCharacterSet) -> BonaFideCharacterSet {
     var set = self
@@ -221,7 +257,8 @@ extension BonaFideCharacterSet: SetAlgebra {
     return self.container.contains(member)
   }
   
-  /// If `self` has been initialized with UnicodeScalarSet and `other` has not, or vise versa,
+  /// Returns a new set with the elements of both this and the given set.
+  /// If this set has been initialized with `UnicodeScalarSet` and `other` has not, or vise versa,
   /// this method will take a long time.
   public func union(_ other: BonaFideCharacterSet) -> BonaFideCharacterSet {
     switch (self.container, other.container) {
@@ -238,7 +275,8 @@ extension BonaFideCharacterSet: SetAlgebra {
     }
   }
   
-  /// If `self` has been initialized with UnicodeScalarSet and `other` has not, or vise versa,
+  /// Returns an intersection of the `BonaFideCharacterSet` with another `BonaFideCharacterSet`.
+  /// If this set has been initialized with `UnicodeScalarSet` and `other` has not, or vise versa,
   /// this method will take a long time.
   public func intersection(_ other: BonaFideCharacterSet) -> BonaFideCharacterSet {
     switch (self.container, other.container) {
@@ -255,7 +293,8 @@ extension BonaFideCharacterSet: SetAlgebra {
     }
   }
   
-  /// If `self` has been initialized with UnicodeScalarSet and `other` has not, or vise versa,
+  /// Returns an exclusive or of the `BonaFideCharacterSet` with another `BonaFideCharacterSet`.
+  /// If this set has been initialized with `UnicodeScalarSet` and `other` has not, or vise versa,
   /// this method will take a long time.
   public func symmetricDifference(_ other: BonaFideCharacterSet) -> BonaFideCharacterSet {
     switch (self.container, other.container) {
@@ -295,19 +334,22 @@ extension BonaFideCharacterSet: SetAlgebra {
     return !result.inserted ? newMember : nil
   }
   
-  /// If `self` has been initialized with UnicodeScalarSet and `other` has not, or vise versa,
+  /// Adds the elements of the given set to the set.
+  /// If this set has been initialized with `UnicodeScalarSet` and `other` has not, or vise versa,
   /// this method will take a long time.
   public mutating func formUnion(_ other: BonaFideCharacterSet) {
     self.container = self.union(other).container
   }
   
-  /// If `self` has been initialized with UnicodeScalarSet and `other` has not, or vise versa,
+  /// Sets the value to an intersection of the `BonaFideCharacterSet` with another `BonaFideCharacterSet`.
+  /// If this set has been initialized with `UnicodeScalarSet` and `other` has not, or vise versa,
   /// this method will take a long time.
   public mutating func formIntersection(_ other: BonaFideCharacterSet) {
     self.container = self.intersection(other).container
   }
   
-  /// If `self` has been initialized with UnicodeScalarSet and `other` has not, or vise versa,
+  /// Sets the value to an exclusive or of the `BonaFideCharacterSet` with another `BonaFideCharacterSet`.
+  /// If this set has been initialized with `UnicodeScalarSet` and `other` has not, or vise versa,
   /// this method will take a long time.
   public mutating func formSymmetricDifference(_ other: BonaFideCharacterSet) {
     self.container = self.symmetricDifference(other).container
