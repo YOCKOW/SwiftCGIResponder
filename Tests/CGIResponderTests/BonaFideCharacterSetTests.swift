@@ -36,12 +36,19 @@ class BonaFideCharacterSetTests: XCTestCase {
     XCTAssertTrue(BonaFideCharacterSet.mimeTypeTokenAllowed.contains("U"))
   }
   
+  func testInversion() {
+    let notEmojiFlags = BonaFideCharacterSet.emojiFlags.inverted
+    XCTAssertFalse(notEmojiFlags.contains("🇯🇵"))
+    XCTAssertTrue(notEmojiFlags.contains("A"))
+  }
+  
   static var allTests: [(String, (BonaFideCharacterSetTests) -> () -> Void)] = [
     ("testAlphanumerics", testAlphanumerics),
     ("testNewlines", testNewlines),
     ("testEmojiFlags", testEmojiFlags),
     ("testEmojiKeycaps", testEmojiKeycaps),
-    ("testMIMETypeTokens", testMIMETypeTokens)
+    ("testMIMETypeTokens", testMIMETypeTokens),
+    ("testInversion", testInversion),
   ]
 }
 

@@ -210,12 +210,12 @@ extension BonaFideCharacterSet {
       let inverted: Multirange<Character> = univ.subtracting(ranges)
       self.container = .multirange(inverted)
     case .unicodeScalarSet(let set):
-      self.container = .unicodeScalarSet(set.inverted())
+      self.container = .unicodeScalarSet(set.inverted)
     }
   }
   
   /// Returns an inverted copy of the `BonaFideCharacterSet`.
-  public func inverted() -> BonaFideCharacterSet {
+  public var inverted: BonaFideCharacterSet {
     var set = self
     set.invert()
     return set

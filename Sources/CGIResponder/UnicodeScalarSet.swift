@@ -152,7 +152,7 @@ extension UnicodeScalarSet {
   }
   
   /// Returns an inverted copy of the `UnicodeScalarSet`.
-  public func inverted() -> UnicodeScalarSet {
+  public var inverted: UnicodeScalarSet {
     var set = self
     set.invert()
     return set
