@@ -32,15 +32,7 @@ You may see other samples in [SwiftCGIResponderSamples](https://github.com/YOCKO
 
 # How to install
 
-```
-git clone https://github.com/YOCKOW/SwiftCGIResponder.git
-cd SwiftCGIResponder
-./build-install.rb --install-prefix=/path/to/your/system --install
-cd ~/your/project
-swiftc main.swift -I/path/to/your/system/include -L/path/to/your/system/lib -lSwiftCGIResponder
-```
-
-... or you can also use [Swift Package Manager](https://github.com/apple/swift-package-manager) easily to import `CGIResponder` to your project.
+You can use [Swift Package Manager](https://github.com/apple/swift-package-manager) easily to import `CGIResponder` to your project.
 
 # License
 MIT License.  
