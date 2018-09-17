@@ -3,28 +3,43 @@
 
 import PackageDescription
 
-#if os(Linux)
-let requireSR5986 = true
-#else 
-let requireSR5986 = false
-#endif
+typealias Supporter = (name:String, requireSR5986Workaround: Bool)
+let supporters: [Supporter] = [
+  ("HTTP", false),
+]
 
-var targets: [Target] = []
-if requireSR5986 { targets.append(.target(name:"SR_5986", dependencies:[], path:"Sources/SR-5986")) }
-targets.append(.target(name:"CGIResponder", dependencies:requireSR5986 ? ["SR_5986"] : []))
-targets.append(.testTarget(name:"CGIResponderTests", dependencies:["CGIResponder"]))
+var productTargets: [String] = []
+var packageTargets: [Target] = []
+
+for supporter in supporters {
+  productTargets.append(supporter.name)
+  packageTargets.append(.target(
+    name:supporter.name,
+    dependencies:(supporter.requireSR5986Workaround ? ["SR-5986"] : []),
+    path:"Sources/Supporters/\(supporter.name)"
+  ))
+  packageTargets.append(.testTarget(
+    name:"\(supporter.name)Tests",
+    dependencies:[.byName(name:supporter.name)],
+    path:"Tests/SupportersTests/\(supporter.name)Tests"
+  ))
+}
 
 let package = Package(
   name:"CGIResponder",
   products:[
     // Products define the executables and libraries produced by a package, and make them visible to other packages.
-    .library(name:"SwiftCGIResponder", type:.dynamic, targets:["CGIResponder"]),
+    .library(
+      name:"SwiftCGIResponder",
+      type:.dynamic,
+      targets:productTargets
+    )
   ],
   dependencies:[
     // Dependencies declare other packages that this package depends on.
     // .package(url: /* package url */, from: "1.0.0"),
   ],
-  targets:targets,
+  targets:packageTargets,
   swiftLanguageVersions:[4]
 )
 
