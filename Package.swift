@@ -3,9 +3,13 @@
 
 import PackageDescription
 
-typealias Supporter = (name:String, requireSR5986Workaround: Bool)
+let packageDependencies:[Package.Dependency] = [
+  .package(url:"https://github.com/YOCKOW/SwiftUnicodeSupplement.git", from:"0.3.0"),
+]
+
+typealias Supporter = (name:String, dependencies:[Target.Dependency])
 let supporters: [Supporter] = [
-  ("HTTP", false),
+  ("HTTP", [.byName(name:"SwiftUnicodeSupplement")]),
 ]
 
 var productTargets: [String] = []
@@ -15,7 +19,7 @@ for supporter in supporters {
   productTargets.append(supporter.name)
   packageTargets.append(.target(
     name:supporter.name,
-    dependencies:(supporter.requireSR5986Workaround ? ["SR-5986"] : []),
+    dependencies:supporter.dependencies,
     path:"Sources/Supporters/\(supporter.name)"
   ))
   packageTargets.append(.testTarget(
@@ -35,10 +39,7 @@ let package = Package(
       targets:productTargets
     )
   ],
-  dependencies:[
-    // Dependencies declare other packages that this package depends on.
-    // .package(url: /* package url */, from: "1.0.0"),
-  ],
+  dependencies:packageDependencies,
   targets:packageTargets,
   swiftLanguageVersions:[4]
 )
