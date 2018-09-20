@@ -5,6 +5,10 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
+// This `import` is required for Ubuntu 14.04?
+// https://travis-ci.org/YOCKOW/SwiftCGIResponder/builds/430854353
+import Foundation
+
 /// # ETag
 /// Reporesents a value of ETag
 public enum ETag {
