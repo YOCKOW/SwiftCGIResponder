@@ -1,3 +1,10 @@
+/* *************************************************************************************************
+ ETagTests.swift
+   © 2017-2018 YOCKOW.
+     Licensed under MIT License.
+     See "LICENSE.txt" for more information.
+ ************************************************************************************************ */
+
 import XCTest
 @testable import HTTP
 

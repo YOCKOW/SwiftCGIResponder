@@ -15,6 +15,20 @@ let supporters: [Supporter] = [
 var productTargets: [String] = []
 var packageTargets: [Target] = []
 
+// Main Target
+productTargets.append("CGIResponder")
+packageTargets.append(.target(
+  name:"CGIResponder",
+  dependencies:supporters.map { .byName(name:$0.name) },
+  path:"Sources/CGIResponder"
+))
+packageTargets.append(.testTarget(
+  name:"CGIResponderTests",
+  dependencies:[.byName(name:"CGIResponder")],
+  path:"Tests/CGIResponderTests"
+))
+
+// Supporters
 for supporter in supporters {
   productTargets.append(supporter.name)
   packageTargets.append(.target(
