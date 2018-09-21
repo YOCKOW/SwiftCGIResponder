@@ -4,12 +4,19 @@
 import PackageDescription
 
 let packageDependencies:[Package.Dependency] = [
+  .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from:"1.1.0"),
   .package(url:"https://github.com/YOCKOW/SwiftUnicodeSupplement.git", from:"0.3.0"),
 ]
 
 typealias Supporter = (name:String, dependencies:[Target.Dependency])
 let supporters: [Supporter] = [
-  ("HTTP", [.byName(name:"SwiftUnicodeSupplement")]),
+  (
+    "HTTP",
+    [
+      .byName(name:"SwiftBonaFideCharacterSet"),
+      .byName(name:"SwiftUnicodeSupplement")
+    ]
+  ),
 ]
 
 var productTargets: [String] = []
