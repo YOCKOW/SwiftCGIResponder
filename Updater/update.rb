@@ -18,6 +18,7 @@ require 'pathname'
 ### CONSTANTS ###
 
 FILES = [
+  :HTTPHeaderFieldName_IANARegistered,
   :HTTPStatusCode
 ]
 
@@ -30,12 +31,18 @@ FORCE_UPDATE = (lambda{|argv|
                     arg = argv.shift
                     if arg == '-f' || arg == '--force'
                       file = argv.shift
-                      if !file || file !~ /\A[0-9A-Za-z]+\Z/
+                      if !file || file !~ /\A[0-9A-Z_a-z]+\Z/
                         $stderr.puts("\"#{file}\" is invalid as a parameter to specify the file.")
                       elsif file =~ /\Aall\Z/i
                         file = 'ALL'
                       end
-                      result[file.to_sym] = true
+                
+                      key = file.to_sym
+                      if FILES.include?(key)
+                        result[key] = true
+                      else
+                        $stderr.puts("\"#{file}\" is unknown module name.")
+                      end
                     end
                   end
                   return result
@@ -184,32 +191,32 @@ FILES.each { |key|
   end
 
   if !FORCE_UPDATE[:ALL] && !FORCE_UPDATE[key] && local_last_modified && remote_last_modified && local_last_modified >= remote_last_modified
-    $stdout.puts("** The local file is up to date.\n\n")
-    next
-  end
-  
-  # open the local file
-  File.open(local_path, 'w+') { |local_file|
-    local_file.puts("// This file was created automatically")
-    local_file.puts("//   from " + urls.map{|url| url.to_s}.join("\n//        "))
-    if remote_last_modified
-      local_file.puts("//     Last-Modified: #{remote_last_modified}")
-    end
+    $stdout.puts("** The local file is up to date.\n")
+  else
     
-    local_file.puts()
-    
-    # open the remote files
-    urls.each { |url|
-      $stdout.puts("*** Fetching #{url.to_s}")
-      url.open { |remote_io|
-        # write data
-        $stdout.puts("*** Writing Data...")
-        mod.write(remote_io, local_file)
+    # open the local file
+    File.open(local_path, 'w+') { |local_file|
+      local_file.puts("// This file was created automatically")
+      local_file.puts("//   from " + urls.map{|url| url.to_s}.join("\n//        "))
+      if remote_last_modified
+        local_file.puts("//     Last-Modified: #{remote_last_modified}")
+      end
+      
+      local_file.puts()
+      
+      # open the remote files
+      urls.each { |url|
+        $stdout.puts("*** Fetching #{url.to_s}")
+        url.open { |remote_io|
+          # write data
+          $stdout.puts("*** Writing Data...")
+          mod.write(remote_io, local_file)
+        }
       }
     }
-  }
+    
+  end
   
   $stdout.puts("* DONE")
-  
   FileUtils.rm(backup_path) if FileTest.exist?(backup_path)
 }
