@@ -1,10 +1,12 @@
 /***************************************************************************************************
- UnicodeScalarSet+HTTPHeader.swift
-   © 2017 YOCKOW.
+ UnicodeScalarSet+HTTP.swift
+   © 2017-2018 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  **************************************************************************************************/
 
+import Ranges
+import BonaFideCharacterSet
 
 extension UnicodeScalarSet {
   private static let _space = UnicodeScalarSet(unicodeScalarsIn:"\u{0020}")
@@ -12,10 +14,10 @@ extension UnicodeScalarSet {
   private static let _characters = UnicodeScalarSet(unicodeScalarsIn:UnicodeScalar(0x00)...UnicodeScalar(0x7F))
   private static let _controlCharacters = UnicodeScalarSet(unicodeScalarsIn:UnicodeScalar(0x00)...UnicodeScalar(0x1F)).union(UnicodeScalarSet(unicodeScalarsIn:"\u{007F}"))
   
-  /// reference: [RFC 7230](https://tools.ietf.org/html/rfc7230#section-3.2)
-  /// RFC 7230 says `obs-fold` has been deprecated
-  /// and `obs-text` should not be used in historical reason. (#3.2.4)
-  /// `obs-` means obsoleted
+  // reference: [RFC 7230](https://tools.ietf.org/html/rfc7230#section-3.2)
+  // RFC 7230 says `obs-fold` has been deprecated
+  // and `obs-text` should not be used in historical reason. (#3.2.4)
+  // `obs-` means obsoleted
   internal static let httpHeaderFieldDelimiterAllowed = UnicodeScalarSet(unicodeScalarsIn:"\"(),/:;<=>?@[\\]{}")
   internal static let visibleCharacterUnicodeScalars = UnicodeScalarSet(unicodeScalarsIn:UnicodeScalar(0x21)...UnicodeScalar(0x7E))
   public static let httpHeaderFieldNameAllowed = visibleCharacterUnicodeScalars.subtracting(httpHeaderFieldDelimiterAllowed)

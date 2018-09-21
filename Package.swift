@@ -5,6 +5,7 @@ import PackageDescription
 
 let packageDependencies:[Package.Dependency] = [
   .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from:"1.1.0"),
+  .package(url:"https://github.com/YOCKOW/SwiftRanges", from: "1.3.2"),
   .package(url:"https://github.com/YOCKOW/SwiftUnicodeSupplement.git", from:"0.3.0"),
 ]
 
@@ -14,6 +15,7 @@ let supporters: [Supporter] = [
     "HTTP",
     [
       .byName(name:"SwiftBonaFideCharacterSet"),
+      .byName(name:"SwiftRanges"),
       .byName(name:"SwiftUnicodeSupplement")
     ]
   ),
