@@ -9,3 +9,4 @@
 
 import HTTP
 public typealias HTTPETag = HTTP.ETag
+public typealias HTTPStatusCode = HTTP.StatusCode
