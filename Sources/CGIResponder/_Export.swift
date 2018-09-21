@@ -9,5 +9,6 @@
 
 import HTTP
 public typealias HTTPETag = HTTP.ETag
+public typealias HTTPHeaderFieldName = HTTP.HeaderFieldName
 public typealias HTTPHeaderFieldValue = HTTP.HeaderFieldValue
 public typealias HTTPStatusCode = HTTP.StatusCode
