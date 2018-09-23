@@ -16,7 +16,7 @@ extension ETag: HeaderFieldValueConvertible {
 }
 
 
-#if compiler(>=4.1.50)
+#if swift(>=4.1.50)
 #else
 // Build failed in Swift < 4.1.50
 // https://travis-ci.org/YOCKOW/SwiftCGIResponder/builds/432042158
