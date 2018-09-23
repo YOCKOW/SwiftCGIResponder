@@ -6,7 +6,7 @@
  ************************************************************************************************ */
 
 /// A type that can be converted to/from an instance of `HeaderFieldValue`.
-public protocol HeaderFieldValueConvertible {
+public protocol HeaderFieldValueConvertible: Hashable {
   init?(httpHeaderFieldValue:HeaderFieldValue)
   var httpHeaderFieldValue:HeaderFieldValue { get }
 }
