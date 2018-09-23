@@ -65,11 +65,32 @@ final class ETagTests: XCTestCase {
     }
   }
   
+  public func test_headerField() {
+    let eTag1 = ETag("\"SomeETag\"")!
+    let eTag2 = ETag("W/\"SomeWeakETag\"")!
+    
+    let eTagField = HeaderFieldDelegate.ETag(eTag1)
+    XCTAssertEqual(eTagField.name, .eTag)
+    XCTAssertEqual(eTagField.value.rawValue, eTag1.description)
+    
+    eTagField.source = eTag2
+    XCTAssertEqual(eTagField.value.rawValue, eTag2.description)
+    
+    let ifMatchField = HeaderFieldDelegate.IfMatch([eTag1, eTag2])
+    XCTAssertEqual(ifMatchField.name, .ifMatch)
+    XCTAssertEqual(ifMatchField.value.rawValue, "\(eTag1.description), \(eTag2.description)")
+    
+    let ifNoneMatchField = HeaderFieldDelegate.IfNoneMatch([eTag1, eTag2])
+    XCTAssertEqual(ifNoneMatchField.name, .ifNoneMatch)
+    XCTAssertEqual(ifNoneMatchField.value.rawValue, "\(eTag1.description), \(eTag2.description)")
+  }
+  
   
   static var allTests = [
     ("test_initialization", test_initialization),
     ("test_comparison", test_comparison),
     ("test_list", test_list),
+    ("test_headerField", test_headerField),
   ]
 }
 
