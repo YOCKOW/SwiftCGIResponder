@@ -15,11 +15,15 @@ extension ETag: HeaderFieldValueConvertible {
   }
 }
 
-extension Array: HeaderFieldValueConvertible where Element == ETag {
-  #if swift(>=4.2)
-  #else
-  // Build failed in Swift 4.1
-  // https://travis-ci.org/YOCKOW/SwiftCGIResponder/builds/432042158
+
+#if compiler(>=4.1.50)
+#else
+// Build failed in Swift < 4.1.50
+// https://travis-ci.org/YOCKOW/SwiftCGIResponder/builds/432042158
+// https://travis-ci.org/YOCKOW/SwiftCGIResponder/builds/432049328
+//
+// -> Let `Array<ETag>` conform to `Hashable` explicitly
+extension Array: Hashable where Element == ETag {
   public var hashValue: Int {
     var hh = 0
     for tag in self {
@@ -27,8 +31,10 @@ extension Array: HeaderFieldValueConvertible where Element == ETag {
     }
     return hh
   }
-  #endif
-  
+}
+#endif
+
+extension Array: HeaderFieldValueConvertible where Element == ETag {
   public init?(httpHeaderFieldValue: HeaderFieldValue) {
     do {
       try self.init(string:httpHeaderFieldValue.rawValue)
