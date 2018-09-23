@@ -76,13 +76,17 @@ final class ETagTests: XCTestCase {
     eTagField.source = eTag2
     XCTAssertEqual(eTagField.value.rawValue, eTag2.description)
     
+    XCTAssertEqual(eTagField.type, .single)
+    
     let ifMatchField = HeaderFieldDelegate.IfMatch([eTag1, eTag2])
     XCTAssertEqual(ifMatchField.name, .ifMatch)
     XCTAssertEqual(ifMatchField.value.rawValue, "\(eTag1.description), \(eTag2.description)")
+    XCTAssertEqual(ifMatchField.type, .single)
     
     let ifNoneMatchField = HeaderFieldDelegate.IfNoneMatch([eTag1, eTag2])
     XCTAssertEqual(ifNoneMatchField.name, .ifNoneMatch)
     XCTAssertEqual(ifNoneMatchField.value.rawValue, "\(eTag1.description), \(eTag2.description)")
+    XCTAssertEqual(ifNoneMatchField.type, .single)
   }
   
   

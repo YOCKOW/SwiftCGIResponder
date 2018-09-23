@@ -41,6 +41,7 @@ open class HeaderFieldDelegate: Hashable {
   }
 }
 
+/// Represents a certain header-field that can be generated from `ValueSource`.
 open class SpecifiedHeaderFieldDelegate<ValueSource>: HeaderFieldDelegate
   where ValueSource: HeaderFieldValueConvertible
 {
@@ -86,10 +87,29 @@ open class SpecifiedHeaderFieldDelegate<ValueSource>: HeaderFieldDelegate
   }
   #endif
   
-  public init(_ valueSource:ValueSource) {
+  internal init(_ valueSource:ValueSource, type:HeaderField.PresenceType) {
     self.source = valueSource
     
-    // This `super.init` is just a dummy.
-    super.init(_name:Swift.type(of:self).name, _value:valueSource.httpHeaderFieldValue, _type:.single)
+    // name and value are dummy.
+    super.init(_name:Swift.type(of:self).name, _value:valueSource.httpHeaderFieldValue, _type:type)
+  }
+}
+
+/// Header-field delegate whose `type` is always `.single`.
+/// One of examples of implementation is `HeaderFieldDelegate.ETag`.
+open class SpecifiedSingleHeaderFieldDelegate<ValueSource>: SpecifiedHeaderFieldDelegate<ValueSource>
+  where ValueSource: HeaderFieldValueConvertible
+{
+  public final override var type: HeaderField.PresenceType {
+    get {
+      return .single
+    }
+    set {
+      guard newValue == .single else { fatalError("Must be .single.") }
+    }
+  }
+  
+  public init(_ valueSource:ValueSource) {
+    super.init(valueSource, type:.single)
   }
 }
