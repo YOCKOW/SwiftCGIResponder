@@ -16,6 +16,19 @@ extension ETag: HeaderFieldValueConvertible {
 }
 
 extension Array: HeaderFieldValueConvertible where Element == ETag {
+  #if swift(>=4.2)
+  #else
+  // Build failed in Swift 4.1
+  // https://travis-ci.org/YOCKOW/SwiftCGIResponder/builds/432042158
+  public var hashValue: Int {
+    var hh = 0
+    for tag in self {
+      hh ^= tag.hashValue
+    }
+    return hh
+  }
+  #endif
+  
   public init?(httpHeaderFieldValue: HeaderFieldValue) {
     do {
       try self.init(string:httpHeaderFieldValue.rawValue)
