@@ -22,4 +22,31 @@ public struct HeaderField {
     /// e.g.) "Cache-Control"
     case appendable
   }
+  
+  internal var _delegate: HeaderFieldDelegate
+  
+  public var name:HeaderFieldName {
+    return self._delegate.name
+  }
+  
+  public var value:HeaderFieldValue {
+    return self._delegate.value
+  }
+  
+  /// Returns the Boolean value that indicates whether the field is duplicable or not.
+  /// e.g.) "Set-Cookie" field is duplicable.
+  public var isDuplicable:Bool {
+    return self._delegate.type == .duplicable
+  }
+  
+  /// Returns the Boolean value that indicates whether the field is appendable or not.
+  /// e.g.) "Cache-Control" field is appendable.
+  public var isAppendable:Bool {
+    return self._delegate.type == .appendable
+  }
+  
+  /// Creates an instance with `delegate`
+  public init(delegate:HeaderFieldDelegate) {
+    self._delegate = delegate
+  }
 }
