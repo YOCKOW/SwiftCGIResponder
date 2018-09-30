@@ -41,6 +41,13 @@ open class HeaderFieldDelegate: Hashable {
   }
 }
 
+/// Represents unspecified/unimplemented header-field
+internal final class UnspecifiedHeaderFieldDelegate: HeaderFieldDelegate {
+  internal init(name:HeaderFieldName, value:HeaderFieldValue, type:HeaderField.PresenceType) {
+    super.init(_name:name, _value:value, _type:type)
+  }
+}
+
 /// Represents a certain header-field that can be generated from `ValueSource`.
 open class SpecifiedHeaderFieldDelegate<ValueSource>: HeaderFieldDelegate
   where ValueSource: HeaderFieldValueConvertible
@@ -73,7 +80,9 @@ open class SpecifiedHeaderFieldDelegate<ValueSource>: HeaderFieldDelegate
   }
   
   public override func isEqual(to other:HeaderFieldDelegate) -> Bool {
-    guard case let another as SpecifiedHeaderFieldDelegate<ValueSource> = other else { return false }
+    guard case let another as SpecifiedHeaderFieldDelegate<ValueSource> = other else {
+      return super.isEqual(to:other)
+    }
     return self.source == another.source
   }
   
