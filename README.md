@@ -3,13 +3,13 @@
 It's an experimental library under development, and useless as of now.
 
 # Requirements
-* Swift >= 4.0 + CoreFoundation + Foundation
-* macOS >= 10.12 or Linux
+* Swift >= 4.1 + CoreFoundation + Foundation
+* macOS >= 10.12 or Linux (Swift >= 4.2 is required on Linux.)
 * HTTP server software (e.g. Apache or similar software)
 
 # Usage
 
-```
+```Swift
 import Foundation
 import CGIResponder
 
