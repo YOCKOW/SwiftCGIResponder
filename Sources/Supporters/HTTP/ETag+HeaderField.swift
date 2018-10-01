@@ -48,21 +48,49 @@ extension Array: HeaderFieldValueConvertible where Element == ETag {
   }
 }
 
-//extension HeaderFieldDelegate {
-//  /// Generates "ETag: [entity tag]"
-//  public final class ETag: SpecifiedSingleHeaderFieldDelegate<HTTP.ETag> {
-//    public override class var name: HeaderFieldName { return .eTag }
-//  }
-//
-//  /// Generates "If-Match: [list of entity tags]"
-//  public final class IfMatch: SpecifiedSingleHeaderFieldDelegate<Array<HTTP.ETag>> {
-//    public override class var name: HeaderFieldName { return .ifMatch }
-//  }
-//
-//
-//  /// Generates "If-None-Match: [list of entity tags]"
-//  public final class IfNoneMatch: SpecifiedSingleHeaderFieldDelegate<Array<HTTP.ETag>> {
-//    public override class var name: HeaderFieldName { return .ifNoneMatch }
-//  }
-//}
-//
+/// Generates a header field whose name is "ETag"
+public struct ETagHeaderFieldDelegate: HeaderFieldDelegate {
+  public typealias ValueSource = ETag
+  
+  public static var name: HeaderFieldName { return .eTag }
+  
+  public static var type: HeaderField.PresenceType { return .single }
+  
+  public var source: ETag
+  
+  public init(_ source: ETag) {
+    self.source = source
+  }
+}
+
+/// Generates a header field whose name is "If-Match"
+public struct IfMatchHeaderFieldDelegate: AppendableHeaderFieldDelegate {
+  public typealias ValueSource = Array<ETag>
+  public typealias Element = ETag
+  
+  public static var name: HeaderFieldName { return .ifMatch }
+  
+  public static var type: HeaderField.PresenceType { return .appendable }
+  
+  public var source: Array<ETag>
+  
+  public init(_ source: Array<ETag>) {
+    self.source = source
+  }
+}
+
+/// Generates a header field whose name is "If-None-Match"
+public struct IfNoneMatchHeaderFieldDelegate: AppendableHeaderFieldDelegate {
+  public typealias ValueSource = Array<ETag>
+  public typealias Element = ETag
+  
+  public static var name: HeaderFieldName { return .ifNoneMatch }
+  
+  public static var type: HeaderField.PresenceType { return .appendable }
+  
+  public var source: Array<ETag>
+  
+  public init(_ source: Array<ETag>) {
+    self.source = source
+  }
+}

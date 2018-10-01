@@ -27,3 +27,22 @@ extension HeaderFieldDelegate {
     return self.source.httpHeaderFieldValue
   }
 }
+
+/// Header field whose type is `appendable`.
+public protocol AppendableHeaderFieldDelegate: HeaderFieldDelegate {
+  associatedtype Element
+  
+  /// The source that generates the value of the header field.
+  var source: ValueSource { get set }
+  
+  /// Append the element
+  mutating func append(_ element:Element)
+}
+
+extension AppendableHeaderFieldDelegate
+  where ValueSource:RangeReplaceableCollection, ValueSource.Element == Element
+{
+  public mutating func append(_ element:Element) {
+    self.source.append(element)
+  }
+}
