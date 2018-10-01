@@ -5,7 +5,7 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
-public protocol HeaderFieldDelegate {
+public protocol HeaderFieldDelegate: Hashable {
   associatedtype ValueSource: HeaderFieldValueConvertible
   
   /// The name of the header field.
@@ -26,6 +26,24 @@ extension HeaderFieldDelegate {
   public var value: HeaderFieldValue {
     return self.source.httpHeaderFieldValue
   }
+}
+
+extension HeaderFieldDelegate where ValueSource: Equatable {
+  public static func ==(lhs:Self, rhs:Self) -> Bool {
+    return lhs.source == rhs.source
+  }
+}
+
+extension HeaderFieldDelegate where ValueSource: Hashable {
+  #if swift(>=4.2)
+  public func hash(into hasher:inout Hasher) {
+    hasher.combine(self.source)
+  }
+  #else
+  public var hashValue: Int {
+    return self.source.hashValue
+  }
+  #endif
 }
 
 /// Header field whose type is `appendable`.
