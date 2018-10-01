@@ -20,10 +20,30 @@ final class HeaderFieldTests: XCTestCase {
     XCTAssertNil(HeaderFieldValue(rawValue:"ひらがなは無効です。"))
   }
   
+  func test_initialization() {
+    let eTag1 = ETag("\"SomeETag\"")!
+    let eTag2 = ETag("W/\"SomeWeakETag\"")!
+    
+    let eTagDelegate = ETagHeaderFieldDelegate(eTag1)
+    let eTagField = HeaderField(delegate:eTagDelegate)
+    XCTAssertFalse(eTagField.isAppendable)
+    XCTAssertFalse(eTagField.isDuplicable)
+    XCTAssertEqual(eTagField.name, .eTag)
+    XCTAssertEqual(eTagField.value, eTag1.httpHeaderFieldValue)
+    
+    let ifMatchDelegate = IfMatchHeaderFieldDelegate([eTag1, eTag2])
+    let ifMatchField = HeaderField(delegate:ifMatchDelegate)
+    XCTAssertTrue(ifMatchField.isAppendable)
+    XCTAssertFalse(ifMatchField.isDuplicable)
+    XCTAssertEqual(ifMatchField.name, .ifMatch)
+    XCTAssertEqual(ifMatchField.value, [eTag1, eTag2].httpHeaderFieldValue)
+  }
+  
   
   static var allTests = [
     ("test_name_initialization", test_name_initialization),
     ("test_value_initialization", test_value_initialization),
+    ("test_initialization", test_initialization),
   ]
 }
 
