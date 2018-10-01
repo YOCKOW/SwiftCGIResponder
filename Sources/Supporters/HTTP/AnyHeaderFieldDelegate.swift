@@ -40,6 +40,20 @@ internal struct _AnyHeaderFieldDelegate {
         self._base.append(concreteElement)
       }
     }
+    
+    internal class _Unspecified: _Box {
+      private var _name: HeaderFieldName
+      private var _value: HeaderFieldValue
+      
+      internal override var type: HeaderField.PresenceType { return .single }
+      internal override var name: HeaderFieldName { return self._name }
+      internal override var value: HeaderFieldValue { return self._value }
+      
+      internal init(name:HeaderFieldName, value:HeaderFieldValue) {
+        self._name = name
+        self._value = value
+      }
+    }
   }
   
   private var _box: _Box
@@ -52,7 +66,12 @@ internal struct _AnyHeaderFieldDelegate {
   internal init<D>(_ delegate:D) where D:HeaderFieldDelegate {
     self._box = _Box._Normal<D>(delegate)
   }
+  
   internal init<D>(_ delegate:D) where D:AppendableHeaderFieldDelegate {
     self._box = _Box._Appendable<D>(delegate)
+  }
+  
+  internal init(name:HeaderFieldName, value:HeaderFieldValue) {
+    self._box = _Box._Unspecified(name:name, value:value)
   }
 }

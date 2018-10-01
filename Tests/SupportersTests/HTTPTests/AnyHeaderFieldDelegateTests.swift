@@ -21,6 +21,12 @@ final class AnyHeaderFieldDelegateTests: XCTestCase {
     XCTAssertEqual(any2.type, .appendable)
     XCTAssertEqual(any2.name, .ifMatch)
     XCTAssertEqual(any2.value, HeaderFieldValue(rawValue:"\"A\", \"B\"")!)
+    
+    let unspecified = _AnyHeaderFieldDelegate(name:HeaderFieldName(rawValue:"Foo")!,
+                                              value:HeaderFieldValue(rawValue:"Bar")!)
+    XCTAssertEqual(unspecified.type, .single)
+    XCTAssertEqual(unspecified.name, HeaderFieldName(rawValue:"Foo")!)
+    XCTAssertEqual(unspecified.value, HeaderFieldValue(rawValue:"Bar")!)
   }
   
   
