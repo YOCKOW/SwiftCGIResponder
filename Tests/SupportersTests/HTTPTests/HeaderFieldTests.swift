@@ -39,11 +39,32 @@ final class HeaderFieldTests: XCTestCase {
     XCTAssertEqual(ifMatchField.value, [eTag1, eTag2].httpHeaderFieldValue)
   }
   
+  func test_delegateSelection() {
+    let eTagField = HeaderField(name:.eTag, value:HeaderFieldValue(rawValue:"*")!)
+    guard
+      case _ as _AnyHeaderFieldDelegate._Box._Normal<ETagHeaderFieldDelegate> = eTagField._delegate._box
+    else
+    {
+      XCTFail("Unexpected delegate")
+      return
+    }
+    
+    let ifMatchField = HeaderField(name:.ifMatch, value:HeaderFieldValue(rawValue:"*")!)
+    guard
+      case _ as _AnyHeaderFieldDelegate._Box._Normal<IfMatchHeaderFieldDelegate> = ifMatchField._delegate._box
+      else
+    {
+      XCTFail("Unexpected delegate")
+      return
+    }
+  }
+  
   
   static var allTests = [
     ("test_name_initialization", test_name_initialization),
     ("test_value_initialization", test_value_initialization),
     ("test_initialization", test_initialization),
+    ("test_delegateSelection", test_delegateSelection),
   ]
 }
 

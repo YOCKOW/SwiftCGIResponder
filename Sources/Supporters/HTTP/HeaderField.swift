@@ -24,7 +24,8 @@ public struct HeaderField {
     case appendable
   }
   
-  private var _delegate: _AnyHeaderFieldDelegate
+  // testable
+  internal var _delegate: _AnyHeaderFieldDelegate
 
   public var name:HeaderFieldName {
     return self._delegate.name
@@ -45,14 +46,18 @@ public struct HeaderField {
   public var isAppendable:Bool {
     return self._delegate.type == .appendable
   }
+  
+  internal init(_ delegate:_AnyHeaderFieldDelegate) {
+    self._delegate = delegate
+  }
 
   /// Creates an instance with `delegate`
   public init<D>(delegate:D) where D: HeaderFieldDelegate {
-    self._delegate = _AnyHeaderFieldDelegate(delegate)
+    self.init(_AnyHeaderFieldDelegate(delegate))
   }
   
   /// Creates an instance with `delegate`
   public init<D>(delegate:D) where D: AppendableHeaderFieldDelegate {
-    self._delegate = _AnyHeaderFieldDelegate(delegate)
+    self.init(_AnyHeaderFieldDelegate(delegate))
   }
 }

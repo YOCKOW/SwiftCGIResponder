@@ -56,7 +56,8 @@ internal struct _AnyHeaderFieldDelegate {
     }
   }
   
-  private var _box: _Box
+  // testable
+  internal var _box: _Box
   
   internal var type: HeaderField.PresenceType { return self._box.type }
   internal var name: HeaderFieldName { return self._box.name }
