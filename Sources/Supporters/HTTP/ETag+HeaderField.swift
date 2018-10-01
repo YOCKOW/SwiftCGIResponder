@@ -63,6 +63,16 @@ public struct ETagHeaderFieldDelegate: HeaderFieldDelegate {
   }
 }
 
+
+// Workaround for the compiler bug.
+// https://travis-ci.org/YOCKOW/SwiftCGIResponder/jobs/435427383
+#if swift(>=4.1.50) || !os(Linux) || DEBUG
+#else
+extension AppendableHeaderFieldDelegate where ValueSource == Array<ETag>, Element == ETag {
+  public var hashValue: Int { return self.source.hashValue }
+}
+#endif
+
 /// Generates a header field whose name is "If-Match"
 public struct IfMatchHeaderFieldDelegate: AppendableHeaderFieldDelegate {
   public typealias ValueSource = Array<ETag>
