@@ -4,8 +4,15 @@ It's an experimental library under development, and useless as of now.
 
 # Requirements
 * Swift >= 4.1 + CoreFoundation + Foundation
-* macOS >= 10.12 or Linux (Swift >= 4.2 is required on Linux.)
+* macOS >= 10.12 or Linux
 * HTTP server software (e.g. Apache or similar software)
+
+## Dependencies
+
+* [SwiftBonaFideCharacterSet](https://github.com/YOCKOW/SwiftBonaFideCharacterSet)
+* [SwiftRanges](https://github.com/YOCKOW/SwiftRanges)
+* [SwiftUnicodeSupplement](https://github.com/YOCKOW/SwiftUnicodeSupplement)
+
 
 # Usage
 
