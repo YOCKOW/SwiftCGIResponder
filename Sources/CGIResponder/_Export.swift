@@ -8,14 +8,18 @@
 // Exports types
 
 import HTTP
-public typealias HTTPETag = HTTP.ETag
-//public typealias HTTPETagHeaderFieldDelegate = HTTP.HeaderFieldDelegate.ETag
-//public typealias HTTPIfMatchHeaderFieldDelegate = HTTP.HeaderFieldDelegate.IfMatch
-//public typealias HTTPIfNoneMatchHeaderFieldDelegate = HTTP.HeaderFieldDelegate.IfNoneMatch
 
+/* Header */
 public typealias HTTPHeaderField = HTTP.HeaderField
 public typealias HTTPHeaderFieldDelegate = HTTP.HeaderFieldDelegate
 public typealias HTTPHeaderFieldName = HTTP.HeaderFieldName
 public typealias HTTPHeaderFieldValue = HTTP.HeaderFieldValue
 
+/* Header Field Delegates */
+public typealias HTTPETagHeaderFieldDelegate = HTTP.ETagHeaderFieldDelegate
+public typealias HTTPIfMatchHeaderFieldDelegate = HTTP.IfMatchHeaderFieldDelegate
+public typealias HTTPIfNoneMatchHeaderFieldDelegate = HTTP.IfNoneMatchHeaderFieldDelegate
+
+/* Others */
+public typealias HTTPETag = HTTP.ETag
 public typealias HTTPStatusCode = HTTP.StatusCode
