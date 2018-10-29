@@ -17,7 +17,7 @@ extension Character {
   fileprivate var _isWhiteSpace: Bool {
     let scalars = self.unicodeScalars
     guard scalars.count == 1 else { return false }
-    return scalars[scalars.startIndex].isWhiteSpace
+    return scalars[scalars.startIndex].latestProperties.isWhitespace
   }
 }
 

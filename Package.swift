@@ -6,7 +6,7 @@ import PackageDescription
 let packageDependencies:[Package.Dependency] = [
   .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from:"1.2.0"),
   .package(url:"https://github.com/YOCKOW/SwiftRanges.git", from: "1.3.2"),
-  .package(url:"https://github.com/YOCKOW/SwiftUnicodeSupplement.git", from:"0.3.0"),
+  .package(url:"https://github.com/YOCKOW/SwiftUnicodeSupplement.git", from:"0.4.0"),
 ]
 
 typealias Supporter = (name:String, dependencies:[Target.Dependency])
