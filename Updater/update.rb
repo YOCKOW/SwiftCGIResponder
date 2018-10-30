@@ -23,6 +23,8 @@ require_relative './modules/extensions.rb'
 ### CONSTANTS ######################################################################################
 
 FILES = [
+  :ContentDispositionParameterKey_IANARegistered,
+  :ContentDispositionValue,
   :HTTPHeaderFieldName_IANARegistered,
   :HTTPStatusCode
 ]

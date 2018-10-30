@@ -59,6 +59,11 @@ class String
   def reserved_by_swift?
     return (SWIFT_KEYWORDS.include?(self)) ? true : false
   end
+  
+  def to_swift_identifier
+    lcc = self.to_lower_camel_case
+    return self.reserved_by_swift? ? "`#{lcc}`" : lcc
+  end
 end
 
 module URI
