@@ -9,13 +9,18 @@ update.rb
  
 =end
 
+# Standard Libraries
 require 'csv'
 require 'fileutils'
 require 'net/https'
 require 'open-uri'
 require 'pathname'
+require 'tmpdir'
 
-### CONSTANTS ###
+# Own
+require_relative './modules/extensions.rb'
+
+### CONSTANTS ######################################################################################
 
 FILES = [
   :HTTPHeaderFieldName_IANARegistered,
@@ -24,105 +29,74 @@ FILES = [
 
 PROJECT_ROOT_DIR = Pathname(File.realpath('..', File.dirname(__FILE__)))
 MODULES_DIR = PROJECT_ROOT_DIR + 'Updater/modules'
+CONVERTERS_DIR = PROJECT_ROOT_DIR + 'Updater/converters'
 
-FORCE_UPDATE = (lambda{|argv|
-                  result = {}
-                  while argv.count > 0
-                    arg = argv.shift
-                    if arg == '-f' || arg == '--force'
-                      file = argv.shift
-                      if !file || file !~ /\A[0-9A-Z_a-z]+\Z/
-                        $stderr.puts("\"#{file}\" is invalid as a parameter to specify the file.")
-                      elsif file =~ /\Aall\Z/i
-                        file = 'ALL'
-                      end
-                
-                      key = file.to_sym
-                      if FILES.include?(key)
-                        result[key] = true
-                      else
-                        $stderr.puts("\"#{file}\" is unknown module name.")
-                      end
-                    end
-                  end
-                  return result
-                }).call(ARGV)
+OPTIONS = {
+  :SKIP => [],
+  :FORCE_UPDATE => []
+}
 
 U_TERMS_OF_USE_URL = URI.parse('http://unicode.org/copyright.html')
-U_TERMS_OF_USE = (lambda {|uri|
-                    $stdout.puts('* Fetching "UNICODE, INC. LICENSE AGREEMENT".')
-                    result = uri.open{|io| io.read }
-                    result = result.match(%r{<a\s+name="License">(.+)</a>[\S\s]*<pre>\s*(\S[\S\s]*\S)\s*</pre>})[1,2].join("\n\n")
-                    return result
-                  }).call(U_TERMS_OF_USE_URL)
+U_TERMS_OF_USE = U_TERMS_OF_USE_URL.content.
+                 match(%r{<a\s+name="License">(.+)</a>[\S\s]*<pre>\s*(\S[\S\s]*\S)\s*</pre>})[1,2].
+                 join("\n\n")
 
 SWIFT_KEYWORDS_URL = URI.parse('https://raw.githubusercontent.com/apple/swift/master/utils/gyb_syntax_support/Token.py')
-SWIFT_KEYWORDS = (lambda{|uri|
-                    $stdout.puts('* Fetching Swift Keywords.')
-                    results = []
-                    uri.open.each{|line|
-                      if line =~ /^\s*(?:DeclKeyword|StmtKeyword|ExprKeyword|Keyword)\s*\('[A-Z_a-z]+'\s*,\s*'([A-Z_a-z]+)'/
-                        results.push($1)
-                      end
-                    }
-                    return results
-                  }).call(SWIFT_KEYWORDS_URL)
+SWIFT_KEYWORD_TYPES = ['DeclKeyword', 'StmtKeyword', 'StmtKeyword', 'Keyword']
+SWIFT_KEYWORD_SCRIPT_REGEX = %r{^\s*(?:#{SWIFT_KEYWORD_TYPES.join('|')})\s*\(\s*'[A-Z_a-z]+'\s*,\s*'([A-Z_a-z]+)'}
+SWIFT_KEYWORDS = SWIFT_KEYWORDS_URL.to_file.each.
+                 map {|line| next $1 if line =~ SWIFT_KEYWORD_SCRIPT_REGEX }.
+                 select {|item| item }
 
-### /CONSTANTS ###
-
-### EXTENSIONS ###
-
-class String
-  def to_keyword
-    words = self.gsub(/(?:\-|(?<=[a-z])(?=[A-Z]))/, ' ').split(/\s+/)
-    if words[0] =~ /^([A-Z]+)([A-Z][0-9a-z]+)$/
-      words.shift
-      words.unshift($1, $2)
-    end
-    return words.map.with_index{|ww,ii|
-      if ii == 0
-        ww.downcase
-      elsif ww !~ /^[A-Z]+$/
-        ww.capitalize
-      else
-        ww
-      end
-    }.join('')
+## CHECK OPTIONS
+argv_index = 0
+while true
+  break if argv_index + 1 > ARGV.count
+  
+  key = nil
+  arg = ARGV[argv_index]
+  
+  if arg =~ /\A(?:\-f|\-\-force)\Z/
+    key = :FORCE_UPDATE
+  elsif arg =~ /\A(?:\-s|\-\-skip)\Z/
+    key = :SKIP
+  else
+    $stderr.puts('Unexpected argument: ' + arg)
   end
   
-  def reserved?
-    return (SWIFT_KEYWORDS.include?(self)) ? true : false
-  end
-end
-
-module IO_CSV_
-  def parse_csv(options = Hash.new)
-    string = self.read
-    
-    if block_given?
-      CSV.parse(string, options) {|row|
-        yield(row)
-      }
-    else
-      return CSV.parse(string, options)
+  if key
+    file = ARGV[argv_index + 1]
+    if !file || file !~ /\A[0-9A-Z_a-z]+\Z/
+      $stderr.puts("\"#{file}\" is invalid as a parameter to specify the file.")
+    elsif file =~ /\Aall\Z/i
+      file = 'ALL'
     end
+    
+    file_sym = file.to_sym
+    if FILES.include?(file_sym) || file_sym == :ALL
+      OPTIONS[key].push(file_sym)
+    else
+      $stderr.puts("\"#{file}\" is unknown module name.")
+    end
+    
+    argv_index += 2
+  else
+    argv_index += 1
   end
 end
-class IO; include IO_CSV_; end
-class StringIO; include IO_CSV_; end
 
-### /EXTENSIONS ###
+### /CONSTANTS #####################################################################################
 
-### FUNCTIONS ###
+### FUNCTIONS ######################################################################################
 
 def failed(message)
   $stderr.puts("!!ERROR!! #{message}")
   exit(false)
 end
 
-def module_for(id)
+def converter_module_for(id)
   begin
-    module_path = MODULES_DIR + (id.to_s + '.rb')
+    module_path = CONVERTERS_DIR + (id.to_s + '.rb')
     require module_path
     return Object.const_get(id)
   rescue LoadError, StandardError => error
@@ -130,36 +104,28 @@ def module_for(id)
   end
 end
 
-def last_modified_at(url)
-  https = Net::HTTP.new(url.host, url.port)
-  https.use_ssl = true
-  header = https.head(url.path)
-  last_modified_string = header['last-modified']
-  return nil if !last_modified_string
-  return Time.parse(last_modified_string)
-end
-
 def last_modified_of(urls)
   result = Time.at(0)
-  urls.each { |url|
-    last_modified = last_modified_at(url)
+  urls.each {|url|
+    failed("Non-URI object is given: #{url}") if !url.kind_of?(URI)
+    last_modified = url.last_modified
     return nil if !last_modified
     result = last_modified if last_modified > result
   }
   return result
 end
 
-#### /FUNCTIONS ###
+### /FUNCTIONS #####################################################################################
 
 failed("Cannot fetch the Unicode license.") if U_TERMS_OF_USE.length < 1
 failed("Cannot fetch the Swift keywords.") if SWIFT_KEYWORDS.count < 1
 
-#### LET'S UPDATE ###
+#### LET'S UPDATE ##################################################################################
 
-FILES.each { |key|
+FILES.each {|key|
   $stdout.puts()
   
-  mod = module_for(key)
+  mod = converter_module_for(key)
   
   rel_path = mod.const_get(:PATH)
   local_path = PROJECT_ROOT_DIR + rel_path
@@ -183,39 +149,47 @@ FILES.each { |key|
   urls = mod.const_get(:URLs)
   remote_last_modified = last_modified_of(urls)
   $stdout.puts("** Last-Modified Date of the remote file: #{remote_last_modified ? remote_last_modified : 'unknown'}")
-
+  
+  must_update = (
+    OPTIONS[:FORCE_UPDATE].include?(:ALL) ||
+    OPTIONS[:FORCE_UPDATE].include?(key) ||
+    local_last_modified == nil ||
+    remote_last_modified == nil ||
+    local_last_modified < remote_last_modified
+  ) ? true : false
+  
+  if !must_update
+    $stdout.puts("** The local file is up to date.\n")
+    next
+  end
+  
   backup_path = Pathname(local_path.to_s.sub(/\.[0-9A-Z_a-z]+$/, '~\&'))
   if FileTest.exist?(local_path)
     # create backup file
     FileUtils.cp(local_path, backup_path)
   end
-
-  if !FORCE_UPDATE[:ALL] && !FORCE_UPDATE[key] && local_last_modified && remote_last_modified && local_last_modified >= remote_last_modified
-    $stdout.puts("** The local file is up to date.\n")
-  else
+  
+  File.open(local_path, 'w+') { |local_file|
+    local_file.puts("// DO NOT EDIT THIS FILE MANUALLY.")
+    local_file.puts("// This file was created automatically")
+    local_file.puts("//   from " + urls.map{|url| url.to_s}.join("\n//        "))
+    if remote_last_modified
+      local_file.puts("//     Last-Modified: #{remote_last_modified}")
+    end
+    local_file.puts()
     
-    # open the local file
-    File.open(local_path, 'w+') { |local_file|
-      local_file.puts("// This file was created automatically")
-      local_file.puts("//   from " + urls.map{|url| url.to_s}.join("\n//        "))
-      if remote_last_modified
-        local_file.puts("//     Last-Modified: #{remote_last_modified}")
-      end
-      
-      local_file.puts()
-      
-      # open the remote files
-      urls.each { |url|
-        $stdout.puts("*** Fetching #{url.to_s}")
-        url.open { |remote_io|
-          # write data
-          $stdout.puts("*** Writing Data...")
-          mod.write(remote_io, local_file)
-        }
-      }
+#    local_file.puts("/*\n")
+#    U_TERMS_OF_USE.each_line{|line| local_file.puts('  ' + line)}
+#    local_file.puts("\n */\n\n")
+#    local_file.puts()
+    
+    # open the remote files
+    urls.each { |url|
+      remote_file = url.to_file
+      $stdout.puts("*** Converting and Writing Data...")
+      mod.write(remote_file, local_file)
     }
-    
-  end
+  }
   
   $stdout.puts("* DONE")
   FileUtils.rm(backup_path) if FileTest.exist?(backup_path)

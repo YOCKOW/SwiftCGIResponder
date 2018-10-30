@@ -13,12 +13,14 @@ module HTTPStatusCode
   URLs = [
     URI.parse('https://www.iana.org/assignments/http-status-codes/http-status-codes-1.csv')
   ]
+end
   
-  module_function def write(remote_io, file)
+module HTTPStatusCode; class << self
+  def write(remote_io, file)
     codes = []
     remote_io.parse_csv {|row|
       next if row[0] !~ /^[0-9][0-9][0-9]$/ || row[1] =~ /^(?:Unassigned|\(Unused\))$/i
-      codes.push([row[1].to_keyword, row[0], row[1]])
+      codes.push([row[1].to_lower_camel_case, row[0], row[1]])
     }
     raise "No data about HTTP Status Codes" if codes.count < 1
     
@@ -27,7 +29,7 @@ module HTTPStatusCode
     file.puts("public enum #{_TYPE_NAME}: UInt16 {")
     codes.each {|info|
       file.write('  case ')
-      file.write((info[0].reserved?) ? "`#{info[0]}`" : "#{info[0]}")
+      file.write((info[0].reserved_by_swift?) ? "`#{info[0]}`" : "#{info[0]}")
       file.write(" = #{info[1]}")
       file.write("\n")
     }
@@ -43,5 +45,5 @@ module HTTPStatusCode
     file.puts('  }')
     file.puts('}')
   end
-end
+end; end
 
