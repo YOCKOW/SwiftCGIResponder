@@ -32,7 +32,7 @@ class String
   
   def _split_for_camel_case
     words = self.gsub(/(?:\-|_|(?<=[a-z])(?=[A-Z]))/, ' ').split(/\s+/)
-    if words[0] =~ /^([A-Z]+)([A-Z][0-9a-z]+)$/
+    if words[0] =~ /^([A-Z]+)([A-Z][a-z][0-9a-z]*)$/
       words.shift
       words.unshift($1, $2)
     end
@@ -70,6 +70,32 @@ module URI
   TMP_DIR = Dir.mktmpdir()
   @@downloaded_files = {}
   
+  protected
+  
+  def _header_field_value(key)
+    trial = 0
+    redirected = self
+    value = nil
+    
+    while true
+      failed("Many redirections: #{url.to_s}") if trial > 10
+      
+      https = Net::HTTP.new(redirected.host, redirected.port)
+      https.use_ssl = true
+      header = https.head(redirected.path)
+      
+      if header['location']
+        redirected = URI.parse(header['location'])
+        trial += 1
+      else
+        value = header[key.to_s.downcase]
+        break
+      end
+    end
+    
+    return value
+  end
+  
   public
   
   def to_hash
@@ -93,26 +119,12 @@ module URI
     return self.to_file.read
   end
   
+  def etag
+    return self._header_field_value('etag')
+  end
+  
   def last_modified
-    trial = 0
-    redirected = self
-    last_modified_string = nil
-    
-    while true
-      failed("Many redirections: #{url.to_s}") if trial > 10
-      
-      https = Net::HTTP.new(redirected.host, redirected.port)
-      https.use_ssl = true
-      header = https.head(redirected.path)
-      
-      if header['location']
-        redirected = URI.parse(header['location'])
-        trial += 1
-      else
-        last_modified_string = header['last-modified']
-        break
-      end
-    end
+    last_modified_string = self._header_field_value('last-modified')
     
     return nil if !last_modified_string
     return Time.parse(last_modified_string)

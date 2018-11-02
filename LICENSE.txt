@@ -19,12 +19,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ====================================================================================================
 *** Acknowledgements ***
 
-"PublicSuffix.swift"
-  was automatically generated from "public_suffix_list.dat" licensed under Mozilla Public License 
-  Version 2.0 (MPL 2.0). Subjecting to MPL 2.0, "PublicSuffix.swift" itself is also licensed under
-  the same license. Please read the source file for more information.
-
-"UnicodeScalar+IDNA.swift"
-  was automatically generated from "IdnaMappingTable.txt" distributed under the Terms of Use in 
-  http://www.unicode.org/copyright.html. Please read the source file for more information.
-
+"Sources/Supporters/LibExtender/CFStringEncodings.swift"
+  was extracted and converted from the code in Swift Project that is licensed under Apache License
+  v2.0 with Runtime Library Exception. Please read the source file for more information.

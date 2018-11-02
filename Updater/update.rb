@@ -12,6 +12,7 @@ update.rb
 # Standard Libraries
 require 'csv'
 require 'fileutils'
+require 'json'
 require 'net/https'
 require 'open-uri'
 require 'pathname'
@@ -23,6 +24,7 @@ require_relative './modules/extensions.rb'
 ### CONSTANTS ######################################################################################
 
 FILES = [
+  :CFStringEncodings,
   :ContentDispositionParameterKey_IANARegistered,
   :ContentDispositionValue,
   :HTTPHeaderFieldName_IANARegistered,
@@ -117,6 +119,17 @@ def last_modified_of(urls)
   return result
 end
 
+def etags_of(urls)
+  result = []
+  urls.each {|url|
+    failed("Non-URI object is given: #{url}") if !url.kind_of?(URI)
+    etag = url.etag
+    # etag can be nil
+    result.push(etag)
+  }
+  return result
+end
+
 ### /FUNCTIONS #####################################################################################
 
 failed("Cannot fetch the Unicode license.") if U_TERMS_OF_USE.length < 1
@@ -134,33 +147,63 @@ FILES.each {|key|
   $stdout.puts("* Path to the local file to be updated: #{rel_path.to_s}")
   
   local_last_modified = nil
+  local_etag_list = []
   if FileTest.exist?(local_path)
     # check last-modified date
     File.open(local_path, 'r') {|file|
       file.each {|line|
         if line =~ %r{^\s*//\s*Last\-Modified\s*\:\s*(.+)}i
           local_last_modified = Time.parse($1)
+        elsif line =~ %r{^\s*//\s*ETags\s*\:\s*(.+)}i
+          local_etag_list = JSON.parse($1)
+        elsif line == "\n"
           break
         end
       }
     }
   end
   $stdout.puts("** Last-Modified Date of the local file: #{local_last_modified ? local_last_modified : 'unknown'}")
+  if local_etag_list.count > 0
+    $stdout.puts("** ETag List of the local file: #{local_etag_list.join(', ')}")
+  end
   
   # Check the last modified date of the remote file
   urls = mod.const_get(:URLs)
   remote_last_modified = last_modified_of(urls)
   $stdout.puts("** Last-Modified Date of the remote file: #{remote_last_modified ? remote_last_modified : 'unknown'}")
   
+  remote_etag_list = etags_of(urls)
+  if remote_etag_list.any?{|etag| etag != nil }
+    $stdout.puts("** ETag List of the remote file: #{remote_etag_list.join(', ')}")
+  end
+  
+  remote_is_new = lambda {
+    return true if local_last_modified != nil && remote_last_modified != nil && local_last_modified < remote_last_modified
+    
+    if local_etag_list.count == 0
+      return true if local_last_modified == nil || remote_last_modified == nil
+      return false if remote_etag_list.all?{|etag| etag == nil }
+    else
+      return true if local_etag_list.count != remote_etag_list.count
+      
+      (0..(local_etag_list.count - 1)).each {|ii|
+        return true if local_etag_list[ii] != remote_etag_list[ii]
+      }
+    end
+    return false
+  }
+  
   must_update = (
     OPTIONS[:FORCE_UPDATE].include?(:ALL) ||
     OPTIONS[:FORCE_UPDATE].include?(key) ||
-    local_last_modified == nil ||
-    remote_last_modified == nil ||
-    local_last_modified < remote_last_modified
+    remote_is_new.call()
   ) ? true : false
   
-  if !must_update
+  should_skip = (
+    OPTIONS[:SKIP].include?(key)
+  ) ? true : false
+  
+  if !must_update || should_skip
     $stdout.puts("** The local file is up to date.\n")
     next
   end
@@ -177,6 +220,9 @@ FILES.each {|key|
     local_file.puts("//   from " + urls.map{|url| url.to_s}.join("\n//        "))
     if remote_last_modified
       local_file.puts("//     Last-Modified: #{remote_last_modified}")
+    end
+    if remote_etag_list.any?{|etag| etag != nil }
+      local_file.puts("//     ETags: #{JSON.generate(remote_etag_list)}")
     end
     local_file.puts()
     

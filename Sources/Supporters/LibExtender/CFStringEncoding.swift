@@ -22,6 +22,12 @@ extension CFString {
   }
 }
 
+extension CFString.Encoding: Equatable {
+  public static func ==(lhs:CFString.Encoding, rhs:CFString.Encoding) -> Bool {
+    return lhs.rawValue == rhs.rawValue
+  }
+}
+
 extension CFString.Encoding {
   /// Initialize with `CFStringBuiltInEncodings`
   ///
