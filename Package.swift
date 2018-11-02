@@ -16,9 +16,14 @@ let supporters: [Supporter] = [
     [
       .byName(name:"SwiftBonaFideCharacterSet"),
       .byName(name:"SwiftRanges"),
-      .byName(name:"SwiftUnicodeSupplement")
+      .byName(name:"SwiftUnicodeSupplement"),
+      .target(name:"LibExtender"),
     ]
   ),
+  (
+    "LibExtender",
+    []
+  )
 ]
 
 var productTargets: [String] = []
