@@ -16,7 +16,7 @@ final class CFStringEncodingTests: XCTestCase {
     #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
     let utf8Value: CFStringBuiltInEncodings = CFStringBuiltInEncodings.UTF8
     #else
-    let utf8Value: CFStringBuiltInEncodings = kCFStringEncodingUTF8
+    let utf8Value: CFStringBuiltInEncodings = CFStringBuiltInEncodings(kCFStringEncodingUTF8)
     #endif
     
     let cfEncoding = CFString.Encoding(utf8Value)
