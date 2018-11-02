@@ -68,7 +68,7 @@ extension HeaderFieldName {
   public static let getProfile = HeaderFieldName(rawValue:"GetProfile")!
   public static let hobareg = HeaderFieldName(rawValue:"Hobareg")!
   public static let host = HeaderFieldName(rawValue:"Host")!
-  public static let httP2Settings = HeaderFieldName(rawValue:"HTTP2-Settings")!
+  public static let http2Settings = HeaderFieldName(rawValue:"HTTP2-Settings")!
   public static let im = HeaderFieldName(rawValue:"IM")!
   public static let `if` = HeaderFieldName(rawValue:"If")!
   public static let ifMatch = HeaderFieldName(rawValue:"If-Match")!
