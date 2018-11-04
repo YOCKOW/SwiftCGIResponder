@@ -5,6 +5,7 @@ public func allTests() -> [XCTestCaseEntry] {
   return [
     testCase(CFStringEncodingTests.allTests),
     testCase(StringCFStringTests.allTests),
+    testCase(StringEncodingTests.allTests),
   ]
 }
 #endif
