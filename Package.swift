@@ -22,7 +22,9 @@ let supporters: [Supporter] = [
   ),
   (
     "LibExtender",
-    []
+    [
+      .byName(name:"SwiftUnicodeSupplement"),
+    ]
   )
 ]
 
