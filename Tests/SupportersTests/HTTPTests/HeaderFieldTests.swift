@@ -40,23 +40,31 @@ final class HeaderFieldTests: XCTestCase {
   }
   
   func test_delegateSelection() {
-    let eTagField = HeaderField(name:.eTag, value:HeaderFieldValue(rawValue:"*")!)
-    guard
-      case _ as _AnyHeaderFieldDelegate._Box._Normal<ETagHeaderFieldDelegate> = eTagField._delegate._box
-    else
+    func check_n<D>(_ name:HeaderFieldName, _ value:HeaderFieldValue, _ expected:D.Type,
+                  file:StaticString = #file, line:UInt = #line)
+      where D:HeaderFieldDelegate
     {
-      XCTFail("Unexpected delegate")
-      return
+      let field = HeaderField(name:name, value:value)
+      guard case _ as _AnyHeaderFieldDelegate._Box._Normal<D> = field._delegate._box else {
+        XCTFail("Unexpected delegate", file:file, line:line)
+        return
+      }
     }
     
-    let ifMatchField = HeaderField(name:.ifMatch, value:HeaderFieldValue(rawValue:"*")!)
-    guard
-      case _ as _AnyHeaderFieldDelegate._Box._Normal<IfMatchHeaderFieldDelegate> = ifMatchField._delegate._box
-      else
+    func check_a<D>(_ name:HeaderFieldName, _ value:HeaderFieldValue, _ expected:D.Type,
+                  file:StaticString = #file, line:UInt = #line)
+      where D:AppendableHeaderFieldDelegate
     {
-      XCTFail("Unexpected delegate")
-      return
+      let field = HeaderField(name:name, value:value)
+      guard case _ as _AnyHeaderFieldDelegate._Box._Appendable<D> = field._delegate._box else {
+        XCTFail("Unexpected delegate", file:file, line:line)
+        return
+      }
     }
+    
+    check_n(.contentDisposition, "attachment", ContentDispositionHeaderFieldDelegate.self)
+    check_n(.eTag, "*", ETagHeaderFieldDelegate.self)
+    check_a(.ifMatch, "*", IfMatchHeaderFieldDelegate.self)
   }
   
   

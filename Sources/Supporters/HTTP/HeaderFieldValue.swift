@@ -7,6 +7,14 @@
 
 import BonaFideCharacterSet
 
+private func _valid_value(_ value:String) -> Bool {
+  return (
+    value.consists(of:.httpHeaderFieldValueAllowed) &&
+    UnicodeScalarSet.visibleCharacterUnicodeScalars.contains(value.unicodeScalars.first!) &&
+    UnicodeScalarSet.visibleCharacterUnicodeScalars.contains(value.unicodeScalars.last!)
+  ) ? true : false
+}
+
 /**
  
  # HeaderFieldValue
@@ -17,13 +25,16 @@ public struct HeaderFieldValue: RawRepresentable {
   public let rawValue : String
   public init?(rawValue:String) {
     if !rawValue.isEmpty {
-      guard rawValue.consists(of:.httpHeaderFieldValueAllowed) &&
-        UnicodeScalarSet.visibleCharacterUnicodeScalars.contains(rawValue.unicodeScalars.first!) &&
-        UnicodeScalarSet.visibleCharacterUnicodeScalars.contains(rawValue.unicodeScalars.last!) else {
-          return nil
-      }
+      guard _valid_value(rawValue) else { return nil }
     }
     self.rawValue = rawValue
+  }
+}
+
+extension HeaderFieldValue: ExpressibleByStringLiteral {
+  public init(stringLiteral value: String) {
+    guard _valid_value(value) else { fatalError("Invalid string: \(value)") }
+    self.init(rawValue:value)!
   }
 }
 

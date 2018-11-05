@@ -22,6 +22,23 @@ public struct ContentDisposition {
   }
 }
 
+extension ContentDisposition: Equatable, Hashable {
+  public static func ==(lhs:ContentDisposition, rhs:ContentDisposition) -> Bool {
+    return lhs.value == rhs.value && lhs.parameters == rhs.parameters
+  }
+  
+  #if swift(>=4.2)
+  public func hash(into hasher:inout Hasher) {
+    hasher.combine(self.value)
+    hasher.combine(self.parameters)
+  }
+  #else
+  public var hashValue: Int {
+    return self.value.hashValue ^ self.parameters.hashValue
+  }
+  #endif
+}
+
 extension ContentDisposition: CustomStringConvertible {
   /// Description for the content disposition.
   /// e.g.) attachment; filename="filename.jpg"
