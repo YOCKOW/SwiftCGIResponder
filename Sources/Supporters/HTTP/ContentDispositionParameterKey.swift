@@ -27,3 +27,9 @@ extension ContentDispositionParameterKey: Hashable {
   }
   #endif
 }
+
+extension ContentDispositionParameterKey: ExpressibleByStringLiteral {
+  public init(stringLiteral string:String) {
+    self.init(rawValue:string)
+  }
+}

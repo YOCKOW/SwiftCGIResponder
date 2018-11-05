@@ -97,12 +97,12 @@ extension String {
   }
 }
 
-extension Dictionary where Key == String, Value == String {
+extension Dictionary {
   /// Initialize with `string` such as "A=B; C=D; E=F"
   public init(parsing string:String,
               keyAndValueAreSeparatedBy kvSeparator:String = "=",
               pairsAreSeparatedBy pairSeparator:String = ";",
-              neateningWith cleaner:(String,String) throws -> (String,String) = { return ($0,$1) })
+              converter:(String, String) throws -> (key:Key,value:Value))
     rethrows
   {
     self.init()
@@ -115,15 +115,28 @@ extension Dictionary where Key == String, Value == String {
       let (key, endIndexOfKey) = string._string_endIndex(from:startIndexOfKey, separator:kvSeparator)
       let startIndexOfValue = string._nextStartIndexOfString(from:endIndexOfKey, separator:kvSeparator)
       if startIndexOfValue >= string.endIndex {
-        let (modifiedKey, modifiedValue) = try cleaner(key, "")
+        let (modifiedKey, modifiedValue) = try converter(key, "")
         self[modifiedKey] = modifiedValue
         break
       }
       
       let (value, endIndexOfValue) = string._string_endIndex(from:startIndexOfValue, separator:pairSeparator)
-      let (modifiedKey, modifiedValue) = try cleaner(key, value)
+      let (modifiedKey, modifiedValue) = try converter(key, value)
       self[modifiedKey] = modifiedValue
       ii = endIndexOfValue
     }
+  }
+}
+
+extension Dictionary where Key == String, Value == String {
+  /// Initialize with `string` such as "A=B; C=D; E=F"
+  public init(parsing string:String,
+              keyAndValueAreSeparatedBy kvSeparator:String = "=",
+              pairsAreSeparatedBy pairSeparator:String = ";")
+  {
+    try! self.init(parsing:string,
+                   keyAndValueAreSeparatedBy:kvSeparator,
+                   pairsAreSeparatedBy:pairSeparator,
+                   converter:{ return ($0, $1) })
   }
 }

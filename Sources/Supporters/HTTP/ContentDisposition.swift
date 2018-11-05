@@ -5,6 +5,9 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
+import LibExtender
+import Foundation
+
 /// Represents "Content-Disposition"
 public struct ContentDisposition {
   public typealias Value = ContentDispositionValue
@@ -31,5 +34,24 @@ extension ContentDisposition: CustomStringConvertible {
       }
     }
     return desc
+  }
+}
+
+extension ContentDisposition {
+  /// Initialize with `string`
+  public init(_ string:String) {
+    let (value_s, parameters_s) = string.splitOnce(separator:";")
+    let value = Value(rawValue:String(value_s).trimmingCharacters(in:.whitespaces))
+    if parameters_s == nil {
+      self.init(value:value, parameters:nil)
+    } else {
+      let parameters = Dictionary<ParameterKey,String>(parsing:String(parameters_s!)) {
+        let key = ParameterKey(rawValue:$0)
+        let value = $1
+        return (key, value)
+      }
+      
+      self.init(value:value, parameters:parameters)
+    }
   }
 }

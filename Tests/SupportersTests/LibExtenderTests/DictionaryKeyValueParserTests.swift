@@ -11,7 +11,7 @@ import XCTest
 final class DictionaryKeyValueParserTests: XCTestCase {
   func test_parse() {
     let string = "A=B; C=D; \"\\\"E\\\"\"=\"F\""
-    let parsed = try! Dictionary(parsing:string)
+    let parsed = Dictionary<String,String>(parsing:string)
     
     XCTAssertEqual(parsed["A"], "B")
     XCTAssertEqual(parsed["C"], "D")
