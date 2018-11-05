@@ -28,6 +28,7 @@ FILES = [
   :ContentDispositionParameterKey_IANARegistered,
   :ContentDispositionValue,
   :HTTPHeaderFieldName_IANARegistered,
+  :HTTPMethod,
   :HTTPStatusCode
 ]
 
