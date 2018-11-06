@@ -13,6 +13,7 @@ extension UnicodeScalarSet {
   private static let _horizontalTab = UnicodeScalarSet(unicodeScalarsIn:"\u{0009}")
   private static let _characters = UnicodeScalarSet(unicodeScalarsIn:UnicodeScalar(0x00)...UnicodeScalar(0x7F))
   private static let _controlCharacters = UnicodeScalarSet(unicodeScalarsIn:UnicodeScalar(0x00)...UnicodeScalar(0x1F)).union(UnicodeScalarSet(unicodeScalarsIn:"\u{007F}"))
+  private static let _tspecials = UnicodeScalarSet(unicodeScalarsIn:"()<>@,;:\\\"/[]?=")
   
   // reference: [RFC 7230](https://tools.ietf.org/html/rfc7230#section-3.2)
   // RFC 7230 says `obs-fold` has been deprecated
@@ -26,5 +27,8 @@ extension UnicodeScalarSet {
   // https://tools.ietf.org/html/rfc2616#section-2.2
   public static let httpSeparatorAllowed = UnicodeScalarSet(unicodeScalarsIn:"()<>@,;:\\\"/[]?={}").union(_space).union(_horizontalTab)
   public static let httpTokenAllowed = _characters.subtracting(_controlCharacters).subtracting(httpSeparatorAllowed)
+  
+  // MIME Type
+  public static let mimeTypeTokenAllowed = UnicodeScalarSet(unicodeScalarsIn:"!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~").subtracting(_tspecials)
 }
 
