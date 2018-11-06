@@ -34,7 +34,13 @@ extension ContentDisposition: Equatable, Hashable {
   }
   #else
   public var hashValue: Int {
-    return self.value.hashValue ^ self.parameters.hashValue
+    var hh = self.value.hashValue
+    if let parameters = self.parameters {
+      for (key, value) in parameters {
+        hh ^= key.hashValue ^ value.hashValue
+      }
+    }
+    return hh
   }
   #endif
 }
