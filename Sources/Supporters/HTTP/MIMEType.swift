@@ -93,3 +93,38 @@ public struct MIMEType {
     self.parameters = parameters
   }
 }
+
+extension MIMEType: Hashable {
+  public static func ==(lhs:MIMEType, rhs:MIMEType) -> Bool {
+    return (
+      lhs.type == rhs.type &&
+      lhs.tree == rhs.tree &&
+      lhs.subtype == rhs.subtype &&
+      lhs.suffix == rhs.suffix &&
+      lhs.parameters == rhs.parameters
+    )
+  }
+  
+  #if swift(>=4.2)
+  public func hash(into hasher:inout Hasher) {
+    hasher.combine(self.type)
+    hasher.combine(self.tree)
+    hasher.combine(self.subtype)
+    hasher.combine(self.suffix)
+    hasher.combine(self.parameters)
+  }
+  #else
+  public var hashValue: Int {
+    var hh = self.type.hashValue
+    if let tree = self.tree { hh ^= tree.hashValue }
+    hh ^= self.subtype.hashValue
+    if let suffix = self.suffix { hh ^= suffix.hashValue }
+    if let parameters = self.parameters {
+      for (key,value) in parameters {
+        hh ^= key.hashValue ^ value.hashValue
+      }
+    }
+    return hh
+  }
+  #endif
+}
