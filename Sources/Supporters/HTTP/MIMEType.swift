@@ -5,6 +5,8 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
+import LibExtender
+
 /// # MIMEType
 /// Represents MIME Type (a.k.a. media type and content type)
 /// Reference: https://en.wikipedia.org/wiki/Media_type
@@ -127,4 +129,49 @@ extension MIMEType: Hashable {
     return hh
   }
   #endif
+}
+
+extension MIMEType {
+  /// Initialize with `string` such as "application/xhtml+xml; charset=UTF-8"
+  ///
+  /// - parameter string: must be `type "/" [tree "."] subtype ["+" suffix] *[";" parameter]`
+  public init?(_ string:String) {
+    let (type_s, tree_subtype_suffix_parameters_s_nilable) = string.splitOnce(separator:"/")
+    
+    guard let type = TopLevelType(rawValue:type_s.lowercased()) else { return nil }
+    
+    guard let tree_subtype_suffix_parameters_s = tree_subtype_suffix_parameters_s_nilable else {
+      return nil
+    }
+    
+    let (tree, subtype_suffix_parameters_s): (Tree?, Substring) = ({
+      if let indexOfFirstDot = $0.firstIndex(of:".") {
+        let tree_s = $0[$0.startIndex..<indexOfFirstDot]
+        if let tree = Tree(rawValue:String(tree_s)) {
+          return (tree, $0[$0.index(after:indexOfFirstDot)..<$0.endIndex])
+        }
+      }
+      return (nil, $0)
+    })(tree_subtype_suffix_parameters_s)
+    
+    let (subtype_suffix_s, parameters_s) = subtype_suffix_parameters_s.splitOnce(separator:";")
+    
+    let (subtype, suffix): (Substring, Suffix?) = ({
+      if let indexOfLastPlus = $0.lastIndex(of:"+") {
+        let suffix_s = $0[$0.index(after:indexOfLastPlus)..<$0.endIndex]
+        if let suffix = Suffix(rawValue:String(suffix_s)) {
+          return ($0[$0.startIndex..<indexOfLastPlus], suffix)
+        }
+      }
+      return ($0, nil)
+    })(subtype_suffix_s)
+    
+    let parameters:[String:String]? = parameters_s != nil ? Dictionary<String,String>(parsing:String(parameters_s!)) : nil
+    
+    self.init(type:type,
+              tree:tree,
+              subtype:String(subtype),
+              suffix:suffix,
+              parameters:parameters)
+  }
 }
