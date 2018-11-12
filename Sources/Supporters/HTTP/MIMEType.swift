@@ -89,10 +89,10 @@ public struct MIMEType {
     
     #if swift(>=4.2)
     public func hash(into hasher:inout Hasher) {
-      hasher.combine(self.type)
-      hasher.combine(self.tree)
-      hasher.combine(self.subtype)
-      hasher.combine(self.suffix)
+      hasher.combine(self._type)
+      hasher.combine(self._tree)
+      hasher.combine(self._subtype)
+      hasher.combine(self._suffix)
     }
     #else
     public var hashValue: Int {

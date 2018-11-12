@@ -3,7 +3,9 @@
 It's an experimental library under development, and useless as of now.
 
 # Requirements
-* Swift >= 4.1 + CoreFoundation + Foundation
+* Swift 4.2, 4.1 compatibility mode of 4.2
+  * CoreFoundation
+  * Foundation
 * macOS >= 10.12 or Linux
 * HTTP server software (e.g. Apache or similar software)
 
