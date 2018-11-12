@@ -29,7 +29,8 @@ FILES = [
   :ContentDispositionValue,
   :HTTPHeaderFieldName_IANARegistered,
   :HTTPMethod,
-  :HTTPStatusCode
+  :HTTPStatusCode,
+  :MIMEType_PathExtension,
 ]
 
 PROJECT_ROOT_DIR = Pathname(File.realpath('..', File.dirname(__FILE__)))
@@ -41,10 +42,10 @@ OPTIONS = {
   :FORCE_UPDATE => []
 }
 
-U_TERMS_OF_USE_URL = URI.parse('http://unicode.org/copyright.html')
-U_TERMS_OF_USE = U_TERMS_OF_USE_URL.content.
-                 match(%r{<a\s+name="License">(.+)</a>[\S\s]*<pre>\s*(\S[\S\s]*\S)\s*</pre>})[1,2].
-                 join("\n\n")
+#U_TERMS_OF_USE_URL = URI.parse('http://unicode.org/copyright.html')
+#U_TERMS_OF_USE = U_TERMS_OF_USE_URL.content.
+#                 match(%r{<a\s+name="License">(.+)</a>[\S\s]*<pre>\s*(\S[\S\s]*\S)\s*</pre>})[1,2].
+#                 join("\n\n")
 
 SWIFT_KEYWORDS_URL = URI.parse('https://raw.githubusercontent.com/apple/swift/master/utils/gyb_syntax_support/Token.py')
 SWIFT_KEYWORD_TYPES = ['DeclKeyword', 'StmtKeyword', 'StmtKeyword', 'Keyword']
@@ -133,7 +134,7 @@ end
 
 ### /FUNCTIONS #####################################################################################
 
-failed("Cannot fetch the Unicode license.") if U_TERMS_OF_USE.length < 1
+#failed("Cannot fetch the Unicode license.") if U_TERMS_OF_USE.length < 1
 failed("Cannot fetch the Swift keywords.") if SWIFT_KEYWORDS.count < 1
 
 #### LET'S UPDATE ##################################################################################

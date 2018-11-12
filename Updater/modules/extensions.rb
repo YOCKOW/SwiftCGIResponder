@@ -62,7 +62,8 @@ class String
   
   def to_swift_identifier
     lcc = self.to_lower_camel_case
-    return self.reserved_by_swift? ? "`#{lcc}`" : lcc
+    lcc = "_#{lcc}" if lcc =~ /^\d/
+    return lcc.reserved_by_swift? ? "`#{lcc}`" : lcc
   end
 end
 

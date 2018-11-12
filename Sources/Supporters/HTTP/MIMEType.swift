@@ -38,6 +38,8 @@ public struct MIMEType {
     case x
   }
   
+  public typealias Subtype = String
+  
   public enum Suffix: String {
     case xml
     case json
@@ -49,25 +51,79 @@ public struct MIMEType {
     case cbor
   }
   
-  public var type: TopLevelType = .application
+  public typealias Parameters = Dictionary<String, String>
   
-  public var tree: Tree? = nil
-  
-  private var _subtype: String = "octet-stream"
-  public var subtype: String {
-    get {
-      return self._subtype
+  /// Holds properties of `MIMEType` except parameters.
+  internal struct _Core: Hashable {
+    internal var _type: TopLevelType
+    
+    internal var _tree: Tree?
+    
+    private var __subtype: Subtype = "octet-stream"
+    internal var _subtype: Subtype {
+      get { return self.__subtype }
+      set {
+         if newValue.isEmpty { fatalError("Subtype cannot be empty.") }
+        guard newValue.consists(of:.mimeTypeTokenAllowed) else { fatalError("Invalid string for MIME Type.") }
+        self.__subtype = newValue.lowercased()
+      }
     }
-    set {
-      if newValue.isEmpty { fatalError("Subtype cannot be empty.") }
-      guard newValue.consists(of:.mimeTypeTokenAllowed) else { fatalError("Invalid string for MIME Type.") }
-      self._subtype = newValue.lowercased()
+    
+    internal var _suffix: Suffix?
+    
+    internal init(type:TopLevelType, tree:Tree?, subtype:Subtype, suffix:Suffix?) {
+      self._type = type
+      self._tree = tree
+      self._subtype = subtype
+      self._suffix = suffix
     }
+    
+    internal static func ==(lhs:_Core, rhs:_Core) -> Bool {
+      return (
+        lhs._type == rhs._type &&
+        lhs._tree == rhs._tree &&
+        lhs._subtype == rhs._subtype &&
+        lhs._suffix == rhs._suffix
+      )
+    }
+    
+    #if swift(>=4.2)
+    public func hash(into hasher:inout Hasher) {
+      hasher.combine(self.type)
+      hasher.combine(self.tree)
+      hasher.combine(self.subtype)
+      hasher.combine(self.suffix)
+    }
+    #else
+    public var hashValue: Int {
+      var hh = self._type.hashValue
+      if let tree = self._tree { hh ^= tree.hashValue }
+      hh ^= self._subtype.hashValue
+      if let suffix = self._suffix { hh ^= suffix.hashValue }
+      return hh
+    }
+    #endif
   }
   
-  public var suffix: Suffix? = nil
+  internal var _core: _Core
+  public var type: TopLevelType {
+    get { return self._core._type }
+    set { self._core._type = newValue }
+  }
+  public var tree: Tree? {
+    get { return self._core._tree }
+    set { self._core._tree = newValue }
+  }
+  public var subtype: String {
+    get { return self._core._subtype }
+    set { self._core._subtype = newValue }
+  }
+  public var suffix: Suffix? {
+    get { return self._core._suffix }
+    set { self._core._suffix = newValue }
+  }
   
-  private var _parameters: [String:String]? = nil
+  internal var _parameters: Parameters?
   public var parameters: [String:String]? {
     get {
       return self._parameters
@@ -82,45 +138,35 @@ public struct MIMEType {
     }
   }
   
+  internal init?(core:_Core, parameters:Parameters?) {
+    self._core = core
+    self.parameters = parameters
+  }
+  
   /// Default initializer
   public init?(type:TopLevelType,
                tree:Tree? = nil,
                subtype:String,
                suffix:Suffix? = nil,
                parameters:[String:String]? = nil) {
-    self.type = type
-    self.tree = tree
-    self.subtype = subtype
-    self.suffix = suffix
-    self.parameters = parameters
+    self.init(core:_Core(type:type, tree:tree, subtype:subtype, suffix:suffix),
+              parameters:parameters)
   }
 }
 
 extension MIMEType: Hashable {
   public static func ==(lhs:MIMEType, rhs:MIMEType) -> Bool {
-    return (
-      lhs.type == rhs.type &&
-      lhs.tree == rhs.tree &&
-      lhs.subtype == rhs.subtype &&
-      lhs.suffix == rhs.suffix &&
-      lhs.parameters == rhs.parameters
-    )
+    return lhs._core == rhs._core && lhs._parameters == rhs._parameters
   }
   
   #if swift(>=4.2)
   public func hash(into hasher:inout Hasher) {
-    hasher.combine(self.type)
-    hasher.combine(self.tree)
-    hasher.combine(self.subtype)
-    hasher.combine(self.suffix)
-    hasher.combine(self.parameters)
+    hasher.combine(self._core)
+    hasher.combine(self._parameters)
   }
   #else
   public var hashValue: Int {
-    var hh = self.type.hashValue
-    if let tree = self.tree { hh ^= tree.hashValue }
-    hh ^= self.subtype.hashValue
-    if let suffix = self.suffix { hh ^= suffix.hashValue }
+    var hh = self._core.hashValue
     if let parameters = self.parameters {
       for (key,value) in parameters {
         hh ^= key.hashValue ^ value.hashValue
@@ -173,5 +219,18 @@ extension MIMEType {
               subtype:String(subtype),
               suffix:suffix,
               parameters:parameters)
+  }
+}
+
+extension MIMEType {
+  /// Returns a set of possible path extensions for the MIME Type represented by the instance.
+  public var possiblePathExtensions:Set<MIMEType.PathExtension>? {
+    return _mimeType_to_ext[self._core]
+  }
+  
+  /// Initialize with a path extension.
+  public init?(pathExtension:MIMEType.PathExtension, parameters:[String:String]? = nil) {
+    guard let core = _ext_to_mimeType[pathExtension] else { return nil }
+    self.init(core:core, parameters:parameters)
   }
 }

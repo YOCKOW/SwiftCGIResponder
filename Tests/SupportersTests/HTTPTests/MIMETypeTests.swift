@@ -22,6 +22,14 @@ final class MIMETypeTests: XCTestCase {
     XCTAssertEqual(xhtml_type?.parameters?["myparameter"], "myvalue")
   }
   
+  func test_pathExtensions() {
+    let txt_ext: MIMEType.PathExtension = .txt
+    let text_mime_type = MIMEType(pathExtension:txt_ext)
+    
+    XCTAssertEqual(text_mime_type, MIMEType(type:.text, subtype:"plain"))
+    XCTAssertEqual(text_mime_type?.possiblePathExtensions?.contains(txt_ext), true)
+  }
+  
   
   static var allTests = [
     ("test_parser", test_parser)
