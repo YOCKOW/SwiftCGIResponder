@@ -6,6 +6,7 @@ import PackageDescription
 let packageDependencies:[Package.Dependency] = [
   .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from:"1.2.0"),
   .package(url:"https://github.com/YOCKOW/SwiftRanges.git", from: "1.3.2"),
+  .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from:"1.0.0"),
   .package(url:"https://github.com/YOCKOW/SwiftUnicodeSupplement.git", from:"0.4.0"),
 ]
 
@@ -28,6 +29,10 @@ let supporters: [Supporter] = [
   )
 ]
 
+let mainTargetDependencies: [Target.Dependency] = [
+  .byName(name:"SwiftTemporaryFile"),
+] + supporters.map { .byName(name:$0.name) }
+
 var productTargets: [String] = []
 var packageTargets: [Target] = []
 
@@ -35,7 +40,7 @@ var packageTargets: [Target] = []
 productTargets.append("CGIResponder")
 packageTargets.append(.target(
   name:"CGIResponder",
-  dependencies:supporters.map { .byName(name:$0.name) },
+  dependencies:mainTargetDependencies,
   path:"Sources/CGIResponder"
 ))
 packageTargets.append(.testTarget(
