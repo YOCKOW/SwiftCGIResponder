@@ -32,7 +32,8 @@ final class MIMETypeTests: XCTestCase {
   
   
   static var allTests = [
-    ("test_parser", test_parser)
+    ("test_parser", test_parser),
+    ("test_pathExtensions", test_pathExtensions),
   ]
 }
 
