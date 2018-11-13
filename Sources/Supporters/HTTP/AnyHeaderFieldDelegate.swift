@@ -16,6 +16,8 @@ internal struct _AnyHeaderFieldDelegate {
     internal var name: HeaderFieldName { _mustBeOverriden() }
     internal var value: HeaderFieldValue { _mustBeOverriden() }
     internal func append<T>(_ element:T) { _mustBeOverriden() }
+    internal func append<S>(contentsOf elements:S) { _mustBeOverriden() }
+    internal func append(elementsIn box:_Box) { _mustBeOverriden() }
     
     internal class _Normal<Delegate>: _Box where Delegate: HeaderFieldDelegate {
       fileprivate var _base: Delegate
@@ -30,6 +32,14 @@ internal struct _AnyHeaderFieldDelegate {
       internal override func append<T>(_ element: T) {
         fatalError("\(Delegate.self) does not conform to AppendableHeaderFieldDelegate.")
       }
+      
+      internal override func append<S>(contentsOf elements:S) {
+        fatalError("\(Delegate.self) does not conform to AppendableHeaderFieldDelegate.")
+      }
+      
+      internal override func append(elementsIn box:_Box) {
+        fatalError("\(Delegate.self) does not conform to AppendableHeaderFieldDelegate.")
+      }
     }
     
     internal class _Appendable<Delegate>: _Normal<Delegate> where Delegate:AppendableHeaderFieldDelegate {
@@ -38,6 +48,20 @@ internal struct _AnyHeaderFieldDelegate {
           fatalError("Cannot append \(element): The type of \(Delegate.self)'s element must be \(Delegate.Element.self).")
         }
         self._base.append(concreteElement)
+      }
+      
+      internal override func append<S>(contentsOf elements:S) {
+        guard case let arrayOfElements as Array<Delegate.Element> = elements else {
+          fatalError("The type of \(Delegate.self)'s elements must be \(Delegate.Element.self).")
+        }
+        self._base.append(contentsOf:arrayOfElements)
+      }
+      
+      internal override func append(elementsIn box:_Box) {
+        guard case let concreteBox as _Appendable<Delegate> = box else {
+          fatalError("Unmatched delegates: \(box)")
+        }
+        self.append(contentsOf:concreteBox._base.elements)
       }
     }
     
@@ -63,6 +87,12 @@ internal struct _AnyHeaderFieldDelegate {
   internal var name: HeaderFieldName { return self._box.name }
   internal var value: HeaderFieldValue { return self._box.value }
   internal mutating func append<T>(_ element:T) { self._box.append(element) }
+  internal mutating func append<S>(contentsOf elements:S) where S:Sequence {
+    self._box.append(contentsOf:Array<S.Element>(elements))
+  }
+  internal mutating func appen(elementsIn delegate:_AnyHeaderFieldDelegate) {
+    self._box.append(elementsIn:delegate._box)
+  }
   
   internal init<D>(_ delegate:D) where D:HeaderFieldDelegate {
     self._box = _Box._Normal<D>(delegate)

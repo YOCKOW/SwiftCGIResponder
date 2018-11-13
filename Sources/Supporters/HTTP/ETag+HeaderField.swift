@@ -84,6 +84,8 @@ public struct IfMatchHeaderFieldDelegate: AppendableHeaderFieldDelegate {
   
   public var source: Array<ETag>
   
+  public var elements: Array<ETag> { return self.source }
+  
   public init(_ source: Array<ETag>) {
     self.source = source
   }
@@ -99,6 +101,8 @@ public struct IfNoneMatchHeaderFieldDelegate: AppendableHeaderFieldDelegate {
   public static var type: HeaderField.PresenceType { return .appendable }
   
   public var source: Array<ETag>
+  
+  public var elements: Array<ETag> { return self.source }
   
   public init(_ source: Array<ETag>) {
     self.source = source

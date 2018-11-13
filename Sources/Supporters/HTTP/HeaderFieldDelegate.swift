@@ -53,8 +53,14 @@ public protocol AppendableHeaderFieldDelegate: HeaderFieldDelegate {
   /// The source that generates the value of the header field.
   var source: ValueSource { get set }
   
+  /// The elements contained in the header field.
+  var elements: [Element] { get }
+  
   /// Append the element
   mutating func append(_ element:Element)
+  
+  /// Append the elements
+  mutating func append<S>(contentsOf elements:S) where S: Sequence, S.Element == Element
 }
 
 extension AppendableHeaderFieldDelegate
@@ -62,5 +68,9 @@ extension AppendableHeaderFieldDelegate
 {
   public mutating func append(_ element:Element) {
     self.source.append(element)
+  }
+  
+  public mutating func append<S>(contentsOf elements:S) where S: Sequence, S.Element == Element {
+    self.source.append(contentsOf:elements)
   }
 }
