@@ -16,6 +16,7 @@ public protocol CGIContentOutputStream: DataOutputStream {
 extension CGIContentOutputStream {
   private mutating func _write(contentAtPath path:String) throws {
     guard let fh = FileHandle(forReadingAtPath:path) else {
+      warn(message:.cannotOpenFileAtPath(path))
       throw CGIResponderError.illegalOperation
     }
     fh.write(to:&self)
@@ -46,3 +47,7 @@ extension CGIContentOutputStream {
     }
   }
 }
+
+extension FileHandle: CGIContentOutputStream {}
+
+extension Data: CGIContentOutputStream {}

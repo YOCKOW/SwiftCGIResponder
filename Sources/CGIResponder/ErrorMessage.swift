@@ -34,6 +34,10 @@ extension ErrorMessage: CustomStringConvertible, CustomDebugStringConvertible {
 }
 
 extension ErrorMessage {
+  internal static func cannotOpenFileAtPath(_ path:String) -> ErrorMessage {
+    return ErrorMessage(rawValue:"Cannot open file at \"\(path)\".")
+  }
+  
   internal static func statusCodeInconsistency(_ actual:HTTPStatusCode,
                                                _ expected:HTTPStatusCode) -> ErrorMessage {
     return ErrorMessage(rawValue:

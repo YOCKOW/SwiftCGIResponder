@@ -4,6 +4,7 @@ import XCTest
 public func allTests() -> [XCTestCaseEntry] {
   return [
     testCase(ExportTests.allTests),
+    testCase(CGIContentOutputStreamTests.allTests),
     testCase(CGIResponderTests.allTests),
     testCase(DataOutputStreamTests.allTests),
     testCase(ErrorMessageTests.allTests),

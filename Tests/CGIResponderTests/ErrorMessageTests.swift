@@ -23,18 +23,21 @@ func checkWarning(_ expected:@autoclosure () -> ErrorMessage,
   let originalStandardError = FileHandle._changeableStandardError
   let tmpFile = FileHandle(forUpdatingAtPath:path)!
   FileHandle._changeableStandardError = tmpFile
+  defer {
+    FileHandle._changeableStandardError = originalStandardError
+    
+    tmpFile.seek(toFileOffset:0)
+    let data = tmpFile.availableData
+    tmpFile.closeFile()
+    
+    try! FileManager.default.removeItem(atPath:path)
+    
+    let message = String(data:data, encoding:.utf8)!.trimmingCharacters(in:.whitespacesAndNewlines)
+    
+    XCTAssertEqual(message, expected().rawValue, file:file, line:line)
+  }
+  
   try body()
-  FileHandle._changeableStandardError = originalStandardError
-  
-  tmpFile.seek(toFileOffset:0)
-  let data = tmpFile.availableData
-  tmpFile.closeFile()
-  
-  try! FileManager.default.removeItem(atPath:path)
-  
-  let message = String(data:data, encoding:.utf8)!.trimmingCharacters(in:.whitespacesAndNewlines)
-  
-  XCTAssertEqual(message, expected().rawValue, file:file, line:line)
 }
 
 final class ErrorMessageTests: XCTestCase {
