@@ -6,6 +6,7 @@ public func allTests() -> [XCTestCaseEntry] {
     testCase(ExportTests.allTests),
     testCase(CGIResponderTests.allTests),
     testCase(DataOutputStreamTests.allTests),
+    testCase(ErrorMessageTests.allTests),
   ]
 }
 #endif
