@@ -12,7 +12,7 @@ public struct ErrorMessage: RawRepresentable {
   public init(rawValue:String) { self.rawValue = rawValue }
 }
 
-public func view(message:ErrorMessage) {
+public func warn(message:ErrorMessage) {
   warn(message.rawValue)
 }
 

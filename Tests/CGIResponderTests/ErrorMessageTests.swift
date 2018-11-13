@@ -39,7 +39,7 @@ func checkWarning(_ expected:@autoclosure () -> ErrorMessage,
 
 final class ErrorMessageTests: XCTestCase {
   func test_message() {
-    checkWarning("MESSAGE") { view(message:"MESSAGE") }
+    checkWarning("MESSAGE") { warn(message:"MESSAGE") }
   }
   
   static var allTests = [
