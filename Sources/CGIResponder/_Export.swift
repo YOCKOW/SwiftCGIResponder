@@ -17,6 +17,7 @@ public typealias HTTPHeaderFieldName = HTTP.HeaderFieldName
 public typealias HTTPHeaderFieldValue = HTTP.HeaderFieldValue
 
 /* Header Field Delegates */
+public typealias HTTPContentTypeHeaderFieldDelegate = HTTP.ContentTypeHeaderFieldDelegate
 public typealias HTTPETagHeaderFieldDelegate = HTTP.ETagHeaderFieldDelegate
 public typealias HTTPIfMatchHeaderFieldDelegate = HTTP.IfMatchHeaderFieldDelegate
 public typealias HTTPIfNoneMatchHeaderFieldDelegate = HTTP.IfNoneMatchHeaderFieldDelegate

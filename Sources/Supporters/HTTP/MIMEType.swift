@@ -234,3 +234,25 @@ extension MIMEType {
     self.init(core:core, parameters:parameters)
   }
 }
+
+extension MIMEType: CustomStringConvertible {
+  public var description: String {
+    var desc : String = "\(self.type.rawValue)/"
+    if let tree = self.tree { desc += "\(tree.rawValue)." }
+    desc += self.subtype
+    if let suffix = self.suffix { desc += "+\(suffix.rawValue)" }
+    
+    if let parameters = self.parameters {
+      for (key, value) in parameters {
+        desc += "; \(key)="
+        if value.consists(of:.mimeTypeTokenAllowed) {
+          desc += value
+        } else {
+          let escapedValue = value.replacingOccurrences(of:"\\", with:"\\\\").replacingOccurrences(of:"\"", with:"\\\"")
+          desc += "\"\(escapedValue)\""
+        }
+      }
+    }
+    return desc
+  }
+}
