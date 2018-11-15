@@ -48,6 +48,7 @@ extension HeaderField {
       .eTag: _TypeBox._Normal(ETagHeaderFieldDelegate.self),
       .ifMatch: _TypeBox._Appendable(IfMatchHeaderFieldDelegate.self),
       .ifNoneMatch: _TypeBox._Appendable(IfNoneMatchHeaderFieldDelegate.self),
+      .lastModified: _TypeBox._Normal(LastModifiedHeaderFieldDelegate.self),
     ]
     
     private func _register(_ box:_TypeBox, for name:HeaderFieldName) -> Bool {

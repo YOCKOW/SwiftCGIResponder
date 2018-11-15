@@ -4,7 +4,9 @@
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
- 
+
+import Foundation
+
 extension HeaderField {
   private static func _create<D>(_ delegate:D) -> HeaderField where D:HeaderFieldDelegate {
     return HeaderField(delegate:delegate)
@@ -32,6 +34,10 @@ extension HeaderField {
   /// Creates the HTTP header field of "If-None-Match"
   public static func ifNoneMatch(_ eTags:[ETag]) -> HeaderField {
     return ._create(IfMatchHeaderFieldDelegate(eTags))
+  }
+  
+  public static func lastModified(_ date:Date) -> HeaderField {
+    return ._create(LastModifiedHeaderFieldDelegate(date))
   }
 }
 
