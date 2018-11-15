@@ -26,7 +26,7 @@ public struct Header {
       if fields[0].isAppendable {
         var field = fields[0]
         for ii in 1..<fields.count {
-          field._delegate.appen(elementsIn:fields[ii]._delegate)
+          field._delegate.append(elementsIn:fields[ii]._delegate)
         }
         normalized.append(field)
       } else if fields[0].isDuplicable {
@@ -57,3 +57,18 @@ public struct Header {
   }
 }
 
+extension Header {
+  /// Inserts new field.
+  ///
+  /// Fatal error will occur if any header fields whose name is the same with `newField` are already
+  /// contained in the header and it is not "appendable" nor "duplicable".
+  public mutating func insert(_ newField:HeaderField) {
+    self.fields.append(newField)
+  }
+  
+  public subscript(_ name:HeaderFieldName) -> [HeaderField] {
+    get {
+      return self._fields.filter { $0.name == name }
+    }
+  }
+}

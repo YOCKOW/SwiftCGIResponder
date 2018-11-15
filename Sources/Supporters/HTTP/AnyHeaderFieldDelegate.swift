@@ -90,7 +90,7 @@ internal struct _AnyHeaderFieldDelegate {
   internal mutating func append<S>(contentsOf elements:S) where S:Sequence {
     self._box.append(contentsOf:Array<S.Element>(elements))
   }
-  internal mutating func appen(elementsIn delegate:_AnyHeaderFieldDelegate) {
+  internal mutating func append(elementsIn delegate:_AnyHeaderFieldDelegate) {
     self._box.append(elementsIn:delegate._box)
   }
   
