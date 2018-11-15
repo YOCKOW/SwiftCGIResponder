@@ -17,6 +17,7 @@ final class CGIResponderTests: XCTestCase {
     responder.contentType = text_utf8_contentType
     XCTAssertEqual(responder.contentType.type, .text)
     XCTAssertEqual(responder.contentType.subtype, "plain")
+    XCTAssertEqual(responder.stringEncoding, .utf8)
   }
 
   static var allTests = [
