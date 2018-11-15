@@ -5,7 +5,7 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
  
-
+/// The principal structure that can respond to the client.
 public struct CGIResponder {
   /// An instance of `HTTPStatusCode` that indicates the result of response.
   public var status: HTTPStatusCode = .ok
@@ -15,4 +15,20 @@ public struct CGIResponder {
   
   /// The content.
   public var content: CGIContent = .string("", encoding:.utf8)
+}
+
+extension CGIResponder {
+  /// The content type of the response.
+  /// This property is computed from `HTTPHeader`.
+  public var contentType: ContentType {
+    get {
+      guard let field = self.header[.contentType].first else {
+        return ContentType(type:.application, subtype:"octet-stream")!
+      }
+      return field.source(as:ContentType.self)!
+    }
+    set {
+      self.header[.contentType] = [.contentType(newValue)]
+    }
+  }
 }

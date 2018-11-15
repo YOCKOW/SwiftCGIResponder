@@ -31,3 +31,11 @@ public struct MIMETypeHeaderFieldDelegate: HeaderFieldDelegate {
 }
 
 public typealias ContentTypeHeaderFieldDelegate = MIMETypeHeaderFieldDelegate
+
+extension HeaderField {
+  /// Creates the HTTP header field of "Content-Type"
+  public static func contentType(_ contentType:MIMEType) -> HeaderField {
+    let delegate = ContentTypeHeaderFieldDelegate(contentType)
+    return HeaderField(delegate:delegate)
+  }
+}

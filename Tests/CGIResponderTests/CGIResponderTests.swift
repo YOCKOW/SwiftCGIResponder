@@ -9,11 +9,18 @@ import XCTest
 @testable import CGIResponder
 
 final class CGIResponderTests: XCTestCase {
-  func test() {
+  func test_contentType() {
+    var responder = CGIResponder()
+    XCTAssertEqual(responder.contentType, ContentType(type:.application, subtype:"octet-stream"))
+    
+    let text_utf8_contentType = ContentType(type:.text, subtype:"plain", parameters:["charset":"UTF-8"])!
+    responder.contentType = text_utf8_contentType
+    XCTAssertEqual(responder.contentType.type, .text)
+    XCTAssertEqual(responder.contentType.subtype, "plain")
   }
 
   static var allTests = [
-    ("test", test),
+    ("test_contentType", test_contentType),
   ]
 }
 

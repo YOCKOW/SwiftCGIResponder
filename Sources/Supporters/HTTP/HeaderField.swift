@@ -34,6 +34,11 @@ public struct HeaderField {
   public var value:HeaderFieldValue {
     return self._delegate.value
   }
+  
+  /// Returns the unwrapped source of HTTP header value.
+  public func source<T>(as type:T.Type) -> T? {
+    return self._delegate.source(as:type)
+  }
 
   /// Returns the Boolean value that indicates whether the field is duplicable or not.
   /// e.g.) "Set-Cookie" field is duplicable.

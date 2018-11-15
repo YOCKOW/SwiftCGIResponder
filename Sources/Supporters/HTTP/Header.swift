@@ -70,6 +70,9 @@ extension Header {
     get {
       return self._fields.filter { $0.name == name }
     }
+    set {
+      self.fields = self._fields.filter{ $0.name != name } + newValue
+    }
   }
 }
 
