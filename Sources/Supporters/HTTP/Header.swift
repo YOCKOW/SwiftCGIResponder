@@ -72,3 +72,9 @@ extension Header {
     }
   }
 }
+
+extension Header: CustomStringConvertible {
+  public var description: String {
+    return self.fields.map{ "\($0.name.rawValue): \($0.value.rawValue)" }.joined(separator:"\u{000D}\u{000A}")
+  }
+}
