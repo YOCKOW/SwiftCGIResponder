@@ -10,6 +10,7 @@
 import HTTP
 
 /* Header */
+public typealias HTTPHeader = HTTP.Header
 public typealias HTTPHeaderField = HTTP.HeaderField
 public typealias HTTPHeaderFieldDelegate = HTTP.HeaderFieldDelegate
 public typealias HTTPHeaderFieldName = HTTP.HeaderFieldName
