@@ -65,7 +65,7 @@ extension CGIResponder {
     
     if let eTagHeaderField = header[.eTag].first, let eTag = eTagHeaderField.source as? HTTPETag {
       if let ifMatch = req.ifMatch {
-        if ifMatch.contains(eTag, weakComparison:false) { return .preconditionFailed }
+        if !ifMatch.contains(eTag, weakComparison:false) { return .preconditionFailed }
       } else if let ifNoneMatch = req.ifNoneMatch {
         if ifNoneMatch.contains(eTag, weakComparison:true) { return .notModified }
       }

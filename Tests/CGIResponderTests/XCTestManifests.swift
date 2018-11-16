@@ -7,6 +7,7 @@ public func allTests() -> [XCTestCaseEntry] {
     testCase(CGIContentOutputStreamTests.allTests),
     testCase(CGIResponderTests.allTests),
     testCase(DataOutputStreamTests.allTests),
+    testCase(EnvironmentVariables.allTests),
     testCase(ErrorMessageTests.allTests),
   ]
 }
