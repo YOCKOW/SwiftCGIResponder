@@ -21,8 +21,10 @@ public typealias HTTPContentTypeHeaderFieldDelegate = HTTP.ContentTypeHeaderFiel
 public typealias HTTPETagHeaderFieldDelegate = HTTP.ETagHeaderFieldDelegate
 public typealias HTTPIfMatchHeaderFieldDelegate = HTTP.IfMatchHeaderFieldDelegate
 public typealias HTTPIfNoneMatchHeaderFieldDelegate = HTTP.IfNoneMatchHeaderFieldDelegate
+public typealias HTTPLastModifiedHeaderFieldDelegate = HTTP.LastModifiedHeaderFieldDelegate
 
 /* Others */
 public typealias ContentType = HTTP.MIMEType
 public typealias HTTPETag = HTTP.ETag
+public typealias HTTPMethod = HTTP.Method
 public typealias HTTPStatusCode = HTTP.StatusCode
