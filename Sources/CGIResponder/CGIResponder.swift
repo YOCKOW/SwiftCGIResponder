@@ -154,6 +154,11 @@ extension CGIResponder {
     }
     try output.write(CGIContent(string:header.description))
     
+    // If the method is HEAD, the body is not required.
+    if let method = Client.client.request.method, method == .head {
+      return
+    }
+    
     // print contents
     try output.write(self.content)
   }
