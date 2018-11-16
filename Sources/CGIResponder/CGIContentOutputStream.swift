@@ -6,6 +6,7 @@
  ************************************************************************************************ */
  
 import Foundation
+import TemporaryFile
 
 /// To what `CGIContent` can be given.
 /// Inherits from `DataOutputStream`.
@@ -51,3 +52,5 @@ extension CGIContentOutputStream {
 extension FileHandle: CGIContentOutputStream {}
 
 extension Data: CGIContentOutputStream {}
+
+extension TemporaryFile: CGIContentOutputStream {}

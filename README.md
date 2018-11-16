@@ -19,15 +19,13 @@ It's an experimental library under development, and useless as of now.
 # Usage
 
 ```Swift
-import Foundation
 import CGIResponder
 
 var responder = CGIResponder()
 responder.status = .ok
-responder.contentType = MIMEType(pathExtension:.txt, parameters:["charset":"UTF-8"])!
+responder.contentType = ContentType(pathExtension:.txt, parameters:["charset":"UTF-8"])!
 responder.content = .string("Hello, World!\n", encoding:.utf8)
-
-responder.respond()
+try! responder.respond()
 
 // -- Output --
 // Status: 200 OK

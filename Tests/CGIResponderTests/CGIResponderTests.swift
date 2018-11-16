@@ -10,6 +10,7 @@ import XCTest
 
 import Foundation
 import HTTP
+import TemporaryFile
 
 final class CGIResponderTests: XCTestCase {
   func test_contentType() {
@@ -92,10 +93,57 @@ final class CGIResponderTests: XCTestCase {
     }
   }
   
+  func test_response() {
+    let CRLF = "\u{0D}\u{0A}"
+    
+    var responder = CGIResponder()
+    
+    func check(_ expected:String,
+               expectedWarning:ErrorMessage? = nil,
+               file:StaticString = #file, line:UInt = #line)
+    {
+      TemporaryFile {
+        var output = $0
+        let respond:() -> Void = { try! responder.respond(to:&output) }
+        if let warning = expectedWarning {
+          checkWarning(warning, file:file, line:line, respond)
+        } else {
+          respond()
+        }
+        
+        output.seek(toFileOffset:0)
+        let data = output.availableData
+        XCTAssertEqual(expected, String(data:data, encoding:.utf8), file:file, line:line)
+      }
+    }
+    
+    responder.status = .ok
+    responder.contentType = ContentType(type:.text, subtype:"plain")!
+    responder.stringEncoding = .utf8
+    responder.content = .init(string:"CGI")
+    
+    check(
+      "Status: 200 OK\(CRLF)" +
+      "Content-Type: text/plain; charset=utf-8\(CRLF)" +
+      "\(CRLF)" +
+      "CGI"
+    )
+    
+    responder.stringEncoding = .ascii
+    check(
+      "Status: 200 OK\(CRLF)" +
+      "Content-Type: text/plain; charset=us-ascii\(CRLF)" +
+      "\(CRLF)" +
+      "CGI",
+      expectedWarning:.stringEncodingInconsistency(.utf8, .ascii)
+    )
+  }
+  
   static var allTests = [
     ("test_contentType", test_contentType),
     ("test_expectedStatus_ETag", test_expectedStatus_ETag),
     ("test_expectedStatus_Date", test_expectedStatus_Date),
+    ("test_response", test_response),
   ]
 }
 
