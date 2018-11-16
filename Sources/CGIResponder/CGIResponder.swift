@@ -136,6 +136,12 @@ extension CGIResponder {
       warn(message:.statusCodeInconsistency(status, expectedStatus))
     }
     
+    if status.rawValue / 100 == 3 {
+      guard self.header[.location].count > 0 else {
+        throw CGIResponderError.missingRequiredHTTPHeaderField(name:.location)
+      }
+    }
+    
     // Status
     try output.write(
       CGIContent(string:"Status: \(status.rawValue) \(status.reasonPhrase)\u{000D}\u{000A}")
