@@ -15,7 +15,7 @@ internal struct _AnyHeaderFieldDelegate {
     internal var type: HeaderField.PresenceType { _mustBeOverriden() }
     internal var name: HeaderFieldName { _mustBeOverriden() }
     internal var value: HeaderFieldValue { _mustBeOverriden() }
-    internal func source<T>(as type:T.Type) -> T? { _mustBeOverriden() }
+    internal var source: Any { _mustBeOverriden() }
     internal func append<T>(_ element:T) { _mustBeOverriden() }
     internal func append<S>(contentsOf elements:S) { _mustBeOverriden() }
     internal func append(elementsIn box:_Box) { _mustBeOverriden() }
@@ -29,10 +29,7 @@ internal struct _AnyHeaderFieldDelegate {
       internal override var type: HeaderField.PresenceType { return Swift.type(of:self._base).type }
       internal override var name: HeaderFieldName { return Swift.type(of:self._base).name }
       internal override var value: HeaderFieldValue { return self._base.value }
-      
-      internal override func source<T>(as type: T.Type) -> T? {
-        return self._base.source as? T
-      }
+      internal override var source: Any { return self._base.source }
       
       internal override func append<T>(_ element: T) {
         fatalError("\(Delegate.self) does not conform to AppendableHeaderFieldDelegate.")
@@ -91,7 +88,8 @@ internal struct _AnyHeaderFieldDelegate {
   internal var type: HeaderField.PresenceType { return self._box.type }
   internal var name: HeaderFieldName { return self._box.name }
   internal var value: HeaderFieldValue { return self._box.value }
-  internal func source<T>(as type:T.Type) -> T? { return self._box.source(as:type) }
+  internal var source: Any { return self._box.source }
+  
   internal mutating func append<T>(_ element:T) { self._box.append(element) }
   internal mutating func append<S>(contentsOf elements:S) where S:Sequence {
     self._box.append(contentsOf:Array<S.Element>(elements))

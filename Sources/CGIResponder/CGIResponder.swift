@@ -5,6 +5,7 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
+import Foundation
 import LibExtender
 
 /// The principal structure that can respond to the client.
@@ -27,7 +28,7 @@ extension CGIResponder {
       guard let field = self.header[.contentType].first else {
         return ContentType(type:.application, subtype:"octet-stream")!
       }
-      return field.source(as:ContentType.self)!
+      return field.source as! ContentType
     }
     set {
       self.header[.contentType] = [.contentType(newValue)]
@@ -53,5 +54,30 @@ extension CGIResponder {
       contentType.parameters = params
       self.contentType = contentType
     }
+  }
+}
+
+extension CGIResponder {
+  /// Estimate the expected status by checking ETag or Last-Modified.
+  public var expectedStatus: HTTPStatusCode? {
+    let header = self.header
+    let req = Client.client.request
+    
+    if let eTagHeaderField = header[.eTag].first, let eTag = eTagHeaderField.source as? HTTPETag {
+      if let ifMatch = req.ifMatch {
+        if ifMatch.contains(eTag, weakComparison:false) { return .preconditionFailed }
+      } else if let ifNoneMatch = req.ifNoneMatch {
+        if ifNoneMatch.contains(eTag, weakComparison:true) { return .notModified }
+      }
+    } else if let lastModifiedField = header[.lastModified].first,
+              let lastModified = lastModifiedField.source as? Date
+    {
+      if let ifUnmodifiedSince = req.ifUnmodifiedSince {
+        if lastModified > ifUnmodifiedSince { return .preconditionFailed }
+      } else if let ifModifiedSince = req.ifModifiedSince {
+        if lastModified <= ifModifiedSince { return .notModified }
+      }
+    }
+    return nil
   }
 }
