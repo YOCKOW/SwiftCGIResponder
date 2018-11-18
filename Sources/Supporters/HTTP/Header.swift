@@ -8,70 +8,47 @@
 /// Represents HTTP Header.
 /// Some header fields are contained.
 public struct Header {
-  private var _fields: [HeaderField]
-  
-  private mutating func _normalize() {
-    var organized = Dictionary<HeaderFieldName,[HeaderField]>(minimumCapacity:self._fields.count)
-    
-    for field in self._fields {
-      let name = field.name
-      if organized[name] == nil { organized[name] = [] }
-      organized[name]!.append(field)
-    }
-    
-    var normalized:[HeaderField] = []
-    
-    for name in organized.keys {
-      let fields = organized[name]!
-      if fields[0].isAppendable {
-        var field = fields[0]
-        for ii in 1..<fields.count {
-          field._delegate.append(elementsIn:fields[ii]._delegate)
-        }
-        normalized.append(field)
-      } else if fields[0].isDuplicable {
-        normalized.append(contentsOf:fields)
-      } else {
-        guard fields.count == 1 else {
-          fatalError("Header Field named \(name) must be single.")
-        }
-        normalized.append(fields[0])
-      }
-    }
-    
-    self._fields = normalized
+  private var _fieldTable: [HeaderFieldName:[HeaderField]]
+  private init(_ fieldTable:[HeaderFieldName:[HeaderField]]) {
+    self._fieldTable = fieldTable
   }
   
-  public var fields: [HeaderField] {
-    get { return self._fields }
-    set {
-      self._fields = newValue
-      self._normalize()
-    }
-  }
-  
-  /// Initialize with fields.
-  public init<S>(_ fields:S) where S: Sequence, S.Element == HeaderField {
-    self._fields = Array<HeaderField>(fields)
-    self._normalize()
-  }
-}
-
-extension Header {
   /// Inserts new field.
   ///
   /// Fatal error will occur if any header fields whose name is the same with `newField` are already
   /// contained in the header and it is not "appendable" nor "duplicable".
   public mutating func insert(_ newField:HeaderField) {
-    self.fields.append(newField)
+    let name = newField.name
+    if let _ = self._fieldTable[name] {
+      if newField.isDuplicable {
+        self._fieldTable[name]!.append(newField)
+      } else if newField.isAppendable {
+        self._fieldTable[name]![0]._delegate.append(elementsIn:newField._delegate)
+      } else {
+        fatalError("Header Field named \(name.rawValue) must be single.")
+      }
+    } else {
+      self._fieldTable[name] = [newField]
+    }
+  }
+  
+  /// Initialize with fields.
+  public init<S>(_ fields:S) where S: Sequence, S.Element == HeaderField {
+    self.init([:])
+    for field in fields {
+      self.insert(field)
+    }
   }
   
   public subscript(_ name:HeaderFieldName) -> [HeaderField] {
     get {
-      return self._fields.filter { $0.name == name }
+      return self._fieldTable[name] ?? []
     }
     set {
-      self.fields = self._fields.filter{ $0.name != name } + newValue
+      self._fieldTable.removeValue(forKey:name)
+      for field in newValue {
+        self.insert(field)
+      }
     }
   }
 }
@@ -79,8 +56,10 @@ extension Header {
 extension Header: CustomStringConvertible {
   public var description: String {
     var desc = ""
-    for field in self.fields {
-      desc += "\(field.name.rawValue): \(field.value.rawValue)\u{000D}\u{000A}"
+    for (name, fields) in self._fieldTable {
+      for field in fields {
+        desc += "\(name.rawValue): \(field.value.rawValue)\u{000D}\u{000A}"
+      }
     }
     desc += "\u{000D}\u{000A}"
     return desc
