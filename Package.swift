@@ -4,7 +4,7 @@
 import PackageDescription
 
 let packageDependencies:[Package.Dependency] = [
-  .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from:"1.2.0"),
+  .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from:"1.3.0"),
   .package(url:"https://github.com/YOCKOW/SwiftNetwork.git", from:"0.6.1"),
   .package(url:"https://github.com/YOCKOW/SwiftRanges.git", from: "1.3.2"),
   .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from:"1.0.1"),
