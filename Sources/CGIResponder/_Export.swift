@@ -26,5 +26,6 @@ public typealias HTTPLastModifiedHeaderFieldDelegate = HTTP.LastModifiedHeaderFi
 /* Others */
 public typealias ContentType = HTTP.MIMEType
 public typealias HTTPETag = HTTP.ETag
+public typealias HTTPETagList = HTTP.ETagList
 public typealias HTTPMethod = HTTP.Method
 public typealias HTTPStatusCode = HTTP.StatusCode

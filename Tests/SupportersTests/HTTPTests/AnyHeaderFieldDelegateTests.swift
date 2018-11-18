@@ -16,7 +16,7 @@ final class AnyHeaderFieldDelegateTests: XCTestCase {
     XCTAssertEqual(any1.value, HeaderFieldValue(rawValue:"*")!)
     
     
-    var any2 = _AnyHeaderFieldDelegate(IfMatchHeaderFieldDelegate([ETag("\"A\"")!]))
+    var any2 = _AnyHeaderFieldDelegate(IfMatchHeaderFieldDelegate(try! ETagList("\"A\"")))
     any2.append(ETag("\"B\"")!)
     XCTAssertEqual(any2.type, .appendable)
     XCTAssertEqual(any2.name, .ifMatch)

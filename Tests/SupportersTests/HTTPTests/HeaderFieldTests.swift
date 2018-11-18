@@ -31,12 +31,12 @@ final class HeaderFieldTests: XCTestCase {
     XCTAssertEqual(eTagField.name, .eTag)
     XCTAssertEqual(eTagField.value, eTag1.httpHeaderFieldValue)
     
-    let ifMatchDelegate = IfMatchHeaderFieldDelegate([eTag1, eTag2])
+    let ifMatchDelegate = IfMatchHeaderFieldDelegate(.list([eTag1, eTag2]))
     let ifMatchField = HeaderField(delegate:ifMatchDelegate)
     XCTAssertTrue(ifMatchField.isAppendable)
     XCTAssertFalse(ifMatchField.isDuplicable)
     XCTAssertEqual(ifMatchField.name, .ifMatch)
-    XCTAssertEqual(ifMatchField.value, [eTag1, eTag2].httpHeaderFieldValue)
+    XCTAssertEqual(ifMatchField.value, ETagList.list([eTag1, eTag2]).httpHeaderFieldValue)
   }
   
   func test_delegateSelection() {

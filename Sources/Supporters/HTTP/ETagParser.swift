@@ -98,17 +98,16 @@ extension String {
   }
 }
 
-
-extension Array where Element == ETag {
+extension ETagList {
   /// Initialize from `string`.
   /// - parameter string: such as ` "A", "B", W/"C" `
-  public init(string:String) throws {
-    self.init()
-    
+  public init(_ string:String) throws {
     if string == "*" {
-      self.append(.any)
+      self = .any
       return
     }
+    
+    self = .list([])
     
     var ii = string.startIndex
     while true {

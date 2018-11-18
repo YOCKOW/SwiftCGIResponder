@@ -27,13 +27,13 @@ extension HeaderField {
   }
   
   /// Creates the HTTP header field of "If-Match"
-  public static func ifMatch(_ eTags:[ETag]) -> HeaderField {
-    return ._create(IfMatchHeaderFieldDelegate(eTags))
+  public static func ifMatch(_ list:ETagList) -> HeaderField {
+    return ._create(IfMatchHeaderFieldDelegate(list))
   }
   
   /// Creates the HTTP header field of "If-None-Match"
-  public static func ifNoneMatch(_ eTags:[ETag]) -> HeaderField {
-    return ._create(IfMatchHeaderFieldDelegate(eTags))
+  public static func ifNoneMatch(_ list:ETagList) -> HeaderField {
+    return ._create(IfMatchHeaderFieldDelegate(list))
   }
   
   public static func lastModified(_ date:Date) -> HeaderField {
