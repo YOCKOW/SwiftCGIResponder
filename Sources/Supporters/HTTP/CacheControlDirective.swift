@@ -151,30 +151,3 @@ extension CacheControlDirective {
   }
 }
 
-extension Array where Element == CacheControlDirective {
-  private mutating func _normalize() {
-    var result: [CacheControlDirective] = []
-    scan: for ii in 0..<self.count {
-      let item = self[ii]
-      for jj in 0..<result.count {
-        if item =~ result[jj] { continue scan }
-      }
-      result.append(item)
-    }
-    self = result
-  }
-  
-  /// init with string
-  internal init?(string:String) {
-    let directiveStrings = string.components(separatedBy:",").map{ $0.trimmingUnicodeScalars(in:.whitespaces) }
-    self.init()
-    for ss in directiveStrings {
-      guard let directive = CacheControlDirective(rawValue:ss) else {
-        return nil
-      }
-      self.append(directive)
-    }
-    self._normalize()
-  }
-}
-
