@@ -13,13 +13,26 @@ public struct Header {
     self._fieldTable = fieldTable
   }
   
+  @discardableResult
+  public mutating func removeFields(forName name:HeaderFieldName) -> [HeaderField] {
+    return self._fieldTable.removeValue(forKey:name) ?? []
+  }
+  
   /// Inserts new field.
   ///
-  /// Fatal error will occur if any header fields whose name is the same with `newField` are already
-  /// contained in the header and it is not "appendable" nor "duplicable".
-  public mutating func insert(_ newField:HeaderField) {
+  /// - parameter newField: A field to be inserted into the header.
+  /// - parameter removingExistingFields: The existing fields that have the same name with `newField`
+  ///                                     will be removed before insertion if this value is `true`.
+  ///                                     Fatal error may occur when this value is `false` if any
+  ///                                     header fields whose name is the same with `newField` are
+  ///                                     already contained in the header and it is not "appendable"
+  ///                                     nor "duplicable".
+  public mutating func insert(_ newField:HeaderField, removingExistingFields:Bool = false) {
     let name = newField.name
-    if let _ = self._fieldTable[name] {
+    
+    if removingExistingFields || self._fieldTable[name] == nil {
+      self._fieldTable[name] = [newField]
+    } else {
       if newField.isDuplicable {
         self._fieldTable[name]!.append(newField)
       } else if newField.isAppendable {
@@ -27,8 +40,6 @@ public struct Header {
       } else {
         fatalError("Header Field named \(name.rawValue) must be single.")
       }
-    } else {
-      self._fieldTable[name] = [newField]
     }
   }
   
@@ -40,7 +51,7 @@ public struct Header {
     }
   }
   
-  public subscript(_ name:HeaderFieldName) -> [HeaderField] {
+  public internal(set) subscript(_ name:HeaderFieldName) -> [HeaderField] {
     get {
       return self._fieldTable[name] ?? []
     }
@@ -50,6 +61,10 @@ public struct Header {
         self.insert(field)
       }
     }
+  }
+  
+  public var count: Int {
+    return self._fieldTable.values.reduce(0) { $0 + $1.count }
   }
 }
 

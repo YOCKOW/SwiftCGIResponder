@@ -40,7 +40,7 @@ extension CGIResponder {
       return field.source as! ContentType
     }
     set {
-      self.header[.contentType] = [.contentType(newValue)]
+      self.header.insert(.contentType(newValue), removingExistingFields:true)
     }
   }
   

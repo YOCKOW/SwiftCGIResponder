@@ -36,7 +36,7 @@ extension HeaderField {
   
   /// Creates the HTTP header field of "If-None-Match"
   public static func ifNoneMatch(_ list:ETagList) -> HeaderField {
-    return ._create(IfMatchHeaderFieldDelegate(list))
+    return ._create(IfNoneMatchHeaderFieldDelegate(list))
   }
   
   public static func lastModified(_ date:Date) -> HeaderField {
