@@ -98,3 +98,19 @@ extension CacheControlDirectiveSet: HeaderFieldValueConvertible {
     return HeaderFieldValue(rawValue:self._store.values.map{ $0.rawValue }.joined(separator:", "))!
   }
 }
+
+extension CacheControlDirectiveSet {
+  internal var _directives: [CacheControlDirective] {
+    return Array(self._store.values)
+  }
+}
+
+extension CacheControlDirectiveSet: ExpressibleByArrayLiteral {
+  public typealias ArrayLiteralElement = CacheControlDirective
+  public init(arrayLiteral elements: CacheControlDirective...) {
+    self._store = [:]
+    for directive in elements {
+      self.insert(directive)
+    }
+  }
+}

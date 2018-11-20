@@ -15,6 +15,9 @@ extension HeaderField {
     return HeaderField(delegate:delegate)
   }
   
+  public static func cacheControl(_ directives:CacheControlDirectiveSet) -> HeaderField {
+    return ._create(CacheControlHeaderFieldDelegate(directives))
+  }
   
   /// Creates the HTTP header field of "Content-Type"
   public static func contentType(_ contentType:MIMEType) -> HeaderField {

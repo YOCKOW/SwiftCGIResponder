@@ -15,6 +15,15 @@ final class CacheControlDirectiveTests: XCTestCase {
     XCTAssertTrue(directives.contains(sameCaseWith:.maxAge(0)))
   }
   
+  func test_header() {
+    let field = HeaderField(name:.cacheControl, value:"public, max-age=19831003")
+    let set = field.source as? CacheControlDirectiveSet
+    XCTAssertNotNil(set)
+    XCTAssertEqual(set?.contains(.public), true)
+    XCTAssertEqual(set?.contains(.maxAge(19831003)), true)
+    XCTAssertNotEqual(set?.contains(.private), true)
+  }
+  
   static var allTests = [
     ("test_set", test_set),
   ]
