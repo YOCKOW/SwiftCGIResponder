@@ -23,7 +23,10 @@ extension UnicodeScalarSet {
   internal static let visibleCharacterUnicodeScalars = UnicodeScalarSet(unicodeScalarsIn:UnicodeScalar(0x21)...UnicodeScalar(0x7E))
   public static let httpHeaderFieldNameAllowed = visibleCharacterUnicodeScalars.subtracting(httpHeaderFieldDelimiterAllowed)
   public static let httpHeaderFieldValueAllowed = visibleCharacterUnicodeScalars.union(_horizontalTab).union(_space)
-
+  
+  internal static let httpQuotedTextAllowed = UnicodeScalarSet(unicodeScalarsIn:"\u{0021}").union(UnicodeScalarSet(unicodeScalarsIn:"\u{0023}"..."\u{005B}")).union(UnicodeScalarSet(unicodeScalarsIn:"\u{005D}"..."\u{007E}")).union(_space).union(_horizontalTab)
+  internal static let httpEscapableUnicodeScalars = visibleCharacterUnicodeScalars.union(_horizontalTab).union(_space)
+  
   // https://tools.ietf.org/html/rfc2616#section-2.2
   public static let httpSeparatorAllowed = UnicodeScalarSet(unicodeScalarsIn:"()<>@,;:\\\"/[]?={}").union(_space).union(_horizontalTab)
   public static let httpTokenAllowed = _characters.subtracting(_controlCharacters).subtracting(httpSeparatorAllowed)
