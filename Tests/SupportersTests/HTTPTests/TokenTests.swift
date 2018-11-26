@@ -42,8 +42,25 @@ final class TokenTests: XCTestCase {
     XCTAssertNil(invalid_string._tokens)
   }
   
+  func test_dictionary() {
+    let source_string = "; key0 = \"value0\" ;; key1 ; key2=value2 "
+    let tokens = source_string._tokens!
+    
+    print("------------------------")
+    for token in tokens {
+      print(type(of:token), token._string)
+    }
+    
+    let dictionary = Dictionary<String,String>(_tokens:tokens)
+    XCTAssertNotNil(dictionary)
+    XCTAssertEqual(dictionary?["key0"], "value0")
+    XCTAssertEqual(dictionary?["key1"], "")
+    XCTAssertEqual(dictionary?["key2"], "value2")
+  }
+  
   
   static var allTests = [
     ("test_split", test_split),
+    ("test_dictionary", test_dictionary),
   ]
 }

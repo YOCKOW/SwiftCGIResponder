@@ -79,7 +79,9 @@ extension StringProtocol {
           scalars!.append(scalar)
         } else if UnicodeScalarSet.httpSeparatorAllowed.contains(scalar) {
           tokens.append(_Token._RawString(scalars!))
-          if scalar == "\"" {
+          if UnicodeScalarSet.whitespaces.contains(scalar) {
+            processing = .whitespace
+          } else if scalar == "\"" {
             // is it right?
             scalars = .init([scalar])
             processing = .quotedString
