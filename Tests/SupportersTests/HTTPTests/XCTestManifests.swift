@@ -11,7 +11,7 @@ public func allTests() -> [XCTestCaseEntry] {
     testCase(HeaderTests.allTests),
     testCase(LastModifiedHeaderFieldDelegateTests.allTests),
     testCase(MIMETypeTests.allTests),
-    testCase(QuotedString.allTests),
+    testCase(QuotedStringTests.allTests),
     testCase(TokenTests.allTests),
   ]
 }
