@@ -19,6 +19,11 @@ extension HeaderField {
     return ._create(CacheControlHeaderFieldDelegate(directives))
   }
   
+  /// Creates the HTTP header field of "Content-Length"
+  public static func contentLength(_ length:UInt) -> HeaderField {
+    return ._create(ContentLengthHeaderFieldDelegate(length))
+  }
+  
   /// Creates the HTTP header field of "Content-Type"
   public static func contentType(_ contentType:MIMEType) -> HeaderField {
     return ._create(ContentTypeHeaderFieldDelegate(contentType))

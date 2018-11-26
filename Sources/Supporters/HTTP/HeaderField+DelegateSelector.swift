@@ -46,6 +46,7 @@ extension HeaderField {
       // Here are default delegates implemented in this module.
       .cacheControl: _TypeBox._Appendable(CacheControlHeaderFieldDelegate.self),
       .contentDisposition: _TypeBox._Normal(ContentDispositionHeaderFieldDelegate.self),
+      .contentLength: _TypeBox._Normal(ContentLengthHeaderFieldDelegate.self),
       .eTag: _TypeBox._Normal(ETagHeaderFieldDelegate.self),
       .ifMatch: _TypeBox._Appendable(IfMatchHeaderFieldDelegate.self),
       .ifNoneMatch: _TypeBox._Appendable(IfNoneMatchHeaderFieldDelegate.self),
