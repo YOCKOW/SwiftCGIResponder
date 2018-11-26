@@ -7,6 +7,7 @@
 
 import Foundation
 import BonaFideCharacterSet
+import LibExtender
 
 /**
  
@@ -34,6 +35,7 @@ public enum CacheControlDirective {
   case immutable
   case noStore
   case noTransform
+  case `extension`(name:String, value:String)
 }
 
 extension CacheControlDirective: RawRepresentable {
@@ -51,17 +53,34 @@ extension CacheControlDirective: RawRepresentable {
     case "no-store": self = .noStore
     case "no-transform": self = .noTransform
     default:
-      let keyAndValue = string.components(separatedBy:"=")
-      guard keyAndValue.count == 2 else  { return nil }
-      guard let seconds = UInt(keyAndValue[1]) else { return nil }
-      switch keyAndValue[0] {
-      case "max-age": self = .maxAge(seconds)
-      case "s-maxage": self = .sMaxAge(seconds)
-      case "max-stale": self = .maxStale(seconds)
-      case "min-fresh": self = .minFresh(seconds)
-      case "stale-while-revalidate": self = .staleWhileRevalidate(seconds)
-      case "stale-if-error": self = .staleIfError(seconds)
-      default: return nil
+      let nameAndValue = string.splitOnce(separator:"=")
+      let name = nameAndValue.0
+      guard let value = nameAndValue.1 else { return nil }
+      let nilableSeconds = UInt(value)
+      switch name {
+      case "max-age":
+        guard let seconds = nilableSeconds else { return nil }
+        self = .maxAge(seconds)
+      case "s-maxage":
+        guard let seconds = nilableSeconds else { return nil }
+        self = .sMaxAge(seconds)
+      case "max-stale":
+        guard let seconds = nilableSeconds else { return nil }
+        self = .maxStale(seconds)
+      case "min-fresh":
+        guard let seconds = nilableSeconds else { return nil }
+        self = .minFresh(seconds)
+      case "stale-while-revalidate":
+        guard let seconds = nilableSeconds else { return nil }
+        self = .staleWhileRevalidate(seconds)
+      case "stale-if-error":
+        guard let seconds = nilableSeconds else { return nil }
+        self = .staleIfError(seconds)
+      default:
+        guard name.consists(of:.httpTokenAllowed) else { return nil }
+        let unquotedValue = value._unquotedString ?? String(value)
+        guard unquotedValue.consists(of:.httpEscapableUnicodeScalars) else { return nil }
+        self = .extension(name:String(name), value:unquotedValue)
       }
     }
   }
@@ -84,6 +103,13 @@ extension CacheControlDirective: RawRepresentable {
     case .immutable: return "immutable"
     case .noStore: return "no-store"
     case .noTransform: return "no-transform"
+    case .extension(let name, let value):
+      guard name.consists(of:.httpTokenAllowed) &&
+            value.consists(of:.httpEscapableUnicodeScalars) else
+      {
+        fatalError("Invalid unicode scalar is contained.")
+      }
+      return "\(name)=\(value._quotedString!)"
     }
   }
 }
@@ -107,6 +133,7 @@ extension CacheControlDirective: Hashable {
     case (.minFresh(let lsec), .minFresh(let rsec)): return lsec == rsec
     case (.staleWhileRevalidate(let lsec), .staleWhileRevalidate(let rsec)): return lsec == rsec
     case (.staleIfError(let lsec), .staleIfError(let rsec)): return lsec == rsec
+    case (.extension(let ln, let lv), .extension(let rn, let rv)): return ln == rn && lv == rv
     default: return false
     }
   }
@@ -142,6 +169,7 @@ extension CacheControlDirective {
     case (.immutable, .immutable): return true
     case (.noStore, .noStore): return true
     case (.noTransform, .noTransform): return true
+    case (.extension(let ln, _), .extension(let rn, _)): return ln == rn
     default: return false
     }
   }

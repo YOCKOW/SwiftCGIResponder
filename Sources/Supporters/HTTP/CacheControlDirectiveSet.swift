@@ -23,6 +23,7 @@ public struct CacheControlDirectiveSet {
     case immutable
     case noStore
     case noTransform
+    case `extension`(name:String)
     
     fileprivate init(_ directive:CacheControlDirective) {
       switch directive {
@@ -41,6 +42,7 @@ public struct CacheControlDirectiveSet {
       case .immutable: self = .immutable
       case .noStore: self = .noStore
       case .noTransform: self = .noTransform
+      case .extension(let name, _): self = .extension(name:name)
       }
     }
   }
@@ -82,15 +84,25 @@ extension CacheControlDirectiveSet: Hashable {}
 
 extension CacheControlDirectiveSet: HeaderFieldValueConvertible {
   public init?(httpHeaderFieldValue: HeaderFieldValue) {
-    let directiveStrings = httpHeaderFieldValue.rawValue.components(separatedBy:",").map {
-      $0.trimmingUnicodeScalars(in:.whitespaces)
+    guard let tokens = httpHeaderFieldValue.rawValue._tokens else { return nil }
+    guard let dictionary = Dictionary<String,String>(_tokens:tokens, pairsAreSeparatedBy:",") else {
+      return nil
     }
+    
     self.init()
-    for string in directiveStrings {
-      guard let directive = CacheControlDirective(rawValue:string) else {
-        return nil
+    for (key, value) in dictionary {
+      if value.isEmpty {
+        guard let directive = CacheControlDirective(rawValue:key) else { return nil }
+        self.insert(directive)
+      } else {
+        if let directive = CacheControlDirective(rawValue:"\(key)=\(value)") {
+          self.insert(directive)
+        } else if let directive = CacheControlDirective(rawValue:"\(key)=\"\(value)\"") {
+          self.insert(directive)
+        } else {
+          return nil
+        }
       }
-      self.insert(directive)
     }
   }
   
