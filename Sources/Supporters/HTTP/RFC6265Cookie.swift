@@ -27,3 +27,20 @@ public protocol RFC6265Cookie: Hashable {
   var isHTTPOnly: Bool { get }
 }
 
+extension HTTPCookie: RFC6265Cookie {
+  public var creationDate: Date? {
+    return CookieProperties(for:self)?.creationDate
+  }
+  
+  public var lastAccessDate: Date? {
+    return nil
+  }
+  
+  public var isPersistent: Bool {
+    return !self.isSessionOnly
+  }
+  
+  public var isHostOnly: Bool {
+    return false
+  }
+}
