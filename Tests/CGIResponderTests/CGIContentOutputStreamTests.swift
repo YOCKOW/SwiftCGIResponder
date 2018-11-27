@@ -22,10 +22,6 @@ final class CGIContentOutputStreamTests: XCTestCase {
       XCTFail("Must not be reached here.")
     }
   }
-  
-  static var allTests = [
-    ("test_pathForUnexistingFile", test_pathForUnexistingFile),
-  ]
 }
 
 

@@ -19,11 +19,6 @@ final class ContentDispositionTests: XCTestCase {
     XCTAssertEqual(formData.value, .formData)
     XCTAssertEqual(formData.parameters?["name"], "field")
   }
-  
-  
-  static var allTests = [
-    ("test_parser", test_parser)
-  ]
 }
 
 

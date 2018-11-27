@@ -24,10 +24,6 @@ final class CacheControlDirectiveTests: XCTestCase {
     XCTAssertEqual(set?.contains(.extension(name:"my-extension", value:"my-value")), true)
     XCTAssertNotEqual(set?.contains(.private), true)
   }
-  
-  static var allTests = [
-    ("test_set", test_set),
-  ]
 }
 
 

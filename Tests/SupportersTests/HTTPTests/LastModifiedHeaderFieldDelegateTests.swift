@@ -19,11 +19,6 @@ final class LastModifiedHeaderFieldDelegateTests: XCTestCase {
     
     XCTAssertEqual(lastModified.source as! Date, date)
   }
-  
-  
-  static var allTests = [
-    ("test_initializer", test_initializer),
-  ]
 }
 
 

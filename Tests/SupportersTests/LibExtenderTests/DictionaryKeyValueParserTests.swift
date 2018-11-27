@@ -17,11 +17,6 @@ final class DictionaryKeyValueParserTests: XCTestCase {
     XCTAssertEqual(parsed["C"], "D")
     XCTAssertEqual(parsed["\"E\""], "F")
   }
-  
-  
-  static var allTests = [
-    ("test_parse", test_parse),
-  ]
 }
 
 

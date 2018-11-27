@@ -28,11 +28,6 @@ final class AnyHeaderFieldDelegateTests: XCTestCase {
     XCTAssertEqual(unspecified.name, HeaderFieldName(rawValue:"Foo")!)
     XCTAssertEqual(unspecified.value, HeaderFieldValue(rawValue:"Bar")!)
   }
-  
-  
-  static var allTests = [
-    ("test_initializer", test_initializer)
-  ]
 }
 
 

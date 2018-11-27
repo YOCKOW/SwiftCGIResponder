@@ -27,12 +27,6 @@ final class CFStringEncodingTests: XCTestCase {
   func test_constants() {
     XCTAssertEqual(CFString.Encoding(String.Encoding.utf8), .utf8)
   }
-  
-  
-  static var allTests = [
-    ("test_initialization", test_initialization),
-    ("test_constants", test_constants)
-  ]
 }
 
 

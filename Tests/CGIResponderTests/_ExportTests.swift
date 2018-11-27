@@ -14,9 +14,5 @@ final class ExportTests: XCTestCase {
     XCTAssertEqual(HTTPETag("\"A\""), .strong("A"))
     XCTAssertEqual(HTTPETag("W/\"B\""), .weak("B"))
   }
-
-  static var allTests = [
-    ("test_HTTPETag", test_HTTPETag),
-  ]
 }
 

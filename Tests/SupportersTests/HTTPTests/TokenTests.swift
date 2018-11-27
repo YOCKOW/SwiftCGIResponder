@@ -51,10 +51,4 @@ final class TokenTests: XCTestCase {
     XCTAssertEqual(dictionary?["key1"], "")
     XCTAssertEqual(dictionary?["key2"], "value2")
   }
-  
-  
-  static var allTests = [
-    ("test_split", test_split),
-    ("test_dictionary", test_dictionary),
-  ]
 }

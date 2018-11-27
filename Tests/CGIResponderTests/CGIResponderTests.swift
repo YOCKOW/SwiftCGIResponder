@@ -138,12 +138,5 @@ final class CGIResponderTests: XCTestCase {
       expectedWarning:.stringEncodingInconsistency(.utf8, .ascii)
     )
   }
-  
-  static var allTests = [
-    ("test_contentType", test_contentType),
-    ("test_expectedStatus_ETag", test_expectedStatus_ETag),
-    ("test_expectedStatus_Date", test_expectedStatus_Date),
-    ("test_response", test_response),
-  ]
 }
 

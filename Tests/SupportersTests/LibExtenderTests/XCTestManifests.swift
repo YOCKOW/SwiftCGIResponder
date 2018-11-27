@@ -1,13 +1,37 @@
 import XCTest
 
+extension CFStringEncodingTests {
+    static let __allTests = [
+        ("test_constants", test_constants),
+        ("test_initialization", test_initialization),
+    ]
+}
+
+extension DictionaryKeyValueParserTests {
+    static let __allTests = [
+        ("test_parse", test_parse),
+    ]
+}
+
+extension StringCFStringTests {
+    static let __allTests = [
+        ("test_conversion", test_conversion),
+    ]
+}
+
+extension StringEncodingTests {
+    static let __allTests = [
+        ("test_IANACharSetName", test_IANACharSetName),
+    ]
+}
+
 #if !os(macOS)
-public func allTests() -> [XCTestCaseEntry] {
-  return [
-    testCase(CFStringEncodingTests.allTests),
-    testCase(DictionaryKeyValueParserTests.allTests),
-    testCase(StringCFStringTests.allTests),
-    testCase(StringEncodingTests.allTests),
-  ]
+public func __allTests() -> [XCTestCaseEntry] {
+    return [
+        testCase(CFStringEncodingTests.__allTests),
+        testCase(DictionaryKeyValueParserTests.__allTests),
+        testCase(StringCFStringTests.__allTests),
+        testCase(StringEncodingTests.__allTests),
+    ]
 }
 #endif
-

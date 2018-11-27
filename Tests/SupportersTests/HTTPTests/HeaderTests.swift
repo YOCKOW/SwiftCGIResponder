@@ -31,8 +31,4 @@ final class HeaderTests: XCTestCase {
     header.removeFields(forName:.ifNoneMatch)
     XCTAssertEqual(header.count, 0)
   }
-  
-  static var allTests = [
-    ("test_appending", test_appending),
-  ]
 }

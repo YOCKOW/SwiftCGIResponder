@@ -22,11 +22,6 @@ final class StringEncodingTests: XCTestCase {
     check(.japaneseEUC, "EUC-JP")
     check(.utf8, "UTF-8")
   }
-  
-  
-  static var allTests = [
-    ("test_IANACharSetName", test_IANACharSetName),
-  ]
 }
 
 

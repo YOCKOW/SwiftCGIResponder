@@ -36,10 +36,6 @@ class EnvironmentVariablesTests: XCTestCase {
     env["CGI_RESPONDER_TESTS"] = nil
     XCTAssertEqual(env["CGI_RESPONDER_TESTS"], nil)
   }
-  
-  static var allTests:[(String, (EnvironmentVariablesTests) -> () -> Void)] = [
-    ("test_accessor", test_accessor),
-  ]
 }
 
 

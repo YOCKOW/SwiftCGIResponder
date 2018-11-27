@@ -94,13 +94,5 @@ final class ETagTests: XCTestCase {
     XCTAssertEqual(ifNoneMatchField.value.rawValue, "\(eTag1.description), \(eTag2.description)")
     XCTAssertEqual(type(of:ifNoneMatchField).type, .appendable)
   }
-  
-  
-  static var allTests = [
-    ("test_initialization", test_initialization),
-    ("test_comparison", test_comparison),
-    ("test_list", test_list),
-    ("test_headerField", test_headerField),
-  ]
 }
 

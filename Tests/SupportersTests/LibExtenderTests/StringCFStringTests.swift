@@ -16,11 +16,6 @@ final class StringCFStringTests: XCTestCase {
     let japanese = "日本語"
     XCTAssertEqual(japanese, String(japanese.coreFoundationString))
   }
-  
-  
-  static var allTests = [
-    ("test_conversion", test_conversion),
-  ]
 }
 
 

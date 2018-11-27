@@ -72,15 +72,6 @@ final class HeaderFieldTests: XCTestCase {
     XCTAssertNotNil(cl.source as? UInt)
     XCTAssertEqual(cl.source as? UInt, 1024)
   }
-  
-  
-  static var allTests = [
-    ("test_name_initialization", test_name_initialization),
-    ("test_value_initialization", test_value_initialization),
-    ("test_initialization", test_initialization),
-    ("test_delegateSelection", test_delegateSelection),
-    ("test_contentLengh", test_contentLengh),
-  ]
 }
 
 

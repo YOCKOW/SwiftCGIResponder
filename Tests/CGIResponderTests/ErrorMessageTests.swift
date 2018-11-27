@@ -44,9 +44,5 @@ final class ErrorMessageTests: XCTestCase {
   func test_message() {
     checkWarning("MESSAGE") { warn(message:"MESSAGE") }
   }
-  
-  static var allTests = [
-    ("test_message", test_message),
-  ]
 }
 

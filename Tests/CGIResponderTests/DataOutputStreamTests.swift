@@ -26,10 +26,6 @@ final class DataOutputStreamTests: XCTestCase {
     target.seek(toFileOffset:0)
     XCTAssertEqual(target.availableData, data)
   }
-
-  static var allTests = [
-    ("test", test),
-  ]
 }
 
 

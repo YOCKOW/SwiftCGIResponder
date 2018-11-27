@@ -18,12 +18,6 @@ final class QuotedStringTests: XCTestCase {
     XCTAssertEqual("\"ABC\\\\DEF\""._unquotedString, "ABC\\DEF")
     XCTAssertEqual("\"NOTCLOSED"._unquotedString, nil)
   }
-  
-  
-  static var allTests = [
-    ("test_quote", test_quote),
-    ("test_unquote", test_unquote),
-  ]
 }
 
 

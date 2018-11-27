@@ -29,12 +29,6 @@ final class MIMETypeTests: XCTestCase {
     XCTAssertEqual(text_mime_type, MIMEType(type:.text, subtype:"plain"))
     XCTAssertEqual(text_mime_type?.possiblePathExtensions?.contains(txt_ext), true)
   }
-  
-  
-  static var allTests = [
-    ("test_parser", test_parser),
-    ("test_pathExtensions", test_pathExtensions),
-  ]
 }
 
 

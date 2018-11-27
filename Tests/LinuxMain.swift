@@ -1,16 +1,12 @@
 import XCTest
 
-// main module
-import CGIResponderTests
-
-// supprters
 import HTTPTests
 import LibExtenderTests
+import CGIResponderTests
 
 var tests = [XCTestCaseEntry]()
-tests += HTTPTests.allTests()
-tests += LibExtenderTests.allTests()
-
-tests += CGIResponderTests.allTests()
+tests += HTTPTests.__allTests()
+tests += LibExtenderTests.__allTests()
+tests += CGIResponderTests.__allTests()
 
 XCTMain(tests)
