@@ -19,6 +19,12 @@ extension ContentDispositionTests {
     ]
 }
 
+extension CookieTests {
+    static let __allTests = [
+        ("test_date", test_date),
+    ]
+}
+
 extension ETagTests {
     static let __allTests = [
         ("test_comparison", test_comparison),
@@ -77,6 +83,7 @@ public func __allTests() -> [XCTestCaseEntry] {
         testCase(AnyHeaderFieldDelegateTests.__allTests),
         testCase(CacheControlDirectiveTests.__allTests),
         testCase(ContentDispositionTests.__allTests),
+        testCase(CookieTests.__allTests),
         testCase(ETagTests.__allTests),
         testCase(HeaderFieldTests.__allTests),
         testCase(HeaderTests.__allTests),
