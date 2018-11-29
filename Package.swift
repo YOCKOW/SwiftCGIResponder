@@ -17,6 +17,7 @@ let supporters: [Supporter] = [
     "HTTP",
     [
       .byName(name:"SwiftBonaFideCharacterSet"),
+      .byName(name:"SwiftNetwork"),
       .byName(name:"SwiftRanges"),
       .byName(name:"SwiftUnicodeSupplement"),
       .target(name:"LibExtender"),
