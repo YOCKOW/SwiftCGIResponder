@@ -33,5 +33,8 @@ extension UnicodeScalarSet {
   
   // MIME Type
   public static let mimeTypeTokenAllowed = UnicodeScalarSet(unicodeScalarsIn:"!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~").subtracting(_tspecials)
+  
+  // cookie
+  public static let cookieValueAllowed = UnicodeScalarSet(unicodeScalarsIn:"!#$%&'()*+-./0123456789:<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~")
 }
 

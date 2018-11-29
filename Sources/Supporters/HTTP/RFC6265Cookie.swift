@@ -41,6 +41,6 @@ extension HTTPCookie: RFC6265Cookie {
   }
   
   public var isHostOnly: Bool {
-    return false
+    fatalError("`var isHostOnly: Bool { get }` is unimplemented in HTTPCookie.")
   }
 }

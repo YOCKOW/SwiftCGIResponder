@@ -26,6 +26,22 @@ public struct CookieProperties {
     guard let properties = cookie.properties else { return nil }
     self.init(properties)
   }
+  
+  public init<C>(for cookie:C) where C: RFC6265Cookie {
+    self.init([:])
+    
+    self.name = cookie.name
+    self.value = cookie.value
+    self.domain = cookie.domain
+    self.path = cookie.path
+    self.creationDate = cookie.creationDate
+    self.expiresDate = cookie.expiresDate
+    self.lastAccessDate = cookie.lastAccessDate
+    self.persistent = cookie.isPersistent
+    self.hostOnly = cookie.isHostOnly
+    self.secure = cookie.isSecure
+    self.httpOnly = cookie.isHTTPOnly
+  }
 }
 
 extension CookieProperties {
