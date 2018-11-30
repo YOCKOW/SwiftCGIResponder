@@ -33,3 +33,17 @@ public struct CookieItem {
     }
   }
 }
+
+extension CookieItem {
+  internal func _nameAndValue(addingPercentEncoding:Bool = true) -> String? {
+    if addingPercentEncoding {
+      guard let name = self.name.addingPercentEncoding(withAllowedUnicodeScalars:.httpTokenAllowed)
+        else { return nil }
+      guard let value = self.value.addingPercentEncoding(withAllowedUnicodeScalars:.cookieValueAllowed)
+        else { return nil }
+      return "\(name)=\(value)"
+    } else {
+      return "\(self.name)=\(self.value)"
+    }
+  }
+}
