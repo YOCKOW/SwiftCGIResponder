@@ -9,6 +9,7 @@ import XCTest
 @testable import HTTP
 
 import Foundation
+import Network
 
 final class CookieTests: XCTestCase {
   func test_date() {
@@ -61,14 +62,38 @@ final class CookieTests: XCTestCase {
       properties[.value] = "value"
       
       let cookie = AnyCookie(properties:CookieProperties(properties))!
-      let fieldValue = cookie.requestHeaderFieldValue(for:url)
-      
-      if !test.2 {
-        XCTAssertNil(fieldValue, "#\(ii)")
+      XCTAssertEqual(cookie.canBeSent(to:url), test.2, "#\(ii)")
+    }
+  }
+  
+  func test_responseHeader() {
+    let future = Date(timeIntervalSinceNow:10000.0)
+    let future_string = DateFormatter.rfc1123.string(from:future)
+    let setCookieValue = HeaderFieldValue(rawValue:
+      "name=value; expires=\(future_string); path=/A/B/C; domain=EXAMPLE.COM; Secure; HttpOnly"
+    )!
+    
+    let cases:[(String,Bool,StaticString,UInt)] = [
+      ("https://example.net/A/B/C", false, #file, #line),
+      ("https://example.com/A/B/C/D/E", true, #file, #line),
+      ("http://sub.example.com/A/B/C/D/E", true, #file, #line),
+      ("https://com/A/B/C/D/E", false, #file, #line),
+    ]
+    
+    for test in cases {
+      let properties =
+        CookieProperties(responseHeaderFieldValue:setCookieValue, for:URL(string:test.0)!)
+      if !test.1 {
+        XCTAssertNil(properties, file:test.2, line:test.3)
       } else {
-        let gotten = fieldValue!.rawValue
-        let expected = "name=value"
-        XCTAssertEqual(gotten, expected, "#\(ii)")
+        XCTAssertNotNil(properties, file:test.2, line:test.3)
+        XCTAssertEqual(properties?.name, "name", file:test.2, line:test.3)
+        XCTAssertEqual(properties?.value, "value", file:test.2, line:test.3)
+        XCTAssertEqual(properties?.domain, Domain("EXAMPLE.COM")?.description, file:test.2, line:test.3)
+        XCTAssertEqual(properties?.path, "/A/B/C", file:test.2, line:test.3)
+        XCTAssertEqual(properties?.secure, true, file:test.2, line:test.3)
+        XCTAssertEqual(properties?.httpOnly, true, file:test.2, line:test.3)
+        XCTAssertEqual(properties?.hostOnly, false, file:test.2, line:test.3)
       }
     }
   }
