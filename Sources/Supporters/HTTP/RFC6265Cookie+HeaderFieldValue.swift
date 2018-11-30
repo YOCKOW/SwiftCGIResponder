@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  RFC6265Cookie+HeaderFieldValue.swift
-   © 2018 YOCKOW.
+   © 2017-2018 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -43,5 +43,28 @@ extension RFC6265Cookie {
     })(path, self.path) else { return false }
     
     return true
+  }
+}
+
+extension RFC6265Cookie {
+  /// Create value of "Set-Cookie:"
+  public func responseHeaderFieldValue(addingPercentEncoding:Bool = true) -> HeaderFieldValue? {
+    guard var string =
+      CookieItem(from:self)._nameAndValue(addingPercentEncoding:addingPercentEncoding) else
+    {
+        return nil
+    }
+    
+    if let expires = self.expiresDate {
+      string += "; Expires=" + DateFormatter.rfc1123.string(from:expires)
+    }
+    
+    string += "; Domain=" + self.domain
+    string += "; Path=" + self.path
+    
+    if self.isSecure { string += "; Secure" }
+    if self.isHTTPOnly { string += "; HttpOnly" }
+    
+    return HeaderFieldValue(rawValue:string)
   }
 }
