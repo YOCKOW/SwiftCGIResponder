@@ -23,6 +23,7 @@ extension CookieTests {
     static let __allTests = [
         ("test_date", test_date),
         ("test_requestHeader", test_requestHeader),
+        ("test_responseHeader", test_responseHeader),
     ]
 }
 
