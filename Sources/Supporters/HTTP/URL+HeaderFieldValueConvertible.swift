@@ -8,11 +8,11 @@
 import Foundation
 
 extension URL: HeaderFieldValueConvertible {
-  public init?(httpHeaderFieldValue: HeaderFieldValue) {
-    self.init(string:httpHeaderFieldValue.rawValue)
+  public init?(headerFieldValue: HeaderFieldValue) {
+    self.init(string:headerFieldValue.rawValue)
   }
   
-  public var httpHeaderFieldValue: HeaderFieldValue {
+  public var headerFieldValue: HeaderFieldValue {
     return HeaderFieldValue(rawValue:self.absoluteString)!
   }
 }

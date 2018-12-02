@@ -9,6 +9,8 @@
 
 import HTTP
 
+/* ********************************************************************************************** */
+
 /* Header */
 public typealias HTTPHeader = HTTP.Header
 public typealias HTTPHeaderField = HTTP.HeaderField
@@ -23,9 +25,24 @@ public typealias HTTPIfMatchHeaderFieldDelegate = HTTP.IfMatchHeaderFieldDelegat
 public typealias HTTPIfNoneMatchHeaderFieldDelegate = HTTP.IfNoneMatchHeaderFieldDelegate
 public typealias HTTPLastModifiedHeaderFieldDelegate = HTTP.LastModifiedHeaderFieldDelegate
 
+/* Protocols */
+public typealias HTTPHeaderFieldValueConvertible = HTTP.HeaderFieldValueConvertible
+
 /* Others */
 public typealias ContentType = HTTP.MIMEType
 public typealias HTTPETag = HTTP.ETag
 public typealias HTTPETagList = HTTP.ETagList
 public typealias HTTPMethod = HTTP.Method
 public typealias HTTPStatusCode = HTTP.StatusCode
+
+/* ********************************************************************************************** */
+
+extension HTTPHeaderFieldValueConvertible {
+  public init?(httpHeaderFieldValue:HTTPHeaderFieldValue) {
+    self.init(headerFieldValue:httpHeaderFieldValue)
+  }
+  
+  public var httpHeaderFieldValue: HTTPHeaderFieldValue {
+    return self.headerFieldValue
+  }
+}

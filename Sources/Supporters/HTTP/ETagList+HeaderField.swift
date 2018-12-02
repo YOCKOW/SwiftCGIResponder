@@ -7,11 +7,11 @@
  
 
 extension ETagList: HeaderFieldValueConvertible {
-  public init?(httpHeaderFieldValue: HeaderFieldValue) {
-    try? self.init(httpHeaderFieldValue.rawValue)
+  public init?(headerFieldValue: HeaderFieldValue) {
+    try? self.init(headerFieldValue.rawValue)
   }
   
-  public var httpHeaderFieldValue: HeaderFieldValue {
+  public var headerFieldValue: HeaderFieldValue {
     return HeaderFieldValue(rawValue:self.description)!
   }
 }

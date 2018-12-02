@@ -8,14 +8,14 @@
 import Foundation
 
 extension Date: HeaderFieldValueConvertible {
-  public init?(httpHeaderFieldValue: HeaderFieldValue) {
-    guard let date = DateFormatter.rfc1123.date(from:httpHeaderFieldValue.rawValue) else {
+  public init?(headerFieldValue: HeaderFieldValue) {
+    guard let date = DateFormatter.rfc1123.date(from:headerFieldValue.rawValue) else {
       return nil
     }
     self = date
   }
   
-  public var httpHeaderFieldValue: HeaderFieldValue {
+  public var headerFieldValue: HeaderFieldValue {
     return HeaderFieldValue(rawValue:DateFormatter.rfc1123.string(from:self))!
   }
 }

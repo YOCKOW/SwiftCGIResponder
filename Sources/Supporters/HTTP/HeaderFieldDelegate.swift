@@ -24,7 +24,7 @@ public protocol HeaderFieldDelegate: Hashable {
 extension HeaderFieldDelegate {
   /// The value of the header field.
   public var value: HeaderFieldValue {
-    return self.source.httpHeaderFieldValue
+    return self.source.headerFieldValue
   }
 }
 

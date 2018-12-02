@@ -19,7 +19,7 @@ extension HeaderField {
       }
       
       fileprivate override func headerField(with value:HeaderFieldValue) -> HeaderField {
-        guard let source = Delegate.ValueSource(httpHeaderFieldValue:value) else {
+        guard let source = Delegate.ValueSource(headerFieldValue:value) else {
           fatalError("\(Delegate.ValueSource.self) cannot be initialized with \"\(value)\".")
         }
         return HeaderField(delegate:Delegate(source))
@@ -30,7 +30,7 @@ extension HeaderField {
       where Delegate:AppendableHeaderFieldDelegate
     {
       fileprivate override func headerField(with value:HeaderFieldValue) -> HeaderField {
-        guard let source = Delegate.ValueSource(httpHeaderFieldValue:value) else {
+        guard let source = Delegate.ValueSource(headerFieldValue:value) else {
           fatalError("\(Delegate.ValueSource.self) cannot be initialized with \"\(value)\".")
         }
         return HeaderField(delegate:Delegate(source))

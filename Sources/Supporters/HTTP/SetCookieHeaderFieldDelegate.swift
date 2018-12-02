@@ -15,15 +15,15 @@ public struct SetCookieHeaderFieldDelegate: HeaderFieldDelegate {
       self._cookie = AnyCookie(cookie)
     }
     
-    public init?(httpHeaderFieldValue: HeaderFieldValue) {
-      guard let properties = CookieProperties(_responseHeaderFieldValue:httpHeaderFieldValue) else {
+    public init?(headerFieldValue: HeaderFieldValue) {
+      guard let properties = CookieProperties(_responseHeaderFieldValue:headerFieldValue) else {
         return nil
       }
       guard let cookie = AnyCookie(properties:properties) else { return nil }
       self.init(cookie)
     }
     
-    public var httpHeaderFieldValue: HeaderFieldValue {
+    public var headerFieldValue: HeaderFieldValue {
       return self._cookie.responseHeaderFieldValue()!
     }
   }

@@ -83,8 +83,8 @@ public struct CacheControlDirectiveSet {
 extension CacheControlDirectiveSet: Hashable {}
 
 extension CacheControlDirectiveSet: HeaderFieldValueConvertible {
-  public init?(httpHeaderFieldValue: HeaderFieldValue) {
-    guard let tokens = httpHeaderFieldValue.rawValue._tokens else { return nil }
+  public init?(headerFieldValue: HeaderFieldValue) {
+    guard let tokens = headerFieldValue.rawValue._tokens else { return nil }
     guard let dictionary = Dictionary<String,String>(_tokens:tokens, pairsAreSeparatedBy:",") else {
       return nil
     }
@@ -106,7 +106,7 @@ extension CacheControlDirectiveSet: HeaderFieldValueConvertible {
     }
   }
   
-  public var httpHeaderFieldValue: HeaderFieldValue {
+  public var headerFieldValue: HeaderFieldValue {
     return HeaderFieldValue(rawValue:self._store.values.map{ $0.rawValue }.joined(separator:", "))!
   }
 }

@@ -27,11 +27,11 @@ public enum ContentTransferEncoding: String, RawRepresentable {
 }
 
 extension ContentTransferEncoding: HeaderFieldValueConvertible {
-  public init?(httpHeaderFieldValue: HeaderFieldValue) {
-    self.init(rawValue:httpHeaderFieldValue.rawValue)
+  public init?(headerFieldValue: HeaderFieldValue) {
+    self.init(rawValue:headerFieldValue.rawValue)
   }
   
-  public var httpHeaderFieldValue: HeaderFieldValue {
+  public var headerFieldValue: HeaderFieldValue {
     return HeaderFieldValue(rawValue:self.rawValue)!
   }
 }
