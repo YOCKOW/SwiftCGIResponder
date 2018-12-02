@@ -44,7 +44,7 @@ public struct AnyCookie: RFC6265Cookie {
     self.isHTTPOnly = properties.httpOnly
   }
   
-  public init?<C>(_ cookie:C) where C:RFC6265Cookie {
-    self.init(properties:CookieProperties(for:cookie))
+  public init<C>(_ cookie:C) where C:RFC6265Cookie {
+    self.init(properties:CookieProperties(for:cookie))!
   }
 }

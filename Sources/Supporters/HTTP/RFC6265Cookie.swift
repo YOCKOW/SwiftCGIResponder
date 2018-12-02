@@ -6,6 +6,7 @@
  ************************************************************************************************ */
 
 import Foundation
+import Network
 
 /// Protocol for cookies defined in [RFC 6265](https://tools.ietf.org/html/rfc6265)
 ///
@@ -41,6 +42,8 @@ extension HTTPCookie: RFC6265Cookie {
   }
   
   public var isHostOnly: Bool {
-    fatalError("`var isHostOnly: Bool { get }` is unimplemented in HTTPCookie.")
+    if let _ = IPAddress(string:self.domain) { return true }
+    if let domain = Domain(self.domain, options:.loose), domain.isPublicSuffix { return true }
+    return false
   }
 }

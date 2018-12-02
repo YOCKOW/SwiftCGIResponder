@@ -97,6 +97,16 @@ final class CookieTests: XCTestCase {
       }
     }
   }
+  
+  func test_setCookieHeaderField() {
+    let setCookie = HeaderField(name:.setCookie, value:"name=value; domain=YOCKOW.jp; path=/path")
+    let cookie = setCookie.source as? SetCookieHeaderFieldDelegate.Cookie
+    XCTAssertNotNil(cookie)
+    XCTAssertEqual(cookie?.name, "name")
+    XCTAssertEqual(cookie?.value, "value")
+    XCTAssertEqual(cookie?.domain.lowercased(), "YOCKOW.jp".lowercased())
+    XCTAssertEqual(cookie?.path, "/path")
+  }
 }
 
 

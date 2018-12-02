@@ -47,5 +47,9 @@ extension HeaderField {
   public static func lastModified(_ date:Date) -> HeaderField {
     return ._create(LastModifiedHeaderFieldDelegate(date))
   }
+  
+  public static func setCookie<C>(_ cookie:C) -> HeaderField where C:RFC6265Cookie {
+    return ._create(SetCookieHeaderFieldDelegate(cookie:cookie))
+  }
 }
 

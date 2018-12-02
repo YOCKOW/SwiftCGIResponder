@@ -24,6 +24,7 @@ extension CookieTests {
         ("test_date", test_date),
         ("test_requestHeader", test_requestHeader),
         ("test_responseHeader", test_responseHeader),
+        ("test_setCookieHeaderField", test_setCookieHeaderField),
     ]
 }
 
