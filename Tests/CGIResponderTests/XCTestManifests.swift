@@ -15,6 +15,12 @@ extension CGIResponderTests {
     ]
 }
 
+extension ClientTests {
+    static let __allTests = [
+        ("test_cookies", test_cookies),
+    ]
+}
+
 extension DataOutputStreamTests {
     static let __allTests = [
         ("test", test),
@@ -44,6 +50,7 @@ public func __allTests() -> [XCTestCaseEntry] {
     return [
         testCase(CGIContentOutputStreamTests.__allTests),
         testCase(CGIResponderTests.__allTests),
+        testCase(ClientTests.__allTests),
         testCase(DataOutputStreamTests.__allTests),
         testCase(EnvironmentVariablesTests.__allTests),
         testCase(ErrorMessageTests.__allTests),

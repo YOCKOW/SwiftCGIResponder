@@ -5,6 +5,7 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
+import BonaFideCharacterSet
 import Foundation
 import HTTP
 import Network
@@ -58,6 +59,26 @@ extension Client {
 }
 
 extension Client.Request {
+  /// An array of `CookieItem`s generated from the value of `HTTP_COOKIE`
+  public func cookies(removingPercentEncoding:Bool = true) -> [HTTPCookieItem]? {
+    guard let cookies_string = EnvironmentVariables.default["HTTP_COOKIE"] else { return nil }
+    
+    var result:[HTTPCookieItem] = []
+    
+    let pair_strings = cookies_string.components(separatedBy:";").map {
+      $0.trimmingUnicodeScalars(in:.whitespaces)
+    }
+    for pair_string in pair_strings {
+      guard let item =
+        HTTPCookieItem(string:pair_string, removingPercentEncoding:removingPercentEncoding) else
+      {
+        return nil
+      }
+      result.append(item)
+    }
+    return result
+  }
+  
   /// An array of ETags generated from the value of `HTTP_IF_MATCH`
   public var ifMatch: HTTPETagList? {
     guard let ifMatch_string = EnvironmentVariables.default["HTTP_IF_MATCH"] else { return nil }
