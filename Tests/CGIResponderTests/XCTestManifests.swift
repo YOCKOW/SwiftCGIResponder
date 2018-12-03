@@ -18,6 +18,7 @@ extension CGIResponderTests {
 extension ClientTests {
     static let __allTests = [
         ("test_cookies", test_cookies),
+        ("test_queryItems", test_queryItems),
     ]
 }
 
