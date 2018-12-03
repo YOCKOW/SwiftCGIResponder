@@ -7,6 +7,12 @@ extension CFStringEncodingTests {
     ]
 }
 
+extension DataTests {
+    static let __allTests = [
+        ("test_quotedPrintable", test_quotedPrintable),
+    ]
+}
+
 extension DictionaryKeyValueParserTests {
     static let __allTests = [
         ("test_parse", test_parse),
@@ -29,6 +35,7 @@ extension StringEncodingTests {
 public func __allTests() -> [XCTestCaseEntry] {
     return [
         testCase(CFStringEncodingTests.__allTests),
+        testCase(DataTests.__allTests),
         testCase(DictionaryKeyValueParserTests.__allTests),
         testCase(StringCFStringTests.__allTests),
         testCase(StringEncodingTests.__allTests),
