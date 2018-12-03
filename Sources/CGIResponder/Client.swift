@@ -52,10 +52,10 @@ extension Client {
 
 extension Client {
   public final class Request {
-    private init() {}
-    fileprivate static let _request = Request()
+    fileprivate weak var _client: Client!
+    fileprivate init(_ client:Client) { self._client = client }
   }
-  public var request: Request { return ._request }
+  public var request: Request { return Request(self) }
 }
 
 extension Client.Request {
@@ -110,6 +110,51 @@ extension Client.Request {
   /// An instance of `HTTPMethod` generated from the value of `REQUEST_METHOD`
   public var method: HTTPMethod? {
     return HTTPMethod(rawValue:EnvironmentVariables.default["REQUEST_METHOD"] ?? "?")
+  }
+  
+  /// Retuns array of `URLQueryItem` generated from "QUERY_STRING" and
+  /// posted data (if content type is "application/x-www-form-urlencoded").
+  /// Inadequate items may be returned if other functions have already read the standard input.
+  public var queryItems: [URLQueryItem]? {
+    func _parse(_ string:String) -> [URLQueryItem] {
+      var result: [URLQueryItem] = []
+      
+      // First, replace "+" with " "
+      // Separator may be "&" or ";"
+      let separator = UnicodeScalarSet(unicodeScalarsIn:"&;")
+      let queryItemStrings = string.replacingOccurrences(of:"+", with:" ").components(separatedBy:separator)
+      for queryItemString in queryItemStrings {
+        let (name_raw, nilable_value_raw) = queryItemString.splitOnce(separator:"=")
+        guard let name = name_raw.removingPercentEncoding else { continue }
+        if let value_raw = nilable_value_raw {
+          guard let value = value_raw.removingPercentEncoding else { continue }
+          result.append(URLQueryItem(name:name, value:value))
+        } else {
+          result.append(URLQueryItem(name:name, value:nil))
+        }
+      }
+      
+      return result
+    }
+    
+    guard let queryString = EnvironmentVariables.default["QUERY_STRING"] else {
+      return nil
+    }
+    var result = _parse(queryString)
+    
+    // Handle Posted Data
+    if let method = self.method, method == .post,
+      let type = self._client.contentType,
+          type.type == .application, type.subtype == "x-www-form-urlencoded",
+      let size = self._client.contentLength, size > 0
+    {
+      let data = FileHandle._changeableStandardInput.readData(ofLength:size)
+      if let string = String(data:data, encoding:.utf8) {
+        result.append(contentsOf:_parse(string))
+      }
+    }
+    
+    return result
   }
   
   /// The User Agent.
