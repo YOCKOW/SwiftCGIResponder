@@ -8,7 +8,7 @@
 import XCTest
 @testable import CGIResponder
 
-func executeUnderTemporaryEnvironment(_ environments:[String:String?],
+func withEnvironmentVariables(_ environments:[String:String?],
                                       _ body:() throws -> Void) rethrows
 {
   let env = EnvironmentVariables.default

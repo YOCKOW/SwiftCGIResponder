@@ -13,7 +13,7 @@ import Foundation
 final class ClientTests: XCTestCase {
   func test_cookies() {
     let cookies = "name1=value1; name2=value2; name1=another_value1"
-    executeUnderTemporaryEnvironment(["HTTP_COOKIE":cookies]) {
+    withEnvironmentVariables(["HTTP_COOKIE":cookies]) {
       let items = Client.client.request.cookies()
       XCTAssertNotNil(items)
       XCTAssertEqual(items?[0].name, "name1")
@@ -38,7 +38,7 @@ final class ClientTests: XCTestCase {
       "REQUEST_METHOD":"POST",
     ]
     
-    executeUnderTemporaryEnvironment(env) {
+    withEnvironmentVariables(env) {
       withStandardInput(data:postData) {
         let queryItems = Client.client.request.queryItems
         XCTAssertNotNil(queryItems)

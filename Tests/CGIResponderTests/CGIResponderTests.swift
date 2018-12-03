@@ -34,19 +34,19 @@ final class CGIResponderTests: XCTestCase {
     responder.header.insert(HTTPHeaderField.eTag(eTag))
     XCTAssertNil(responder.expectedStatus)
     
-    executeUnderTemporaryEnvironment([HTTP_IF_MATCH:"\"ETAG\""]) {
+    withEnvironmentVariables([HTTP_IF_MATCH:"\"ETAG\""]) {
       XCTAssertNil(responder.expectedStatus)
     }
     
-    executeUnderTemporaryEnvironment([HTTP_IF_MATCH:"\"OTHER\""]) {
+    withEnvironmentVariables([HTTP_IF_MATCH:"\"OTHER\""]) {
       XCTAssertEqual(responder.expectedStatus, .preconditionFailed)
     }
     
-    executeUnderTemporaryEnvironment([HTTP_IF_NONE_MATCH:"W/\"ETAG\""]) {
+    withEnvironmentVariables([HTTP_IF_NONE_MATCH:"W/\"ETAG\""]) {
       XCTAssertEqual(responder.expectedStatus, .notModified)
     }
     
-    executeUnderTemporaryEnvironment([HTTP_IF_NONE_MATCH:"W/\"OTHER\""]) {
+    withEnvironmentVariables([HTTP_IF_NONE_MATCH:"W/\"OTHER\""]) {
       XCTAssertNil(responder.expectedStatus)
     }
   }
@@ -67,28 +67,28 @@ final class CGIResponderTests: XCTestCase {
     responder.header.insert(HTTPHeaderField.lastModified(date_base))
     XCTAssertNil(responder.expectedStatus)
     
-    executeUnderTemporaryEnvironment([HTTP_IF_UNMODIFIED_SINCE:date_string(date_old)]) {
+    withEnvironmentVariables([HTTP_IF_UNMODIFIED_SINCE:date_string(date_old)]) {
       XCTAssertEqual(responder.expectedStatus, .preconditionFailed)
     }
     
-    executeUnderTemporaryEnvironment([HTTP_IF_UNMODIFIED_SINCE:date_string(date_base)]) {
+    withEnvironmentVariables([HTTP_IF_UNMODIFIED_SINCE:date_string(date_base)]) {
       XCTAssertEqual(responder.expectedStatus, nil)
     }
     
-    executeUnderTemporaryEnvironment([HTTP_IF_UNMODIFIED_SINCE:date_string(date_new)]
+    withEnvironmentVariables([HTTP_IF_UNMODIFIED_SINCE:date_string(date_new)]
     ) {
       XCTAssertEqual(responder.expectedStatus, nil)
     }
     
-    executeUnderTemporaryEnvironment([HTTP_IF_MODIFIED_SINCE:date_string(date_old)]) {
+    withEnvironmentVariables([HTTP_IF_MODIFIED_SINCE:date_string(date_old)]) {
       XCTAssertEqual(responder.expectedStatus, nil)
     }
     
-    executeUnderTemporaryEnvironment([HTTP_IF_MODIFIED_SINCE:date_string(date_base)]) {
+    withEnvironmentVariables([HTTP_IF_MODIFIED_SINCE:date_string(date_base)]) {
       XCTAssertEqual(responder.expectedStatus, .notModified)
     }
     
-    executeUnderTemporaryEnvironment([HTTP_IF_MODIFIED_SINCE:date_string(date_new)]) {
+    withEnvironmentVariables([HTTP_IF_MODIFIED_SINCE:date_string(date_new)]) {
       XCTAssertEqual(responder.expectedStatus, .notModified)
     }
   }
