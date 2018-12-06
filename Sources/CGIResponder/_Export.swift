@@ -30,6 +30,8 @@ public typealias HTTPHeaderFieldValueConvertible = HTTP.HeaderFieldValueConverti
 
 /* Others */
 public typealias ContentType = HTTP.MIMEType
+public typealias HTTPContentDisposition = HTTP.ContentDisposition
+public typealias HTTPContentTransferEncoding = HTTP.ContentTransferEncoding
 public typealias HTTPCookieItem = HTTP.CookieItem
 public typealias HTTPETag = HTTP.ETag
 public typealias HTTPETagList = HTTP.ETagList

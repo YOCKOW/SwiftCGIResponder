@@ -34,6 +34,9 @@ extension ErrorMessage: CustomStringConvertible, CustomDebugStringConvertible {
 }
 
 extension ErrorMessage {
+  internal static let cannotDecodeBase64: ErrorMessage = "Cannot decode Base64."
+  internal static let cannotDecodeQuotedPrintable: ErrorMessage = "Cannot decode quoted-printable."
+  
   internal static func cannotOpenFileAtPath(_ path:String) -> ErrorMessage {
     return ErrorMessage(rawValue:"Cannot open file at \"\(path)\".")
   }

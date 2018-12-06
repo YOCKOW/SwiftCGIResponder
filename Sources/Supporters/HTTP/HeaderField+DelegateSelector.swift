@@ -4,7 +4,10 @@
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
- 
+
+import BonaFideCharacterSet
+import LibExtender
+
 extension HeaderField {
   /// Metatype-erasure for `HeaderFieldDelegate`
   private class _TypeBox {
@@ -47,6 +50,8 @@ extension HeaderField {
       .cacheControl: _TypeBox._Appendable(CacheControlHeaderFieldDelegate.self),
       .contentDisposition: _TypeBox._Normal(ContentDispositionHeaderFieldDelegate.self),
       .contentLength: _TypeBox._Normal(ContentLengthHeaderFieldDelegate.self),
+      .contentTransferEncoding: _TypeBox._Normal(ContentTransferEncodingHeaderFieldDelegate.self),
+      .contentType: _TypeBox._Normal(MIMETypeHeaderFieldDelegate.self),
       .eTag: _TypeBox._Normal(ETagHeaderFieldDelegate.self),
       .ifMatch: _TypeBox._Appendable(IfMatchHeaderFieldDelegate.self),
       .ifNoneMatch: _TypeBox._Appendable(IfNoneMatchHeaderFieldDelegate.self),
@@ -94,6 +99,20 @@ extension HeaderField {
     } else {
       self.init(_AnyHeaderFieldDelegate(name:name, value:value))
     }
+  }
+  
+  public init?(string:String) {
+    func _trim<S>(_ string:S) -> String where S:StringProtocol {
+      return string.trimmingUnicodeScalars(in:.whitespacesAndNewlines)
+    }
+    
+    guard case let (nameString, valueString?) = string.splitOnce(separator:":") else { return nil }
+    guard let name = HeaderFieldName(rawValue:_trim(nameString)),
+          let value = HeaderFieldValue(rawValue:_trim(valueString)) else
+    {
+        return nil
+    }
+    self.init(name:name, value:value)
   }
 }
 

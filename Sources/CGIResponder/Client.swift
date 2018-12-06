@@ -9,6 +9,7 @@ import BonaFideCharacterSet
 import Foundation
 import HTTP
 import Network
+import TemporaryFile
 
 /// Represents the client.
 public final class Client {
@@ -77,6 +78,34 @@ extension Client.Request {
       result.append(item)
     }
     return result
+  }
+  
+  /// Returns an instance of `FormData.Iterator`.
+  /// - parameter temporaryDirectory: Temporary directory that will contain uploaded files temporarily
+  ///
+  /// ## Important notes
+  /// * Calling this method more than once will return meaningless iterator.
+  /// * The uploaded files may be lost unless copying them to another location,
+  ///   because, the temporary directory will be removed at the end of program.
+  public func formDataIterator(using temporaryDirectory:TemporaryDirectory) -> FormData.Iterator? {
+    guard
+      let clientContentType = self._client.contentType,
+      clientContentType.type == .multipart && clientContentType.subtype == "form-data",
+      let clientContentTypeParameters = clientContentType.parameters,
+      let boundary = clientContentTypeParameters["boundary"], !boundary.isEmpty else
+    {
+      return nil
+    }
+    
+    let clientStringEncoding: String.Encoding = ({
+      guard let charset = clientContentTypeParameters["charset"]  else { return .utf8 }
+      guard let encoding = String.Encoding(ianaCharacterSetName:charset) else { return .utf8 }
+      return encoding
+    })()
+    
+    return FormData.Iterator(boundary:boundary,
+                             stringEncoding:clientStringEncoding,
+                             temporaryDirectory:temporaryDirectory)
   }
   
   /// An array of ETags generated from the value of `HTTP_IF_MATCH`

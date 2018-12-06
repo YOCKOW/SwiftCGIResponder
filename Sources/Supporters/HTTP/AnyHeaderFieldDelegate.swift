@@ -74,6 +74,7 @@ internal struct _AnyHeaderFieldDelegate {
       internal override var type: HeaderField.PresenceType { return .single }
       internal override var name: HeaderFieldName { return self._name }
       internal override var value: HeaderFieldValue { return self._value }
+      internal override var source: Any { return self._value }
       
       internal init(name:HeaderFieldName, value:HeaderFieldValue) {
         self._name = name
