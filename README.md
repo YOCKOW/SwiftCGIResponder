@@ -3,22 +3,31 @@
 It's an experimental library under development, and useless as of now.
 
 # Requirements
-* Swift >= 4.0 + CoreFoundation + Foundation
+* Swift 4.2, 4.1 compatibility mode of 4.2
+  * CoreFoundation
+  * Foundation
 * macOS >= 10.12 or Linux
 * HTTP server software (e.g. Apache or similar software)
 
+## Dependencies
+
+* [SwiftBonaFideCharacterSet](https://github.com/YOCKOW/SwiftBonaFideCharacterSet)
+* [SwiftNetwork](https://github.com/YOCKOW/SwiftNetwork)
+* [SwiftRanges](https://github.com/YOCKOW/SwiftRanges)
+* [SwiftTemporaryFile](https://github.com/YOCKOW/SwiftTemporaryFile)
+* [SwiftUnicodeSupplement](https://github.com/YOCKOW/SwiftUnicodeSupplement)
+
+
 # Usage
 
-```
-import Foundation
+```Swift
 import CGIResponder
 
 var responder = CGIResponder()
 responder.status = .ok
-responder.contentType = MIMEType(pathExtension:.txt, parameters:["charset":"UTF-8"])!
+responder.contentType = ContentType(pathExtension:.txt, parameters:["charset":"UTF-8"])!
 responder.content = .string("Hello, World!\n", encoding:.utf8)
-
-responder.respond()
+try! responder.respond()
 
 // -- Output --
 // Status: 200 OK
@@ -32,15 +41,7 @@ You may see other samples in [SwiftCGIResponderSamples](https://github.com/YOCKO
 
 # How to install
 
-```
-git clone https://github.com/YOCKOW/SwiftCGIResponder.git
-cd SwiftCGIResponder
-./build-install.rb --install-prefix=/path/to/your/system --install
-cd ~/your/project
-swiftc main.swift -I/path/to/your/system/include -L/path/to/your/system/lib -lSwiftCGIResponder
-```
-
-... or you can also use [Swift Package Manager](https://github.com/apple/swift-package-manager) easily to import `CGIResponder` to your project.
+You can use [Swift Package Manager](https://github.com/apple/swift-package-manager) easily to import `CGIResponder` to your project.
 
 # License
 MIT License.  

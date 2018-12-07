@@ -1,94 +1,193 @@
-/***************************************************************************************************
+/* *************************************************************************************************
  Client.swift
-   © 2017 YOCKOW.
+   © 2017-2018 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
- **************************************************************************************************/
+ ************************************************************************************************ */
 
+import BonaFideCharacterSet
 import Foundation
+import HTTP
+import Network
+import TemporaryFile
 
-/**
- 
- # Client
- Represents the client.
- 
- */
-public class Client {
-  public static let client = Client()
+/// Represents the client.
+public final class Client {
   private init() {}
+  public static let client = Client()
 }
 
 extension Client {
   /// Returns whether connection is secure or not.
   public var connectionIsSecure: Bool {
-    guard case let secure as Bool = EnvironmentVariables.default[.https] else { return false }
-    return secure
+    guard let https = EnvironmentVariables.default["HTTPS"] else { return false }
+    return https.lowercased() == "on"
   }
-  
+
   /// Retuns client's content-length if request method is "POST" or something.
   public var contentLength: Int? {
-    return EnvironmentVariables.default[.contentLength] as! Int?
+    return Int(EnvironmentVariables.default["CONTENT_LENGTH"] ?? "?")
   }
-  
+
   /// Retuns client's content-type if request method is "POST" or something.
-  public var contentType: MIMEType? {
-    return EnvironmentVariables.default[.contentType] as! MIMEType?
-  }
-  
-  /// Returns array of instances of `HTTPCookieItem`
-  /// generated from `HTTP_COOKIE` of environment variables.
-  public var cookies: [HTTPCookieItem]? {
-    return EnvironmentVariables.default[.httpCookie] as! [HTTPCookieItem]?
+  public var contentType: ContentType? {
+    return ContentType(EnvironmentVariables.default["CONTENT_TYPE"] ?? "?")
   }
   
   /// Returns hostname of the client.
-  /// If there is no value for `REMOTE_HOST`, reverse DNS lookup will be tried internally.
-  public var hostname: Hostname? {
-    if let remoteHost = EnvironmentVariables.default[.remoteHost] {
-      return (remoteHost as! Hostname)
+  /// If there is no value for `REMOTE_HOST` in environment variables,
+  /// reverse DNS lookup will be tried internally.
+  public var hostname: Domain? {
+    if let remoteHost = EnvironmentVariables.default["REMOTE_HOST"] {
+      return Domain(remoteHost, options:.loose)
     }
     guard let ip = self.ipAddress else { return nil }
-    return ip.hostname // reverse lookup
+    return ip.domain // reverse lookup
   }
   
   /// Returns an instance of `IPAddress` generated from the value of `REMOTE_ADDR`.
   public var ipAddress: IPAddress? {
-    return EnvironmentVariables.default[.remoteAddress] as! IPAddress?
+    return IPAddress(string:EnvironmentVariables.default["REMOTE_ADDR"] ?? "?")
+  }
+}
+
+extension Client {
+  public final class Request {
+    fileprivate weak var _client: Client!
+    fileprivate init(_ client:Client) { self._client = client }
+  }
+  public var request: Request { return Request(self) }
+}
+
+extension Client.Request {
+  /// An array of `CookieItem`s generated from the value of `HTTP_COOKIE`
+  public func cookies(removingPercentEncoding:Bool = true) -> [HTTPCookieItem]? {
+    guard let cookies_string = EnvironmentVariables.default["HTTP_COOKIE"] else { return nil }
+    
+    var result:[HTTPCookieItem] = []
+    
+    let pair_strings = cookies_string.components(separatedBy:";").map {
+      $0.trimmingUnicodeScalars(in:.whitespaces)
+    }
+    for pair_string in pair_strings {
+      guard let item =
+        HTTPCookieItem(string:pair_string, removingPercentEncoding:removingPercentEncoding) else
+      {
+        return nil
+      }
+      result.append(item)
+    }
+    return result
+  }
+  
+  /// Returns an instance of `FormData.Iterator`.
+  /// - parameter temporaryDirectory: Temporary directory that will contain uploaded files temporarily
+  ///
+  /// ## Important notes
+  /// * Calling this method more than once will return meaningless iterator.
+  /// * The uploaded files may be lost unless copying them to another location,
+  ///   because, the temporary directory will be removed at the end of program.
+  public func formDataIterator(using temporaryDirectory:TemporaryDirectory) -> FormData.Iterator? {
+    guard
+      let clientContentType = self._client.contentType,
+      clientContentType.type == .multipart && clientContentType.subtype == "form-data",
+      let clientContentTypeParameters = clientContentType.parameters,
+      let boundary = clientContentTypeParameters["boundary"], !boundary.isEmpty else
+    {
+      return nil
+    }
+    
+    let clientStringEncoding: String.Encoding = ({
+      guard let charset = clientContentTypeParameters["charset"]  else { return .utf8 }
+      guard let encoding = String.Encoding(ianaCharacterSetName:charset) else { return .utf8 }
+      return encoding
+    })()
+    
+    return FormData.Iterator(boundary:boundary,
+                             stringEncoding:clientStringEncoding,
+                             temporaryDirectory:temporaryDirectory)
+  }
+  
+  /// An array of ETags generated from the value of `HTTP_IF_MATCH`
+  public var ifMatch: HTTPETagList? {
+    guard let ifMatch_string = EnvironmentVariables.default["HTTP_IF_MATCH"] else { return nil }
+    return try? HTTPETagList(ifMatch_string)
+  }
+  
+  /// A date generated from the value of `HTTP_IF_MODIFIED_SINCE`
+  public var ifModifiedSince: Date? {
+    guard let ifModifiedSince_string = EnvironmentVariables.default["HTTP_IF_MODIFIED_SINCE"] else {
+      return nil
+    }
+    return DateFormatter.rfc1123.date(from:ifModifiedSince_string)
+  }
+  
+  /// An array of ETags generated from the value of `HTTP_IF_NONE_MATCH`
+  public var ifNoneMatch: HTTPETagList? {
+    guard let ifNoneMatch_string = EnvironmentVariables.default["HTTP_IF_NONE_MATCH"] else { return nil }
+    return try? HTTPETagList(ifNoneMatch_string)
+  }
+  
+  /// A date generated from the value of `HTTP_IF_UNMODIFIED_SINCE`
+  public var ifUnmodifiedSince: Date? {
+    guard let ifUnmodifiedSince_string = EnvironmentVariables.default["HTTP_IF_UNMODIFIED_SINCE"] else {
+      return nil
+    }
+    return DateFormatter.rfc1123.date(from:ifUnmodifiedSince_string)
+  }
+  
+  /// An instance of `HTTPMethod` generated from the value of `REQUEST_METHOD`
+  public var method: HTTPMethod? {
+    return HTTPMethod(rawValue:EnvironmentVariables.default["REQUEST_METHOD"] ?? "?")
   }
   
   /// Retuns array of `URLQueryItem` generated from "QUERY_STRING" and
   /// posted data (if content type is "application/x-www-form-urlencoded").
-  /// Inadequate items may be returned if other functions have already read standard input.
+  /// Inadequate items may be returned if other functions have already read the standard input.
   public var queryItems: [URLQueryItem]? {
-    guard case let queryString as String = EnvironmentVariables.default[.queryString] else { return nil }
-    var result = Array<URLQueryItem>(string:queryString)
+    func _parse(_ string:String) -> [URLQueryItem] {
+      var result: [URLQueryItem] = []
+      
+      // First, replace "+" with " "
+      // Separator may be "&" or ";"
+      let separator = UnicodeScalarSet(unicodeScalarsIn:"&;")
+      let queryItemStrings = string.replacingOccurrences(of:"+", with:" ").components(separatedBy:separator)
+      for queryItemString in queryItemStrings {
+        let (name_raw, nilable_value_raw) = queryItemString.splitOnce(separator:"=")
+        guard let name = name_raw.removingPercentEncoding else { continue }
+        if let value_raw = nilable_value_raw {
+          guard let value = value_raw.removingPercentEncoding else { continue }
+          result.append(URLQueryItem(name:name, value:value))
+        } else {
+          result.append(URLQueryItem(name:name, value:nil))
+        }
+      }
+      
+      return result
+    }
+    
+    guard let queryString = EnvironmentVariables.default["QUERY_STRING"] else {
+      return nil
+    }
+    var result = _parse(queryString)
     
     // Handle Posted Data
-    if let method = self.requestMethod, method == .post,
-      let type = self.contentType, type.type == .application, type.subtype == "x-www-form-urlencoded",
-      let size = self.contentLength, size > 0
+    if let method = self.method, method == .post,
+      let type = self._client.contentType,
+          type.type == .application, type.subtype == "x-www-form-urlencoded",
+      let size = self._client.contentLength, size > 0
     {
-      let data = FileHandle.standardInput.readData(ofLength:size)
+      let data = FileHandle._changeableStandardInput.readData(ofLength:size)
       if let string = String(data:data, encoding:.utf8) {
-        let additionals = Array<URLQueryItem>(string:string)
-        if result == nil {
-          return additionals
-        } else if additionals != nil {
-          result!.append(contentsOf:additionals!)
-        }
+        result.append(contentsOf:_parse(string))
       }
     }
     
     return result
   }
   
-  /// Returns an instance of `HTTPMethod` generated from the value of `REQUEST_METHOD`
-  public var requestMethod: HTTPMethod? {
-    return EnvironmentVariables.default[.requestMethod] as! HTTPMethod?
-  }
-  
-  /// Returns user agent.
+  /// The User Agent.
   public var userAgent: String? {
-    return EnvironmentVariables.default[.httpUserAgent] as! String?
+    return EnvironmentVariables.default["HTTP_USER_AGENT"]
   }
 }

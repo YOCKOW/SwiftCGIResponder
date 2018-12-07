@@ -1,28 +1,27 @@
-/***************************************************************************************************
+/* *************************************************************************************************
  CGIContentOutputStreamTests.swift
-   © 2017 YOCKOW.
+   © 2018 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
- **************************************************************************************************/
+ ************************************************************************************************ */
  
 import XCTest
 @testable import CGIResponder
-import Foundation
 
-class CGIContentOutputStreamTests: XCTestCase {
-  
-  func testData() {
-    let string = "STRING"
-    let content = CGIContent(string:string)
+final class CGIContentOutputStreamTests: XCTestCase {
+  func test_pathForUnexistingFile() {
+    let path = "--hoge/fuga/piyo--"
+    let unexisting = CGIContent(fileAtPath:path)
     
-    var data = Data()
-    XCTAssertNoThrow(try data.write(content))
-    XCTAssertEqual(data, string.data(using:.utf8)!)
+    var output = Data()
+    do {
+      try checkWarning(.cannotOpenFileAtPath(path)) { try output.write(unexisting) }
+    } catch CGIResponderError.illegalOperation {
+      XCTAssertTrue(true)
+    } catch {
+      XCTFail("Must not be reached here.")
+    }
   }
-  
-  
-  static var allTests: [(String, (CGIContentOutputStreamTests) -> () -> Void)] = [
-    ("testData", testData),
-  ]
 }
+
 
