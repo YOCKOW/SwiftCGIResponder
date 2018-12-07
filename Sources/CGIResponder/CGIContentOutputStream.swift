@@ -1,67 +1,56 @@
-/***************************************************************************************************
+/* *************************************************************************************************
  CGIContentOutputStream.swift
-   © 2017 YOCKOW.
+   © 2017-2018 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
- **************************************************************************************************/
+ ************************************************************************************************ */
  
 import Foundation
+import TemporaryFile
 
-/**
- 
- # CGIContentOutputStream
- To what `CGIContent` can be given.
- Adopts `DataOutputStream`.
- 
- */
+/// To what `CGIContent` can be given.
+/// Inherits from `DataOutputStream`.
 public protocol CGIContentOutputStream: DataOutputStream {
   mutating func write(_:CGIContent) throws
 }
 
 extension CGIContentOutputStream {
+  private mutating func _write(contentAtPath path:String) throws {
+    guard let fh = FileHandle(forReadingAtPath:path) else {
+      warn(message:.cannotOpenFileAtPath(path))
+      throw CGIResponderError.illegalOperation
+    }
+    fh.write(to:&self)
+  }
+  
   /// Default implementation.
-  /// In order to conserve memory, implementations for some cases are separated.
+  /// Write the content represented by `content` to the receiver.
   public mutating func write(_ content:CGIContent) throws {
-    let writeFH = {(fh:FileHandle, target:inout Self) -> Void  in
-      while true {
-        let data = fh.readData(ofLength:4096)
-        if data.isEmpty { break }
-        target.write(data)
-      }
-    }
-    
-    let writePath = {(path:String, target:inout Self) -> Void in
-      guard let fh = FileHandle(forReadingAtPath:path) else {
-        warn("Cannot open file at path: \(path)")
-        throw CGIResponderError.illegalOperation
-      }
-      writeFH(fh, &target)
-    }
-    
     switch content {
+    case .data(let data):
+      self.write(data)
     case .fileHandle(let fh):
-      writeFH(fh, &self)
-    case .path(let path):
-      try writePath(path, &self)
-    case .temporaryFile(let temporaryFile):
-      writeFH(temporaryFile.fileHandle, &self)
-    case .onCall(let creator):
-      try self.write(creator())
-    case .url(let url):
-      if !url.isFileURL { fallthrough }
-      try writePath(url.path, &self)
-    default:
-      guard let data = content.data else {
-        throw CGIResponderError.unexpectedError(message:"No data available: \(content)")
+      fh.write(to:&self)
+    case .path(let path): 
+      try self._write(contentAtPath:path)
+    case .string(let string, let encoding):
+      guard let data = string.data(using:encoding) else {
+        throw CGIResponderError.unexpectedError(message:"No data available: \(string)")
       }
       self.write(data)
+    case .temporaryFile(let temporaryFile):
+      temporaryFile.write(to:&self)
+    case .url(let url):
+      if url.isFileURL { try self._write(contentAtPath:url.path) }
+      else { self.write(try Data(contentsOf:url)) }
+    case .lazy(let closure):
+      try self.write(closure())
     }
   }
 }
 
-/// Let `FileHandle` comform to `CGIContentOutputStream`.
 extension FileHandle: CGIContentOutputStream {}
 
-/// Let `Data` comform to `CGIContentOutputStream`.
 extension Data: CGIContentOutputStream {}
 
+extension TemporaryFile: CGIContentOutputStream {}

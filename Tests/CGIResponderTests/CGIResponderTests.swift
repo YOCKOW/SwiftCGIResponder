@@ -1,124 +1,142 @@
-/***************************************************************************************************
+/* *************************************************************************************************
  CGIResponderTests.swift
-   © 2017 YOCKOW.
+   © 2017-2018 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
- **************************************************************************************************/
+ ************************************************************************************************ */
 
 import XCTest
 @testable import CGIResponder
-import Foundation
 
-class CGIResponderTests: XCTestCase {
-  func testContentType() {
+import Foundation
+import HTTP
+import TemporaryFile
+
+final class CGIResponderTests: XCTestCase {
+  func test_contentType() {
     var responder = CGIResponder()
-    XCTAssertEqual(responder.contentType, MIMEType(type:.application, subtype:"octet-stream"))
-    XCTAssertEqual(responder.stringEncoding, nil)
+    XCTAssertEqual(responder.contentType, ContentType(type:.application, subtype:"octet-stream"))
     
-    responder.contentType = MIMEType(pathExtension:.txt, parameters:["charset":"UTF-8"])!
+    let text_utf8_contentType = ContentType(type:.text, subtype:"plain", parameters:["charset":"UTF-8"])!
+    responder.contentType = text_utf8_contentType
     XCTAssertEqual(responder.contentType.type, .text)
     XCTAssertEqual(responder.contentType.subtype, "plain")
     XCTAssertEqual(responder.stringEncoding, .utf8)
   }
   
-  func testOutput() {
-    var output = Data()
+  func test_expectedStatus_ETag() {
+    let eTag: HTTPETag = .strong("ETAG")
     var responder = CGIResponder()
+    
+    let HTTP_IF_MATCH = "HTTP_IF_MATCH"
+    let HTTP_IF_NONE_MATCH = "HTTP_IF_NONE_MATCH"
+    
+    responder.header.insert(HTTPHeaderField.eTag(eTag))
+    XCTAssertNil(responder.expectedStatus)
+    
+    withEnvironmentVariables([HTTP_IF_MATCH:"\"ETAG\""]) {
+      XCTAssertNil(responder.expectedStatus)
+    }
+    
+    withEnvironmentVariables([HTTP_IF_MATCH:"\"OTHER\""]) {
+      XCTAssertEqual(responder.expectedStatus, .preconditionFailed)
+    }
+    
+    withEnvironmentVariables([HTTP_IF_NONE_MATCH:"W/\"ETAG\""]) {
+      XCTAssertEqual(responder.expectedStatus, .notModified)
+    }
+    
+    withEnvironmentVariables([HTTP_IF_NONE_MATCH:"W/\"OTHER\""]) {
+      XCTAssertNil(responder.expectedStatus)
+    }
+  }
+  
+  func test_expectedStatus_Date() {
+    let date_base = DateFormatter.rfc1123.date(from:"Mon, 03 Oct 1983 16:21:09 GMT")!
+    let date_old = date_base - 1000
+    let date_new = date_base + 1000
+    
+    let HTTP_IF_UNMODIFIED_SINCE = "HTTP_IF_UNMODIFIED_SINCE"
+    let HTTP_IF_MODIFIED_SINCE = "HTTP_IF_MODIFIED_SINCE"
+    
+    func date_string(_ date:Date) -> String {
+      return DateFormatter.rfc1123.string(from:date)
+    }
+    
+    var responder = CGIResponder()
+    responder.header.insert(HTTPHeaderField.lastModified(date_base))
+    XCTAssertNil(responder.expectedStatus)
+    
+    withEnvironmentVariables([HTTP_IF_UNMODIFIED_SINCE:date_string(date_old)]) {
+      XCTAssertEqual(responder.expectedStatus, .preconditionFailed)
+    }
+    
+    withEnvironmentVariables([HTTP_IF_UNMODIFIED_SINCE:date_string(date_base)]) {
+      XCTAssertEqual(responder.expectedStatus, nil)
+    }
+    
+    withEnvironmentVariables([HTTP_IF_UNMODIFIED_SINCE:date_string(date_new)]
+    ) {
+      XCTAssertEqual(responder.expectedStatus, nil)
+    }
+    
+    withEnvironmentVariables([HTTP_IF_MODIFIED_SINCE:date_string(date_old)]) {
+      XCTAssertEqual(responder.expectedStatus, nil)
+    }
+    
+    withEnvironmentVariables([HTTP_IF_MODIFIED_SINCE:date_string(date_base)]) {
+      XCTAssertEqual(responder.expectedStatus, .notModified)
+    }
+    
+    withEnvironmentVariables([HTTP_IF_MODIFIED_SINCE:date_string(date_new)]) {
+      XCTAssertEqual(responder.expectedStatus, .notModified)
+    }
+  }
+  
+  func test_response() {
+    let CRLF = "\u{0D}\u{0A}"
+    
+    var responder = CGIResponder()
+    
+    func check(_ expected:String,
+               expectedWarning:ErrorMessage? = nil,
+               file:StaticString = #file, line:UInt = #line)
+    {
+      TemporaryFile {
+        var output = $0
+        let respond:() -> Void = { try! responder.respond(to:&output) }
+        if let warning = expectedWarning {
+          checkWarning(warning, file:file, line:line, respond)
+        } else {
+          respond()
+        }
+        
+        output.seek(toFileOffset:0)
+        let data = output.availableData
+        XCTAssertEqual(expected, String(data:data, encoding:.utf8), file:file, line:line)
+      }
+    }
+    
     responder.status = .ok
-    responder.contentType = MIMEType(pathExtension:.txt, parameters:["charset":"UTF-8"])!
-    responder.content = .string("Hello, World!\n", encoding:.utf8)
+    responder.contentType = ContentType(type:.text, subtype:"plain")!
+    responder.stringEncoding = .utf8
+    responder.content = .init(string:"CGI")
     
-    let expected = "Status: \(HTTPStatusCode.ok.rawValue) \(HTTPStatusCode.ok.reasonPhrase)\r\n" +
-      "\(HTTPHeaderFieldName.contentType.rawValue): \(MIMEType(pathExtension:.txt, parameters:["charset":"UTF-8"])!.description)\r\n" +
-      "\r\n" +
-      "Hello, World!\n"
+    check(
+      "Status: 200 OK\(CRLF)" +
+      "Content-Type: text/plain; charset=utf-8\(CRLF)" +
+      "\(CRLF)" +
+      "CGI"
+    )
     
-    XCTAssertNoThrow(try responder.respond(to:&output))
-    XCTAssertEqual(String(data:output, encoding:.utf8), expected)
+    responder.stringEncoding = .ascii
+    check(
+      "Status: 200 OK\(CRLF)" +
+      "Content-Type: text/plain; charset=us-ascii\(CRLF)" +
+      "\(CRLF)" +
+      "CGI",
+      expectedWarning:.stringEncodingInconsistency(.utf8, .ascii)
+    )
   }
-  
-  func testStringEncoding() {
-    var output = FileHandle.nullDevice
-    var responder = CGIResponder()
-    responder.contentType = MIMEType(pathExtension:.txt, parameters:["charset":"US-ASCII"])!
-    responder.content = .string("?", encoding:.utf8)
-    
-    let expected: ErrorMessage = .stringEncodingInconsistency(.utf8, String.Encoding(ianaCharacterSetName:"US-ASCII")!)
-    XCTAssertTrue(try checkWarning(expected){ try responder.respond(to:&output) })
-  }
-  
-  func testExpectedStatus() {
-    var output = FileHandle.nullDevice
-    
-    let eTag1 = HTTPETag.strong("ETag1")
-    let eTag2 = HTTPETag.strong("ETag2")
-    let theDayBeforeYesterday = Date(timeIntervalSinceNow:TimeInterval(-48 * 60 * 60))
-    let yesterday = Date(timeIntervalSinceNow:TimeInterval(-24 * 60 * 60))
-    let now = Date()
-    
-    let env = EnvironmentVariables.default
-    
-    var responder1 = CGIResponder()
-    var responder2 = CGIResponder()
-    
-    // ETag
-    
-    //// If-Match
-    env[EnvironmentVariables.Name.httpIfMatch.rawValue] = eTag1.description
-    responder1.setHTTPHeaderField(HTTPHeaderField(eTag:eTag2))
-    XCTAssertEqual(responder1.expectedStatus, .preconditionFailed)
-    XCTAssertTrue(try checkWarning(.statusCodeInconsistency(.ok, .preconditionFailed)) {
-      try responder1.respond(to:&output)
-    })
-    
-    responder1.setHTTPHeaderField(HTTPHeaderField(eTag:eTag1))
-    XCTAssertEqual(responder1.expectedStatus, nil)
-    
-    env.removeValue(forName:EnvironmentVariables.Name.httpIfMatch.rawValue)
-    
-    //// If-None-Match
-    env[EnvironmentVariables.Name.httpIfNoneMatch.rawValue] = eTag1.description
-    XCTAssertEqual(responder1.expectedStatus, .notModified)
-    XCTAssertTrue(try checkWarning(.statusCodeInconsistency(.ok, .notModified)) {
-      try responder1.respond(to:&output)
-    })
-    
-    env[EnvironmentVariables.Name.httpIfNoneMatch.rawValue] = eTag2.description
-    XCTAssertEqual(responder1.expectedStatus, nil)
-    
-    env.removeValue(forName:EnvironmentVariables.Name.httpIfNoneMatch.rawValue)
-    
-    // Last-Modified
-    
-    //// If-Unmofidied-Since
-    env[EnvironmentVariables.Name.httpIfUnmodifiedSince.rawValue] = DateFormatter.rfc1123.string(from:yesterday)
-    responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:now))
-    XCTAssertEqual(responder2.expectedStatus, .preconditionFailed)
-    XCTAssertTrue(try checkWarning(.statusCodeInconsistency(.ok, .preconditionFailed)) {
-      try responder2.respond(to:&output)
-    })
-    
-    responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:theDayBeforeYesterday))
-    XCTAssertEqual(responder2.expectedStatus, nil)
-    
-    env.removeValue(forName:EnvironmentVariables.Name.httpIfUnmodifiedSince.rawValue)
-    
-    //// If-Modified-Since
-    env[EnvironmentVariables.Name.httpIfModifiedSince.rawValue] = DateFormatter.rfc1123.string(from:yesterday)
-    responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:now))
-    XCTAssertEqual(responder2.expectedStatus, nil)
-    
-    responder2.setHTTPHeaderField(HTTPHeaderField(lastModified:theDayBeforeYesterday))
-    XCTAssertEqual(responder2.expectedStatus, .notModified)
-    XCTAssertTrue(try checkWarning(.statusCodeInconsistency(.ok, .notModified)) {
-      try responder2.respond(to:&output)
-    })
-  }
-  
-  static var allTests: [(String, (CGIResponderTests) -> () -> Void)] = [
-    ("testContentType", testContentType),
-    ("testOutput", testOutput),
-    ("testStringEncoding", testStringEncoding),
-    ("testExpectedStatus", testExpectedStatus),
-  ]
 }
+

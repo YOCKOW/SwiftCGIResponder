@@ -1,26 +1,28 @@
-/***************************************************************************************************
+/* *************************************************************************************************
  CGIResponder.swift
-   © 2017 YOCKOW.
+   © 2017-2018 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
- **************************************************************************************************/
+ ************************************************************************************************ */
 
 import Foundation
+import LibExtender
 
-/**
- 
- # CGIResponder
- The principal structure that can respond to the client.
- 
- */
+/// The principal structure that can respond to the client.
 public struct CGIResponder {
+  /// An instance of `HTTPStatusCode` that indicates the result of response.
   public var status: HTTPStatusCode
-  public var header: HTTPHeader // response header
+  
+  /// Response header that contains some HTTP header fields.
+  public var header: HTTPHeader
+  
+  /// The content.
   public var content: CGIContent
   
-  public init(status: HTTPStatusCode = .ok,
-              header: HTTPHeader = HTTPHeader(fields:[]),
-              content: CGIContent = .string("", encoding:.utf8)) {
+  public init(status: HTTPStatusCode  = .ok,
+              header: HTTPHeader = HTTPHeader([]),
+              content: CGIContent = .string("", encoding:.utf8))
+  {
     self.status = status
     self.header = header
     self.content = content
@@ -28,46 +30,17 @@ public struct CGIResponder {
 }
 
 extension CGIResponder {
-  /**
-   
-   Set HTTP Header Field
-   
-   - returns: Nothing
-   
-   */
-  public mutating func setHTTPHeaderField(_ newField:HTTPHeaderField) {
-    self.header.set(newField)
-  }
-  
-  /**
-   
-   Append HTTP Header Field
-   
-   - returns: Nothing
-   
-   */
-  public mutating func appendHTTPHeaderField(_ newField:HTTPHeaderField) throws {
-    try self.header.append(newField)
-  }
-  public mutating func appendHTTPHeaderField(name:HTTPHeaderFieldName, value:HTTPHeaderFieldValue) throws {
-    guard let field = HTTPHeaderField(name:name, value:value) else {
-      throw CGIResponderError.invalidArgument
-    }
-    try self.appendHTTPHeaderField(field)
-  }
-}
-
-extension CGIResponder {
-  /// Get and set Content-Type directly.
-  public var contentType: MIMEType {
+  /// The content type of the response.
+  /// This property is computed from `HTTPHeader`.
+  public var contentType: ContentType {
     get {
-      guard let field = self.header.fields(forName:.contentType).first else {
-        return MIMEType(type:.application, subtype:"octet-stream")!
+      guard let field = self.header[.contentType].first else {
+        return ContentType(type:.application, subtype:"octet-stream")!
       }
-      return (field.delegate as! SpecifiedHTTPHeaderFieldDelegate.ContentType).contentType
+      return field.source as! ContentType
     }
     set {
-      self.setHTTPHeaderField(HTTPHeaderField(contentType:newValue))
+      self.header.insert(.contentType(newValue), removingExistingFields:true)
     }
   }
   
@@ -81,7 +54,7 @@ extension CGIResponder {
     }
     set {
       var contentType = self.contentType
-      var params: [String:String] = contentType.parameters != nil ? contentType.parameters! : [:]
+      var params: ContentType.Parameters = contentType.parameters ?? [:]
       if let encoding = newValue {
         params["charset"] = encoding.ianaCharacterSetName! // error may occur
       } else {
@@ -94,23 +67,23 @@ extension CGIResponder {
 }
 
 extension CGIResponder {
-  /// Check ETag or Last-Modified
+  /// Estimate the expected status by checking ETag or Last-Modified.
   public var expectedStatus: HTTPStatusCode? {
     let header = self.header
-    let env = EnvironmentVariables.default
+    let req = Client.client.request
     
-    if let eTagHeaderField = header.fields(forName:.eTag).first {
-      let eTag = (eTagHeaderField.delegate as! HTTPHeaderFieldDelegate.ETag).eTag
-      if case let ifMatch as [HTTPETag] = env[.httpIfMatch] {
-        if !eTag.matches(in:ifMatch) { return .preconditionFailed }
-      } else if case let ifNoneMatch as [HTTPETag] = env[.httpIfNoneMatch] {
-        if eTag.weaklyMatches(in:ifNoneMatch) { return .notModified }
+    if let eTagHeaderField = header[.eTag].first, let eTag = eTagHeaderField.source as? HTTPETag {
+      if let ifMatch = req.ifMatch {
+        if !ifMatch.contains(eTag, weakComparison:false) { return .preconditionFailed }
+      } else if let ifNoneMatch = req.ifNoneMatch {
+        if ifNoneMatch.contains(eTag, weakComparison:true) { return .notModified }
       }
-    } else if let lastModifiedHeaderField = header.fields(forName:.lastModified).first {
-      let lastModified = (lastModifiedHeaderField.delegate as! HTTPHeaderFieldDelegate.LastModified).date
-      if case let ifUnmodifiedSince as Date = env[.httpIfUnmodifiedSince] {
+    } else if let lastModifiedField = header[.lastModified].first,
+              let lastModified = lastModifiedField.source as? Date
+    {
+      if let ifUnmodifiedSince = req.ifUnmodifiedSince {
         if lastModified > ifUnmodifiedSince { return .preconditionFailed }
-      } else if case let ifModifiedSince as Date = env[.httpIfModifiedSince] {
+      } else if let ifModifiedSince = req.ifModifiedSince {
         if lastModified <= ifModifiedSince { return .notModified }
       }
     }
@@ -121,15 +94,17 @@ extension CGIResponder {
 extension CGIResponder {
   /**
    
-   Respond to client; Print HTTP headers (including "Status") and contents to standard output.
+   Respond to client; Print HTTP headers (including "Status") and content to standard output.
    Modifications may be made by Web Server.
    Just call this method after everything is ready.
    
-   ```
+   ```Swift
+   import CGIResponder
    var responder = CGIResponder()
    responder.status = .ok
-   responder.contentType = MIMEType(pathExtension:.txt, parameters:["charset":"UTF-8"])!
+   responder.contentType = ContentType(pathExtension:.txt, parameters:["charset":"UTF-8"])!
    responder.content = .string("Hello, World!\n", encoding:.utf8)
+   try! responder.respond()
    
    // -- Output --
    // Status: 200 OK
@@ -138,50 +113,51 @@ extension CGIResponder {
    // Hello, World!
    //
    ```
-   
-   - returns:
-     Nothing
-   
-   - parameters:
-     Nothing
-   
    */
-  public func respond() {
+  public func respond() throws {
     var stdout = FileHandle.standardOutput
-    do {
-      try self.respond(to:&stdout)
-    } catch CGIResponderError.missingRequiredHTTPHeaderField(let name) {
-      warn("HTTP Header Field `\(name)` Required.")
-    } catch {
-      warn("Unexpected Error Occurred.")
-    }
+    try self.respond(to:&stdout)
   }
   
   /// For debug purpose, you can specify output.
-  public func respond<Respondee: CGIContentOutputStream>(to output:inout Respondee) throws {
+  public func respond<Respondee:CGIContentOutputStream>(to output:inout Respondee) throws {
     let status = self.status
     
     // Check if there's mismatch about string encoding.
     if case let .string(_, encoding:encoding) = self.content,
-       let expectedEncoding = self.stringEncoding,
-       encoding != expectedEncoding {
-      viewMessage(.stringEncodingInconsistency(encoding, expectedEncoding))
+      let expectedEncoding = self.stringEncoding,
+      encoding != expectedEncoding
+    {
+      warn(message:.stringEncodingInconsistency(encoding, expectedEncoding))
     }
     
     // Check if `status` is an expected value or not using ETag or Last-Modified
     if let expectedStatus = self.expectedStatus, status != expectedStatus {
-      viewMessage(.statusCodeInconsistency(status, expectedStatus))
+      warn(message:.statusCodeInconsistency(status, expectedStatus))
+    }
+    
+    if status.rawValue / 100 == 3 {
+      guard self.header[.location].count > 0 else {
+        throw CGIResponderError.missingRequiredHTTPHeaderField(name:.location)
+      }
     }
     
     // Status
-    try output.write(CGIContent(string:"Status: \(status.rawValue) \(status.reasonPhrase)\r\n"))
+    try output.write(
+      CGIContent(string:"Status: \(status.rawValue) \(status.reasonPhrase)\u{000D}\u{000A}")
+    )
     
     // Requires `Content-Type:`
     var header = self.header
-    if header.fields(forName:.contentType).first == nil {
-      header.set(HTTPHeaderField(contentType:MIMEType(type:.application, subtype:"octet-stream")!))
+    if header[.contentType].count < 1 {
+      header.insert(.contentType(ContentType(type:.application, subtype:"octet-stream")!))
     }
-    try output.write(CGIContent(string:header.description + "\r\n"))
+    try output.write(CGIContent(string:header.description))
+    
+    // If the method is HEAD, the body is not required.
+    if let method = Client.client.request.method, method == .head {
+      return
+    }
     
     // print contents
     try output.write(self.content)
