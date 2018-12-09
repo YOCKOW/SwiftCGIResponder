@@ -28,7 +28,13 @@ let supporters: [Supporter] = [
     [
       .byName(name:"SwiftUnicodeSupplement"),
     ]
-  )
+  ),
+  (
+    "XHTML",
+    [
+      .target(name:"LibExtender"),
+    ]
+  ),
 ]
 
 let mainTargetDependencies: [Target.Dependency] = [
