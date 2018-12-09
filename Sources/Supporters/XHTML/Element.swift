@@ -37,3 +37,13 @@ extension TextHolderElement {
     }
   }
 }
+
+
+/// Element that may have some children.
+public protocol ParentElement: Element {
+  func add<E>(child:E) where E:Element
+  func insert<E>(child:E, at index:Int) where E:Element
+  func removeChild(at index:Int)
+  var children: [AnyElement] { get }
+  var childCount: Int { get }
+}
