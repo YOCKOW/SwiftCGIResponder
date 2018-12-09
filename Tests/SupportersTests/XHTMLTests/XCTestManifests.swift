@@ -1,6 +1,6 @@
 import XCTest
 
-extension XHTMLDocumentTests {
+extension DocumentTests {
     static let __allTests = [
         ("test_initialization", test_initialization),
     ]
@@ -9,7 +9,7 @@ extension XHTMLDocumentTests {
 #if !os(macOS)
 public func __allTests() -> [XCTestCaseEntry] {
     return [
-        testCase(XHTMLDocumentTests.__allTests),
+        testCase(DocumentTests.__allTests),
     ]
 }
 #endif

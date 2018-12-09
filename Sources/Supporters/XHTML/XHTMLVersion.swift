@@ -18,7 +18,7 @@ public enum HTML4_01Version {
 }
 
 /// The version of XHTML.
-public enum XHTMLVersion {
+public enum Version {
   /// XHTML 1.0
   case v1_0(HTML4_01Version)
   
@@ -56,7 +56,7 @@ public enum XHTMLVersion {
   case unspecified
 }
 
-extension XHTMLVersion {
+extension Version {
   internal var _documentType: String? {
     switch self {
     case .v1_0(let hVersion):
@@ -81,7 +81,7 @@ extension XHTMLVersion {
     case .mobileProfile1_2:
       return "<!DOCTYPE html PUBLIC \"-//WAPFORUM//DTD XHTML Mobile 1.2//EN\" \"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd\">"
     case .mobileProfile1_3:
-      return XHTMLVersion.basic1_1._documentType
+      return Version.basic1_1._documentType
     case .v5:
       return "<!DOCTYPE html>"
     case .unspecified:

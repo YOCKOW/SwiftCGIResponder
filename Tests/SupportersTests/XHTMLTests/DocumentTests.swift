@@ -1,5 +1,5 @@
 /* *************************************************************************************************
- XHTMLDocumentTests.swift
+ DocumentTests.swift
    © 2017-2018 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
@@ -8,7 +8,7 @@
 import XCTest
 @testable import XHTML
 
-final class XHTMLDocumentTests: XCTestCase {
+final class DocumentTests: XCTestCase {
   func test_initialization() {
     let simpleXHTML5_string = """
       <?xml version="1.0" encoding="UTF-8"?>
@@ -33,8 +33,8 @@ final class XHTMLDocumentTests: XCTestCase {
       </xhtml:html>
       """
     
-    let simpleXHTML5 = XHTMLDocument(xmlString:simpleXHTML5_string)
-    let xhtml5 = XHTMLDocument(xmlString:xhtml5_string)
+    let simpleXHTML5 = Document(xmlString:simpleXHTML5_string)
+    let xhtml5 = Document(xmlString:xhtml5_string)
     
     XCTAssertNotNil(simpleXHTML5)
     XCTAssertNotNil(xhtml5)

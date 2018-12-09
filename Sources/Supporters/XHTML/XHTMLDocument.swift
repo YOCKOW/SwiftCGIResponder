@@ -10,7 +10,7 @@ import LibExtender
 
 /// Represents the XHTML document.
 /// This is NOT a subclass of `XMLDocument`, but utilizes it.
-public struct XHTMLDocument {
+public struct Document {
   private var __xmlDocument: XMLDocument!
   private var _xmlDocument: XMLDocument {
     get { return self.__xmlDocument }
@@ -34,7 +34,7 @@ public struct XHTMLDocument {
   }
   
   /// Create an empty document.
-  public init?(version:XHTMLVersion,
+  public init?(version:Version,
                xmlVersion:String = "1.0", stringEncoding encoding:String.Encoding = .utf8,
                options mask:XMLNode.Options = []) {
     guard xmlVersion == "1.0" || xmlVersion == "1.1" else { return nil }
@@ -50,7 +50,7 @@ public struct XHTMLDocument {
 }
 
 // For output.
-extension XHTMLDocument {
+extension Document {
   public var xmlData: Data {
     return self._xmlDocument.xmlData
   }
