@@ -57,7 +57,7 @@ public enum XHTMLVersion {
 }
 
 extension XHTMLVersion {
-  internal var _documentTypes: String? {
+  internal var _documentType: String? {
     switch self {
     case .v1_0(let hVersion):
       switch hVersion {
@@ -81,7 +81,7 @@ extension XHTMLVersion {
     case .mobileProfile1_2:
       return "<!DOCTYPE html PUBLIC \"-//WAPFORUM//DTD XHTML Mobile 1.2//EN\" \"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd\">"
     case .mobileProfile1_3:
-      return XHTMLVersion.basic1_1._documentTypes
+      return XHTMLVersion.basic1_1._documentType
     case .v5:
       return "<!DOCTYPE html>"
     case .unspecified:
