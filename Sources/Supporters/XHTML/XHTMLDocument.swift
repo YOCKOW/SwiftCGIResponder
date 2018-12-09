@@ -11,7 +11,11 @@ import LibExtender
 /// Represents the XHTML document.
 /// This is NOT a subclass of `XMLDocument`, but utilizes it.
 public struct XHTMLDocument {
-  private var _xmlDocument: XMLDocument
+  private var __xmlDocument: XMLDocument!
+  private var _xmlDocument: XMLDocument {
+    get { return self.__xmlDocument }
+    set { self.__xmlDocument = (newValue.copy() as! XMLDocument) }
+  }
   
   private init?(_ xmlDocument:XMLDocument) {
     guard
