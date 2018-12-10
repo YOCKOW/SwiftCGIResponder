@@ -41,9 +41,28 @@ extension TextHolderElement {
 
 /// Element that may have some children.
 public protocol ParentElement: Element {
-  func add<E>(child:E) where E:Element
-  func insert<E>(child:E, at index:Int) where E:Element
-  func removeChild(at index:Int)
+  mutating func add<E>(child:E) where E:Element
+  mutating func insert<E>(child:E, at index:Int) where E:Element
+  mutating func removeChild(at index:Int)
   var children: [AnyElement] { get }
   var childCount: Int { get }
+}
+
+
+/// User of `_XMLNodeWrapper`
+internal protocol _XMLNodeWrapperUser {
+  associatedtype Node: XMLNode
+  var _wrapper: _XMLNodeWrapper<Node> { get set }
+}
+extension _XMLNodeWrapperUser {
+  public var name: String? { return self._wrapper[\.name] }
+  public var localName: String? { return self._wrapper[\.localName] }
+  public var uri: String? { return self._wrapper[\.uri] }
+  public var stringValue: String? {
+    get { return self._wrapper[\.stringValue] }
+    set { self._wrapper[\.stringValue] = newValue }
+  }
+  public func xmlString(options mask:XMLNode.Options) -> String {
+    return self._wrapper.call(getter:Node.xmlString, arguments:mask)
+  }
 }
