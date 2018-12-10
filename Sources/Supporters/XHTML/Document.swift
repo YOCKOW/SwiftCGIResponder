@@ -11,11 +11,7 @@ import LibExtender
 /// Represents the XHTML document.
 /// This is NOT a subclass of `XMLDocument`, but utilizes it.
 public struct Document {
-  private var __xmlDocument: XMLDocument!
-  private var _xmlDocument: XMLDocument {
-    get { return self.__xmlDocument }
-    set { self.__xmlDocument = (newValue.copy() as! XMLDocument) }
-  }
+  private var _xmlDocumentWrapper: _XMLNodeWrapper<XMLDocument>
   
   private init?(_ xmlDocument:XMLDocument) {
     guard
@@ -24,7 +20,7 @@ public struct Document {
     {
       return nil
     }
-    self._xmlDocument = xmlDocument
+    self._xmlDocumentWrapper = _XMLNodeWrapper(xmlDocument)
   }
   
   /// Initialize with a given string.
@@ -52,18 +48,18 @@ public struct Document {
 // For output.
 extension Document {
   public var xmlData: Data {
-    return self._xmlDocument.xmlData
+    return self._xmlDocumentWrapper[\.xmlData]
   }
   
   public func xmlData(options mask:XMLNode.Options = []) -> Data {
-    return self._xmlDocument.xmlData(options:mask)
+    return self._xmlDocumentWrapper.call(getter:XMLDocument.xmlData, arguments:mask)
   }
   
   public var xmlString: String {
-    return self._xmlDocument.xmlString
+    return self._xmlDocumentWrapper[\.xmlString]
   }
   
   public func xmlString(options mask:XMLNode.Options = []) -> String {
-    return self._xmlDocument.xmlString(options:mask)
+    return self._xmlDocumentWrapper.call(getter:XMLDocument.xmlString, arguments:mask)
   }
 }
