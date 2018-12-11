@@ -16,10 +16,15 @@ public protocol Element: Hashable {
   var stringValue: String? { get set }
   func xmlString(options mask:XMLNode.Options) -> String
 }
-
 extension Element {
   public var xmlString: String {
     return self.xmlString(options:.nodeCompactEmptyElement)
+  }
+}
+extension Element {
+  internal var _xmlElementWrapper: _XMLNodeWrapper<XMLElement> {
+    let xmlElement = try! XMLElement(xmlString:self.xmlString)
+    return .init(xmlElement)
   }
 }
 
@@ -50,11 +55,10 @@ public protocol ParentElement: Element {
 
 
 /// User of `_XMLNodeWrapper`
-internal protocol _XMLNodeWrapperUser {
-  associatedtype Node: XMLNode
-  var _wrapper: _XMLNodeWrapper<Node> { get set }
+internal protocol _XMLElementWrapper {
+  var _wrapper: _XMLNodeWrapper<XMLElement> { get set }
 }
-extension _XMLNodeWrapperUser {
+extension _XMLElementWrapper {
   public var name: String? { return self._wrapper[\.name] }
   public var localName: String? { return self._wrapper[\.localName] }
   public var uri: String? { return self._wrapper[\.uri] }
@@ -63,6 +67,11 @@ extension _XMLNodeWrapperUser {
     set { self._wrapper[\.stringValue] = newValue }
   }
   public func xmlString(options mask:XMLNode.Options) -> String {
-    return self._wrapper.call(getter:Node.xmlString, arguments:mask)
+    return self._wrapper.call(getter:XMLElement.xmlString, arguments:mask)
+  }
+}
+extension Element where Self: _XMLElementWrapper {
+  internal var _xmlElementWrapper: _XMLNodeWrapper<XMLElement> {
+    return self._wrapper
   }
 }
