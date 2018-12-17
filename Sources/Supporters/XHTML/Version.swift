@@ -107,7 +107,7 @@ extension String {
   fileprivate func _removeWhitespacesAndNewlines() -> String {
     var newScalars = UnicodeScalarView()
     for scalar in self.unicodeScalars {
-      if UnicodeScalarSet.whitespacesAndNewlines.contains(scalar) { continue }
+      if UnicodeScalarSet.xmlWhitespaces.contains(scalar) { continue }
       newScalars.append(scalar)
     }
     return String(newScalars)
