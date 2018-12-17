@@ -32,6 +32,7 @@ let supporters: [Supporter] = [
   (
     "XHTML",
     [
+      .byName(name:"SwiftBonaFideCharacterSet"),
       .target(name:"LibExtender"),
     ]
   ),

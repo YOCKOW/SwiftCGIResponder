@@ -4,9 +4,10 @@
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
- 
 
-public enum HTML4_01Version {
+import BonaFideCharacterSet
+
+public enum HTML4_01Version: Hashable {
   /// Corresponding to strict HTML 4.01.
   case strict
   
@@ -18,7 +19,7 @@ public enum HTML4_01Version {
 }
 
 /// The version of XHTML.
-public enum Version {
+public enum Version: Hashable {
   /// XHTML 1.0
   case v1_0(HTML4_01Version)
   
@@ -87,5 +88,35 @@ extension Version {
     case .unspecified:
       return nil
     }
+  }
+}
+
+private let _doctypesWithoutSpaces:[String:Version] = [
+  "<!DOCTYPEhtmlPUBLIC\"-//W3C//DTDXHTML1.0Strict//EN\"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">":.v1_0(.strict),
+  "<!DOCTYPEhtmlPUBLIC\"-//W3C//DTDXHTML1.0Transitional//EN\"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">":.v1_0(.transitional),
+  "<!DOCTYPEhtmlPUBLIC\"-//W3C//DTDXHTML1.0Frameset//EN\"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">":.v1_0(.frameset),
+  "<!DOCTYPEhtmlPUBLIC\"-//W3C//DTDXHTML1.1//EN\"\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">":.v1_1,
+  "<!DOCTYPEhtmlPUBLIC\"-//W3C//DTDXHTMLBasic1.0//EN\"\"http://www.w3.org/TR/xhtml-basic/xhtml-basic10.dtd\">":.basic1_0,
+  "<!DOCTYPEhtmlPUBLIC\"-//W3C//DTDXHTMLBasic1.1//EN\"\"http://www.w3.org/TR/xhtml-basic/xhtml-basic11.dtd\">":.basic1_1,
+  "<!DOCTYPEhtmlPUBLIC\"-//WAPFORUM//DTDXHTMLMobile1.0//EN\"\"http://www.wapforum.org/DTD/xhtml-mobile10.dtd\">":.mobileProfile1_0,
+  "<!DOCTYPEhtmlPUBLIC\"-//WAPFORUM//DTDXHTMLMobile1.1//EN\"\"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile11.dtd\">":.mobileProfile1_1,
+  "<!DOCTYPEhtmlPUBLIC\"-//WAPFORUM//DTDXHTMLMobile1.2//EN\"\"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd\">":.mobileProfile1_2,
+  "<!DOCTYPEhtml>":.v5,
+]
+extension String {
+  fileprivate func _removeWhitespacesAndNewlines() -> String {
+    var newScalars = UnicodeScalarView()
+    for scalar in self.unicodeScalars {
+      if UnicodeScalarSet.whitespacesAndNewlines.contains(scalar) { continue }
+      newScalars.append(scalar)
+    }
+    return String(newScalars)
+  }
+}
+extension Version {
+  internal init?(_documentType: String) {
+    let doctypeWithoutSpaces = _documentType._removeWhitespacesAndNewlines()
+    guard let version = _doctypesWithoutSpaces[doctypeWithoutSpaces] else { return nil }
+    self = version
   }
 }
