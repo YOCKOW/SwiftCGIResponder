@@ -8,36 +8,53 @@
 import XCTest
 @testable import XHTML
 
+private let simpleXHTML5_string =
+  """
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!-- Comment before DOCTYPE -->
+  <?processing-instruction-before-doctype some-attribute='some-value'?>
+  <!DOCTYPE html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+      <title>XHTML5</title>
+    </head>
+    <body>
+      <div>I am XHTML5.</div>
+      <div id="ID&quot;&apos;&lt;&gt;" data-user-name="YOCKOW">ID</div>
+    </body>
+  </html>
+  """
+private let simpleXHTML5_data = simpleXHTML5_string.data(using:.utf8)!
+
+private let xhtml5_string =
+  """
+  <?xml version="1.0" encoding="UTF-8"?>
+  <?xml-stylesheet type="text/css" href="test.css"?>
+  <xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <xhtml:head>
+      <xhtml:title xml:id="title">XHTML5</xhtml:title>
+      <xhtml:script><![CDATA[ window.alert("XHTML5!") ]]></xhtml:script>
+    </xhtml:head>
+    <xhtml:body>
+      <xhtml:div>I am also XHTML5.</xhtml:div>
+    </xhtml:body>
+  </xhtml:html>
+  """
+private let xhtml5_data = xhtml5_string.data(using:.utf8)!
+
 final class DocumentTests: XCTestCase {
+  func test_detectXHTMLInfo() {
+    let infoOfSimpleXHTML5 = simpleXHTML5_data._detectXHTMLInfo()
+    XCTAssertTrue(infoOfSimpleXHTML5 == (xmlVersion:"1.0", encoding:.utf8, version:.v5),
+                  "\(infoOfSimpleXHTML5)")
+    
+  
+    let infoOfXHTML5 = xhtml5_data._detectXHTMLInfo()
+    XCTAssertTrue(infoOfXHTML5 == (xmlVersion:"1.0", encoding:.utf8, version:nil),
+                  "\(infoOfXHTML5)")
+  }
+  
   func test_initialization() {
-    let simpleXHTML5_string = """
-      <?xml version="1.0" encoding="UTF-8"?>
-      <!DOCTYPE html>
-      <html xmlns="http://www.w3.org/1999/xhtml">
-        <head><title>XHTML5</title></head>
-        <body><div>I am XHTML5.</div><div id="ID&quot;&apos;" data-user-name="YOCKOW">ID</div></body>
-      </html>
-      """
-    
-    let xhtml5_string = """
-      <?xml version="1.0" encoding="UTF-8"?>
-      <?xml-stylesheet type="text/css" href="test.css"?>
-      <xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml">
-        <xhtml:head>
-          <xhtml:title xml:id="title">XHTML5</xhtml:title>
-          <xhtml:script><![CDATA[ window.alert("XHTML5!") ]]></xhtml:script>
-        </xhtml:head>
-        <xhtml:body>
-          <xhtml:div>I am also XHTML5.</xhtml:div>
-        </xhtml:body>
-      </xhtml:html>
-      """
-    
-//    let simpleXHTML5 = Document(xmlString:simpleXHTML5_string)
-//    let xhtml5 = Document(xmlString:xhtml5_string)
-//
-//    XCTAssertNotNil(simpleXHTML5)
-//    XCTAssertNotNil(xhtml5)
   }
 }
 
