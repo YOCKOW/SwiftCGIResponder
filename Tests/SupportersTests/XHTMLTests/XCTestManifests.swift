@@ -7,6 +7,14 @@ extension DocumentTests {
     ]
 }
 
+extension NamesTests {
+    static let __allTests = [
+        ("test_attributeName", test_attributeName),
+        ("test_NCName", test_NCName),
+        ("test_QName", test_QName),
+    ]
+}
+
 extension VersionTests {
     static let __allTests = [
         ("test_initialization", test_initialization),
@@ -17,6 +25,7 @@ extension VersionTests {
 public func __allTests() -> [XCTestCaseEntry] {
     return [
         testCase(DocumentTests.__allTests),
+        testCase(NamesTests.__allTests),
         testCase(VersionTests.__allTests),
     ]
 }

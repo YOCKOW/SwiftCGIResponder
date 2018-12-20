@@ -60,4 +60,7 @@ extension UnicodeScalarSet {
   ).union(
     UnicodeScalarSet(unicodeScalarsIn:"\u{203F}"..."\u{2040}")
   )
+  
+  internal static let xmlNoncolonizedNameScalars =
+    xmlNameCharacterScalars.subtracting(UnicodeScalarSet(unicodeScalarsIn:":"))
 }
