@@ -10,6 +10,7 @@ extension CFStringEncodingTests {
 extension DataTests {
     static let __allTests = [
         ("test_quotedPrintable", test_quotedPrintable),
+        ("test_view", test_view),
     ]
 }
 
