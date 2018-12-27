@@ -49,33 +49,27 @@ final class DataTests: XCTestCase {
   }
   
   func test_view() {
+    let uint8View = data.uint8View
+    XCTAssertEqual(uint8View[uint8View.index(after:uint8View.startIndex)], 0x01)
     
+    guard let uint16BEView = data.uint16BigEndianView else { XCTFail("Must not be nil."); return }
+    XCTAssertEqual(uint16BEView[uint16BEView.index(uint16BEView.startIndex, offsetBy:3)],
+                   0x0607)
     
+    guard let uint16LEView = data.uint16LittleEndianView else { XCTFail("Must not be nil."); return }
+    XCTAssertEqual(uint16LEView[uint16LEView.index(uint16LEView.startIndex, offsetBy:7)],
+                   0x0F0E)
     
-//    let uint8View = data.uint8View
-//    XCTAssertEqual(uint8View[uint8View.index(after:uint8View.startIndex)], 0x01)
-//
-//    guard let uint16BEView = data.uint16BigEndianView else { XCTFail("Must not be nil."); return }
-//    XCTAssertEqual(uint16BEView[uint16BEView.index(uint16BEView.startIndex, offsetBy:3)],
-//                   0x0607)
-//
-//    guard let uint16LEView = data.uint16LittleEndianView else { XCTFail("Must not be nil."); return }
-//    XCTAssertEqual(uint16LEView[uint16LEView.index(uint16LEView.startIndex, offsetBy:7)],
-//                   0x0F0E)
-//
-//    guard let uint32BEView = data.uint32BigEndianView else { XCTFail("Must not be nil."); return }
-//    XCTAssertEqual(uint32BEView[uint32BEView.index(uint32BEView.startIndex, offsetBy:1)],
-//                   0x04050607)
-//
-//    guard let uint32LEView = data.uint32LittleEndianView else { XCTFail("Must not be nil."); return }
-//    XCTAssertEqual(uint32LEView[uint32LEView.index(uint32LEView.startIndex, offsetBy:2)],
-//                   0x0B0A0908)
-//
-//    let subdata = data[0x08..<0x10]
-//    guard let subUInt16LEView = subdata.uint16LittleEndianView else { XCTFail("Must not be nil."); return }
-//    XCTAssertEqual(subUInt16LEView[subUInt16LEView.startIndex], 0x0908)
+    guard let uint32BEView = data.uint32BigEndianView else { XCTFail("Must not be nil."); return }
+    XCTAssertEqual(uint32BEView[uint32BEView.index(uint32BEView.startIndex, offsetBy:1)],
+                   0x04050607)
     
+    guard let uint32LEView = data.uint32LittleEndianView else { XCTFail("Must not be nil."); return }
+    XCTAssertEqual(uint32LEView[uint32LEView.index(uint32LEView.startIndex, offsetBy:2)],
+                   0x0B0A0908)
     
+    guard let subUInt16LEView = subdata.uint16LittleEndianView else { XCTFail("Must not be nil."); return }
+    XCTAssertEqual(subUInt16LEView[subUInt16LEView.startIndex], 0x0504)
   }
 }
 

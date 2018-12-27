@@ -9,12 +9,12 @@ import CoreFoundation
 import Foundation
 
 extension Data {
-  public struct View<U>: Hashable where U: UnsignedInteger, U: FixedWidthInteger {
-    /// The byte-order which has been used when the integer was written into data.
-    fileprivate enum Endianness {
+  public struct View<UnsignedIntegerType>
+    where UnsignedIntegerType: UnsignedInteger & FixedWidthInteger
+  {
+    fileprivate enum _Endianness {
       case bigEndian, littleEndian
       // Should implement the case like `case middleEndian(ByteOrder)`?
-      
       fileprivate init(_ cfEndian:CFByteOrder) {
         if cfEndian == CFByteOrderBigEndian.rawValue {
           self = .bigEndian
@@ -27,52 +27,50 @@ extension Data {
     }
     
     /// Index of view.
-    public struct Index: Hashable, Comparable {
+    public struct Index: Comparable {
       private var _index: Int
-      private var _range: Range<Data.Index>
+      private var _relativeRange: Range<Data.RelativeIndex>
+      
       fileprivate init(index:Int) {
+        assert(index >= 0)
         self._index = index
-        self._range = (index * MemoryLayout<U>.size)..<((index + 1) * MemoryLayout<U>.size)
+        
+        let length = MemoryLayout<UnsignedIntegerType>.size
+        let lower = Data.RelativeIndex(distance:index * length)!
+        let upper = Data.RelativeIndex(distance:(index + 1) * length)!
+        self._relativeRange = lower..<upper
       }
+      
       fileprivate init(range:Range<Data.Index>) {
-        assert(range.lowerBound % MemoryLayout<U>.size == 0)
-        assert(range.upperBound - range.lowerBound == MemoryLayout<U>.size)
-        self._index = range.lowerBound / MemoryLayout<U>.size
-        self._range = range
+        assert(range.lowerBound >= 0)
+        assert(range.upperBound - range.lowerBound == MemoryLayout<UnsignedIntegerType>.size)
+        self._index = range.lowerBound / MemoryLayout<UnsignedIntegerType>.size
+        self._relativeRange =
+          Data.RelativeIndex(distance:range.lowerBound)!..<Data.RelativeIndex(distance:range.upperBound)!
       }
-      static fileprivate func +(lhs:Index, rhs:Int) -> Index {
+      
+      fileprivate static func +(lhs:Index, rhs:Int) -> Index {
         return Index(index:lhs._index + rhs)
       }
-      fileprivate func subdata(for data:Data) -> Data {
-        precondition(
-          self._index >= 0 && self._range.lowerBound < data.endIndex,
-          "Out of bounds."
-        )
-        return data[self._range]
+      
+      public static func ==(lhs:Index, rhs:Index) -> Bool {
+        return lhs._index == rhs._index
       }
       
-      public static func ==(lhs:Index, rhs:Index) -> Bool { return lhs._index == rhs._index }
-      
-      #if swift(>=4.2)
-      public func hash(into hasher:inout Hasher) {
-        hasher.combine(self._index)
-      }
-      #else
-      public var hashValue: Int {
-        return self._index.hashValue
-      }
-      #endif
-      
-      public static func < (lhs:Index, rhs:Index) -> Bool {
+      public static func <(lhs:Index, rhs:Index) -> Bool {
         return lhs._index < rhs._index
+      }
+      
+      fileprivate func subdata(for data:Data) -> Data {
+        return data[self._relativeRange]
       }
     }
     
-    private var _endianness: Endianness
+    private var _endianness: _Endianness
     private var _data: Data
-    
-    fileprivate init?(data:Data, endianness:Endianness = .init(CFByteOrderGetCurrent())) {
-      guard data.count % MemoryLayout<U>.size == 0 else { return nil }
+
+    fileprivate init?(data:Data, endianness:_Endianness = .init(CFByteOrderGetCurrent())) {
+      guard data.count % MemoryLayout<UnsignedIntegerType>.size == 0 else { return nil }
       self._data = data
       self._endianness = endianness
     }
@@ -148,65 +146,75 @@ extension Data {
   }
 }
 
+
 extension Data.View {
-  public var startIndex: Data.View<U>.Index {
+  public var startIndex: Data.View<UnsignedIntegerType>.Index {
     return Index(index:0)
   }
-  
-  public var endIndex: Data.View<U>.Index {
-    let endIndexOfData = self._data.endIndex
-    return Index(range:endIndexOfData..<(endIndexOfData + MemoryLayout<U>.size))
+
+  public var endIndex: Data.View<UnsignedIntegerType>.Index {
+    let distance = self._data.endIndex - self._data.startIndex
+    return Index(range:distance..<(distance + MemoryLayout<UnsignedIntegerType>.size))
   }
-  
-  public func index(_ index:Data.View<U>.Index, offsetBy distance:Int) -> Data.View<U>.Index {
+
+  public func index(_ index:Data.View<UnsignedIntegerType>.Index,
+                    offsetBy distance:Int) -> Data.View<UnsignedIntegerType>.Index
+  {
     return index + distance
   }
-  
-  public func index(after index:Data.View<U>.Index) -> Data.View<U>.Index {
+
+  public func index(after index:Data.View<UnsignedIntegerType>.Index)
+    -> Data.View<UnsignedIntegerType>.Index
+  {
     return self.index(index, offsetBy:1)
   }
 
-  public func index(before index:Data.View<U>.Index) -> Data.View<U>.Index {
+  public func index(before index:Data.View<UnsignedIntegerType>.Index)
+    -> Data.View<UnsignedIntegerType>.Index
+  {
     return self.index(index, offsetBy:-1)
   }
-  
-  private func _subdata(at index:Data.View<U>.Index) -> Data {
+
+  private func _subdata(at index:Data.View<UnsignedIntegerType>.Index) -> Data {
     return index.subdata(for:self._data)
   }
-  
-  public subscript(_ index:Data.View<U>.Index) -> U {
-    let data = self._subdata(at:index)
-    assert(data.count == MemoryLayout<U>.size)
 
-    var unswapped: U = 0
+  public subscript(_ index:Data.View<UnsignedIntegerType>.Index) -> UnsignedIntegerType {
+    let data = self._subdata(at:index)
+    assert(data.count == MemoryLayout<UnsignedIntegerType>.size)
+
+    var unswapped: UnsignedIntegerType = 0
     Swift.withUnsafeMutableBytes(of:&unswapped) { (pointer:UnsafeMutableRawBufferPointer) -> Void in
       for ii in 0..<data.count {
-        pointer[ii] = data[data.startIndex + ii]
+        pointer[ii] = data[Data.RelativeIndex(distance:ii)!]
       }
     }
     
     switch self._endianness {
-    case .bigEndian: return U(bigEndian:unswapped)
-    case .littleEndian: return U(littleEndian:unswapped)
+    case .bigEndian: return UnsignedIntegerType(bigEndian:unswapped)
+    case .littleEndian: return UnsignedIntegerType(littleEndian:unswapped)
     }
   }
 }
 
 extension Data.View: Sequence {
   public struct Iterator: IteratorProtocol {
-    public typealias Element = U
-    private var _view: Data.View<U>
-    private var _index: Data.View<U>.Index
-    fileprivate init(_ view:Data.View<U>) { self._view = view; self._index = view.startIndex }
-    public mutating func next() -> U? {
+    public typealias Element = UnsignedIntegerType
+    private var _view: Data.View<UnsignedIntegerType>
+    private var _index: Data.View<UnsignedIntegerType>.Index
+    fileprivate init(_ view:Data.View<UnsignedIntegerType>) {
+      self._view = view
+      self._index = view.startIndex
+    }
+    public mutating func next() -> UnsignedIntegerType? {
       guard self._index < self._view.endIndex else { return nil }
       let result = self._view[self._index]
       self._index = self._view.index(after:self._index)
       return result
     }
   }
-  
-  public func makeIterator() -> Data.View<U>.Iterator {
+
+  public func makeIterator() -> Data.View<UnsignedIntegerType>.Iterator {
     return Iterator(self)
   }
 }
