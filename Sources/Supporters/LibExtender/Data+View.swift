@@ -156,6 +156,10 @@ extension Data.View {
     let distance = self._data.endIndex - self._data.startIndex
     return Index(range:distance..<(distance + MemoryLayout<UnsignedIntegerType>.size))
   }
+  
+  public var count: Int {
+    return (self._data.endIndex - self._data.startIndex) / MemoryLayout<UnsignedIntegerType>.size
+  }
 
   public func index(_ index:Data.View<UnsignedIntegerType>.Index,
                     offsetBy distance:Int) -> Data.View<UnsignedIntegerType>.Index

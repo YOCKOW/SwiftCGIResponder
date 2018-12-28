@@ -4,9 +4,13 @@
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
- 
+
+import BonaFideCharacterSet
 import Foundation
 import LibExtender
+
+// "Prolog" consists of only ASCII characters (except contents of comments).
+// So, Non-ASCII characters can be ignored to detect XML/XHTML version.
 
 // Reference: https://www.w3.org/TR/REC-xml/#sec-prolog-dtd
 /*
@@ -19,108 +23,210 @@ import LibExtender
  [26]     VersionNum     ::=     '1.' [0-9]+
  [27]     Misc     ::=     Comment | PI | S
  */
+// "XMLDecl" starts with "<?xml" and ends with "?>"
+// "Comment" starts with "<!--" and ends with "-->"
+// "PI" starts with "<?" and ends with "?>"
+// "doctypedecl" starts with "<!DOCTYPE" and ends with ">"
 
-// "XMLDecl" starts with "<?xml"
+private struct _ASCIICode: ExpressibleByUnicodeScalarLiteral, Equatable {
+  typealias UnicodeScalarLiteralType = Unicode.Scalar
+  private var _scalar: Unicode.Scalar
+  fileprivate var scalar: Unicode.Scalar { return self._scalar }
 
-// "Comment" starts with "<!--"
-// "PI" starts with "<?"
+  fileprivate init(unicodeScalarLiteral scalar:Unicode.Scalar) {
+    assert(scalar.value < 0x80, "\(scalar) is Non-ASCII.")
+    self._scalar = scalar
+  }
 
-// "doctypedecl" starts with "<!DOCTYPE"
-
-extension UInt8 {
-  fileprivate var _isXMLWhitespace: Bool {
-    return self == 0x20 || self == 0x09 || self == 0x0A || self == 0x0D
+  fileprivate init?<U>(_ value:U) where U: UnsignedInteger & FixedWidthInteger {
+    guard value < 0x80 else { return nil }
+    self._scalar = Unicode.Scalar(UInt8(value))
   }
   
-  
-  fileprivate static let _exclamation: UInt8 = 0x0021
-  fileprivate static let _hyphen: UInt8 = 0x002D
-  fileprivate static let _lt: UInt8 = 0x3C
-  fileprivate static let _gt: UInt8 = 0x3E
-  fileprivate static let _question: UInt8 = 0x3F
-  
-  fileprivate static let _C: UInt8 = 0x43
-  fileprivate static let _D: UInt8 = 0x44
-  fileprivate static let _E: UInt8 = 0x45
-  fileprivate static let _O: UInt8 = 0x4F
-  fileprivate static let _P: UInt8 = 0x50
-  fileprivate static let _T: UInt8 = 0x54
-  fileprivate static let _Y: UInt8 = 0x59
-  fileprivate static let _l: UInt8 = 0x6C
-  fileprivate static let _m: UInt8 = 0x6D
-  fileprivate static let _x: UInt8 = 0x78
+  fileprivate func isContained(in scalars:UnicodeScalarSet) -> Bool {
+    return scalars.contains(self._scalar)
+  }
 }
 
-extension Data {
-  private var _indexOfFirstLT: Data.Index? {
-    for ii in 0..<self.endIndex {
-      let byte = self[ii]
-      if byte._isXMLWhitespace { continue }
-      if byte == ._lt { return ii }
+extension String {
+  fileprivate var _asciiCodes: [_ASCIICode] {
+    var result: [_ASCIICode] = []
+    for scalar in self.unicodeScalars {
+      if scalar > "\u{7F}" { fatalError("Non-ASCII.") }
+      result.append(.init(unicodeScalarLiteral:scalar))
+    }
+    return result
+  }
+  
+  fileprivate init(_ asciiCodes:[_ASCIICode]) {
+    self.init(UnicodeScalarView(asciiCodes.map{ $0.scalar }))
+  }
+}
+
+extension Data.View {
+  fileprivate subscript(_ distance:Int) -> _ASCIICode? {
+    let index = self.index(self.startIndex, offsetBy:distance)
+    let int = self[index]
+    return _ASCIICode(int)
+  }
+}
+
+private struct _ASCIICodeView {
+  private class _Box {
+    fileprivate func asciiCode(at index:Int) -> _ASCIICode? { fatalError("Must be overriden.") }
+    fileprivate var count: Int { fatalError("Must be overriden.") }
+  }
+  private class _View<U>: _Box where U: UnsignedInteger & FixedWidthInteger {
+    private var _base: Data.View<U>
+    private var _count: Int
+    fileprivate override var count: Int { return self._count }
+    
+    fileprivate init(_ view:Data.View<U>) {
+      self._base = view
+      self._count = view.count
+    }
+    
+    fileprivate override func asciiCode(at index: Int) -> _ASCIICode? {
+      return self._base[index]
+    }
+    
+  }
+  
+  private var _box: _Box
+  fileprivate init<U>(_ view:Data.View<U>) where U: UnsignedInteger & FixedWidthInteger {
+    self._box = _View<U>(view)
+  }
+  
+  fileprivate subscript(_ index:Int) -> _ASCIICode? {
+    return  self._box.asciiCode(at:index)
+  }
+  
+  fileprivate subscript(_ range:Range<Int>) -> [_ASCIICode]? {
+    var result: [_ASCIICode] = []
+    for ii in range {
+      guard let ascii = self[ii] else { return nil }
+      result.append(ascii)
+    }
+    return result
+  }
+  
+  fileprivate var count: Int { return self._box.count }
+}
+
+extension _ASCIICodeView {
+  fileprivate init?(_ data:Data) {
+    // https://www.w3.org/TR/xml/#sec-guessing
+    guard data.count > 4 else { return nil } // It should be XHTML...
+    let si = data.startIndex
+    switch (data[si], data[si + 1], data[si + 2], data[si + 3]) {
+    case (0x00, 0x00, 0xFE, 0xFF):
+      guard let view = data[(si + 4)..<data.endIndex].uint32BigEndianView else { return nil }
+      self.init(view)
+    case (0xFF, 0xFE, 0x00, 0x00):
+      guard let view = data[(si + 4)..<data.endIndex].uint32LittleEndianView else { return nil }
+      self.init(view)
+    case (0xFE, 0xFF, _, _):
+      guard let view = data[(si + 2)..<data.endIndex].uint16BigEndianView else { return nil }
+      self.init(view)
+    case (0xFF, 0xFE, _, _):
+      guard let view = data[(si + 2)..<data.endIndex].uint16LittleEndianView else { return nil }
+      self.init(view)
+    case (0xEF, 0xBB, 0xBF, _):
+      let view = data[(si + 3)..<data.endIndex].uint8View
+      self.init(view)
+    case (0x00, 0x00, 0x00, 0x3C):
+      guard let view = data.uint32BigEndianView else { return nil }
+      self.init(view)
+    case (0x3C, 0x00, 0x00, 0x00):
+      guard let view = data.uint32LittleEndianView else { return nil }
+      self.init(view)
+    case (0x00, 0x3C, 0x00, 0x3F):
+      guard let view = data.uint16BigEndianView else { return nil }
+      self.init(view)
+    case (0x3C, 0x00, 0x3F, 0x00):
+      guard let view = data.uint16LittleEndianView else { return nil }
+      self.init(view)
+    case (0x3C, 0x3F, 0x78, 0x6D):
+      let view = data.uint8View
+      self.init(view)
+    default:
+      // unsupported encoding?
+      return nil
+    }
+  }
+}
+
+extension _ASCIICodeView {
+  fileprivate var _indexOfFirstLT: Int? {
+    // Although XML must start with "<?xml",
+    // leading whitespaces are accepted here.
+    for ii in 0..<self.count {
+      guard let ascii = self[ii] else { return nil }
+      if ascii.isContained(in:.xmlWhitespaces) { continue }
+      if ascii == "<" { return ii }
       return nil // The first non-space character is not "<"
     }
     return nil
   }
   
-  private func _matches(_ sequence:[UInt8], from index:Data.Index) -> Bool {
-    guard index + sequence.count <= self.endIndex else { return false }
-    
+  fileprivate func _matches(_ sequence:[_ASCIICode], from index:Int) -> Bool {
+    guard index + sequence.count <= self.count else { return false }
     for ii in 0..<sequence.count {
       guard sequence[ii] == self[index + ii] else { return false }
     }
     return true
   }
   
-  private func _next(sequence:[UInt8], from index:Data.Index) -> Range<Data.Index>? {
-    for ii in index..<self.endIndex {
-      if self._matches(sequence, from:ii) { return ii..<(ii + sequence.count) }
+  fileprivate func _next(sequence:[_ASCIICode], from index:Int) -> Range<Int>? {
+    for ii in index..<self.count {
+      if self._matches(sequence, from: ii) { return ii..<(ii + sequence.count) }
     }
     return nil
   }
   
-  private func _next(byte:UInt8, from index:Data.Index) -> Data.Index? {
-    for ii in index..<self.endIndex {
-      if self[ii] == byte { return ii }
+  fileprivate func _next(asciiCode:_ASCIICode, from index:Int) -> Int? {
+    for ii in index..<self.count {
+      if self[ii] == asciiCode { return ii }
     }
     return nil
   }
   
-  private func _xmlDeclStarts(from index:Data.Index) -> Bool {
-    return self._matches([._lt, ._question, ._x, ._m, ._l], from:index)
+  fileprivate func _xmlDeclStarts(from index:Int) -> Bool {
+    return self._matches("<?xml"._asciiCodes, from:index)
   }
-  private func _rangeOfXMLDecl(from index:Data.Index) -> Range<Data.Index>? {
+  fileprivate func _rangeOfXMLDecl(from index:Int) -> Range<Int>? {
     guard self._xmlDeclStarts(from:index) else { return nil }
-    guard let rangeOfClose = self._next(sequence:[._question, ._gt], from:index) else { return nil }
+    guard let rangeOfClose = self._next(sequence:"?>"._asciiCodes, from:index) else { return nil }
     return index ..< rangeOfClose.upperBound
   }
-  
-  private func _commentStarts(from index:Data.Index) -> Bool {
-    return self._matches([._lt, ._exclamation, ._hyphen, ._hyphen], from:index)
+
+  fileprivate func _commentStarts(from index:Int) -> Bool {
+    return self._matches("<!--"._asciiCodes, from:index)
   }
-  private func _rangeOfComment(from index:Data.Index) -> Range<Data.Index>? {
+  fileprivate func _rangeOfComment(from index:Data.Index) -> Range<Data.Index>? {
     guard self._commentStarts(from:index) else { return nil }
-    guard let rangeOfClose = self._next(sequence:[._hyphen, ._hyphen, ._gt], from:index) else { return nil }
+    guard let rangeOfClose = self._next(sequence:"-->"._asciiCodes, from:index) else { return nil }
     return index ..< rangeOfClose.upperBound
   }
-  
-  private func _piStarts(from index:Data.Index) -> Bool {
-    return self._matches([._lt, ._question], from:index)
+
+  fileprivate func _piStarts(from index:Int) -> Bool {
+    return self._matches("<?"._asciiCodes, from:index)
   }
-  private func _rangeOfPI(from index:Data.Index) -> Range<Data.Index>? {
+  fileprivate func _rangeOfPI(from index:Int) -> Range<Int>? {
     guard self._piStarts(from:index) else { return nil }
-    guard let rangeOfClose = self._next(sequence:[._question, ._gt], from:index) else { return nil }
+    guard let rangeOfClose = self._next(sequence:"?>"._asciiCodes, from:index) else { return nil }
     return index ..< rangeOfClose.upperBound
   }
-  
-  private func _doctypeStarts(from index:Data.Index) -> Bool {
-    return self._matches([._lt, ._exclamation, ._D, ._O, ._C, ._T, ._Y, ._P, ._E], from:index)
+
+  fileprivate func _doctypeStarts(from index:Int) -> Bool {
+    return self._matches("<!DOCTYPE"._asciiCodes, from:index)
   }
-  private func _rangeOfDOCTYPE(from index:Data.Index) -> Range<Data.Index>? {
+  fileprivate func _rangeOfDOCTYPE(from index:Int) -> Range<Int>? {
     guard self._doctypeStarts(from:index) else { return nil }
     var countOfLT = 0
-    for ii in (index + 9)..<self.endIndex {
-      if self[ii] == ._lt { countOfLT += 1 }
-      if self[ii] == ._gt {
+    for ii in (index + 9)..<self.count {
+      if self[ii] == "<" { countOfLT += 1 }
+      if self[ii] == ">" {
         if countOfLT == 0 { return index ..< (ii + 1) }
         countOfLT -= 1
       }
@@ -128,26 +234,30 @@ extension Data {
     return nil
   }
   
-  private var _string: String? {
-    if let string = String(data:self, encoding:.utf8) { return string }
-    if let string = String(data:self, encoding:.utf16) { return string }
-    return nil
+  fileprivate func _string(in range:Range<Int>) -> String? {
+    guard let codes = self[range] else { return nil }
+    return String(codes)
   }
-  
-  internal func _detectXHTMLInfo()
-    -> (xmlVersion:String?, encoding:String.Encoding?, version:Version?)
-  {
-    var result: (xmlVersion:String?, encoding:String.Encoding?, version:Version?) = (nil,nil,nil)
+}
+
+extension Data {
+  /// Detect information about XHTML as far as possible.
+  /// `stringEncoding` is the encoding that is declared in "XML declartion".
+  public var xhtmlInfo: (xmlVersion:String?, stringEncoding:String.Encoding?, version:Version?) {
+    typealias Result = (xmlVersion:String?, stringEncoding:String.Encoding?, version:Version?)
+    var result:Result = (nil,nil,nil)
     
-    guard let indexOfFirstLT = self._indexOfFirstLT else { return (nil,nil,nil) }
-    var position: Data.Index = indexOfFirstLT
+    guard let view = _ASCIICodeView(self) else { return (nil,nil,nil) }
+    guard let indexOfFirstLT = view._indexOfFirstLT else { return (nil,nil,nil) }
     
-    if let rangeOfXMLDecl = self._rangeOfXMLDecl(from:indexOfFirstLT) {
+    var position: Int = indexOfFirstLT
+
+    if let rangeOfXMLDecl = view._rangeOfXMLDecl(from:indexOfFirstLT) {
       let startIndexOfAttr = rangeOfXMLDecl.lowerBound + 5
       let endIndexOfAttr = rangeOfXMLDecl.upperBound - 2
-      
-      if let attributes = self[startIndexOfAttr..<endIndexOfAttr]._string {
-        // `attributes` may be `version="1.0" encoding="UTF-8"`.
+
+      if let attributes = view._string(in:startIndexOfAttr..<endIndexOfAttr) {
+        // `attributes` is string like `version="1.0" encoding="UTF-8"`.
         if let pseudoElement = try? XMLElement(xmlString:"<element \(attributes) />") {
           if let version = pseudoElement.attribute(forName:"version")?.stringValue {
             result.xmlVersion = version
@@ -155,44 +265,44 @@ extension Data {
           if let encoding_string = pseudoElement.attribute(forName:"encoding")?.stringValue,
              let encoding = String.Encoding(ianaCharacterSetName:encoding_string)
           {
-            result.encoding = encoding
+            result.stringEncoding = encoding
           }
         }
       }
-      
+
       position = rangeOfXMLDecl.upperBound
     }
-    
+
     // Next, search "doctypedecl"
     while true {
       // Only "Comment" or "PI" can be accepted before "doctypedecl"
       guard
-        let indexOfLT = self._next(byte:._lt, from:position),
-        indexOfLT < self.endIndex - 2,
-        self[indexOfLT + 1] == ._question || self[indexOfLT + 1] == ._exclamation
+        let indexOfLT = view._next(asciiCode:"<", from:position),
+        indexOfLT < view.count - 2,
+        view[indexOfLT + 1] == "?" || view[indexOfLT + 1] == "!"
       else {
         break
       }
-      
-      if let range = self._rangeOfComment(from:indexOfLT) {
+
+      if let range = view._rangeOfComment(from:indexOfLT) {
         position = range.upperBound
         continue
       }
-      
-      if let range = self._rangeOfPI(from:indexOfLT) {
+
+      if let range = view._rangeOfPI(from:indexOfLT) {
         position = range.upperBound
         continue
       }
-      
-      if let range = self._rangeOfDOCTYPE(from:indexOfLT), let doctype = self[range]._string {
+
+      if let range = view._rangeOfDOCTYPE(from:indexOfLT), let doctype = view._string(in:range) {
         result.version = Version(_documentType:doctype)
         break
       }
-      
+
       // Other element
       break
     }
-    
+
     return result
   }
 }

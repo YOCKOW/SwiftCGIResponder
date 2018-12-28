@@ -44,13 +44,13 @@ private let xhtml5_data = xhtml5_string.data(using:.utf8)!
 
 final class DocumentTests: XCTestCase {
   func test_detectXHTMLInfo() {
-    let infoOfSimpleXHTML5 = simpleXHTML5_data._detectXHTMLInfo()
-    XCTAssertTrue(infoOfSimpleXHTML5 == (xmlVersion:"1.0", encoding:.utf8, version:.v5),
+    let infoOfSimpleXHTML5 = simpleXHTML5_data.xhtmlInfo
+    XCTAssertTrue(infoOfSimpleXHTML5 == (xmlVersion:"1.0", stringEncoding:.utf8, version:.v5),
                   "\(infoOfSimpleXHTML5)")
     
-  
-    let infoOfXHTML5 = xhtml5_data._detectXHTMLInfo()
-    XCTAssertTrue(infoOfXHTML5 == (xmlVersion:"1.0", encoding:.utf8, version:nil),
+    
+    let infoOfXHTML5 = xhtml5_data.xhtmlInfo
+    XCTAssertTrue(infoOfXHTML5 == (xmlVersion:"1.0", stringEncoding:.utf8, version:nil),
                   "\(infoOfXHTML5)")
   }
   
