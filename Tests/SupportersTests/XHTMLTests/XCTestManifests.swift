@@ -1,5 +1,11 @@
 import XCTest
 
+extension AttributesTests {
+    static let __allTests = [
+        ("test_initialzation", test_initialzation),
+    ]
+}
+
 extension DocumentTests {
     static let __allTests = [
         ("test_detectXHTMLInfo", test_detectXHTMLInfo),
@@ -24,6 +30,7 @@ extension VersionTests {
 #if !os(macOS)
 public func __allTests() -> [XCTestCaseEntry] {
     return [
+        testCase(AttributesTests.__allTests),
         testCase(DocumentTests.__allTests),
         testCase(NamesTests.__allTests),
         testCase(VersionTests.__allTests),

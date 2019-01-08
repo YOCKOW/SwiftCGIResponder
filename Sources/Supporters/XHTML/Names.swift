@@ -47,7 +47,9 @@ public struct NoncolonizedName: CustomStringConvertible,
 
 
 /// Represents [QName](https://www.w3.org/TR/REC-xml-names/#NT-QName).
-public struct QualifiedName: CustomStringConvertible, Hashable {
+public struct QualifiedName: CustomStringConvertible, Hashable, ExpressibleByStringLiteral {
+  public typealias StringLiteralType = String
+  
   public var prefix: NoncolonizedName?
   public var localName: NoncolonizedName
   
@@ -75,11 +77,18 @@ public struct QualifiedName: CustomStringConvertible, Hashable {
       self.init(prefix:nil, localName:localPart)
     }
   }
+  
+  public init(stringLiteral:String) {
+    guard let instance = QualifiedName(stringLiteral) else {
+      fatalError("\"\(stringLiteral)\" is invalid for QName.")
+    }
+    self = instance
+  }
 }
 
 
 /// Represents the name of [Attribute](https://www.w3.org/TR/REC-xml-names/#NT-Attribute).
-public enum AttributeName: CustomStringConvertible, Hashable {
+public enum AttributeName: CustomStringConvertible, Hashable, ExpressibleByStringLiteral {
   /// Default namespace
   case defaultNamespaceDeclaration
   
@@ -112,5 +121,12 @@ public enum AttributeName: CustomStringConvertible, Hashable {
     } else {
       return nil
     }
+  }
+  
+  public init(stringLiteral:String) {
+    guard let instance = AttributeName(stringLiteral) else {
+      fatalError("\"\(stringLiteral)\" is invalid for attribute name.")
+    }
+    self = instance
   }
 }
