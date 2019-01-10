@@ -58,3 +58,9 @@ extension Attributes {
     }
   }
 }
+
+extension Attributes: Sequence {
+  public func makeIterator() -> DictionaryIterator<AttributeName, String> {
+    return self._attributes.makeIterator()
+  }
+}
