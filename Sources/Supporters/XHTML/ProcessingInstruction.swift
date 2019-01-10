@@ -14,7 +14,7 @@ public protocol ProcessingInstruction: Node {
   var content: String? { get }
 }
 extension ProcessingInstruction {
-  public var xmlString: String {
+  public var xhtmlString: String {
     return "<?\(self.target.description) \(self.content ?? "")?>"
   }
 }

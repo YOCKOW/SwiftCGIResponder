@@ -8,5 +8,5 @@
 /// The nodes in the abstract, logical tree structure
 /// that represents an XHTML document like `XMLNode`.
 public protocol Node: class {
-  var xmlString: String { get }
+  var xhtmlString: String { get }
 }

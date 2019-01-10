@@ -14,10 +14,10 @@ public final class Miscellany: Node {
   
   private var _node: _Node
   
-  public var xmlString: String {
+  public var xhtmlString: String {
     switch self._node {
-    case .comment(let comment): return comment.xmlString
-    case .processingInstruction(let pi): return pi.xmlString
+    case .comment(let comment): return comment.xhtmlString
+    case .processingInstruction(let pi): return pi.xhtmlString
     }
   }
   

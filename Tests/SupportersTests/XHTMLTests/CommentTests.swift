@@ -11,7 +11,7 @@ import XCTest
 final class CommentTests: XCTestCase {
   func test_comment() {
     let comment = Comment("Comment")
-    XCTAssertEqual(comment?.xmlString, "<!--Comment-->")
+    XCTAssertEqual(comment?.xhtmlString, "<!--Comment-->")
     XCTAssertNil(Comment("A -- B"))
     XCTAssertNil(Comment("A+B-"))
   }

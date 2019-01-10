@@ -52,7 +52,7 @@ public final class Comment: Node {
     self._text = text
   }
   
-  public var xmlString:String {
+  public var xhtmlString:String {
     return "<!--\(self.text)-->"
   }
 }
