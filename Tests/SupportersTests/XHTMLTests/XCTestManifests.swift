@@ -6,6 +6,12 @@ extension AttributesTests {
     ]
 }
 
+extension CommentTests {
+    static let __allTests = [
+        ("test_comment", test_comment),
+    ]
+}
+
 extension DocumentTests {
     static let __allTests = [
         ("test_detectXHTMLInfo", test_detectXHTMLInfo),
@@ -31,6 +37,7 @@ extension VersionTests {
 public func __allTests() -> [XCTestCaseEntry] {
     return [
         testCase(AttributesTests.__allTests),
+        testCase(CommentTests.__allTests),
         testCase(DocumentTests.__allTests),
         testCase(NamesTests.__allTests),
         testCase(VersionTests.__allTests),
