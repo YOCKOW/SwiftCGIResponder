@@ -27,6 +27,12 @@ extension NamesTests {
     ]
 }
 
+extension ProcessingInstructionTests {
+    static let __allTests = [
+        ("test_XMLStyleSheet", test_XMLStyleSheet),
+    ]
+}
+
 extension VersionTests {
     static let __allTests = [
         ("test_initialization", test_initialization),
@@ -40,6 +46,7 @@ public func __allTests() -> [XCTestCaseEntry] {
         testCase(CommentTests.__allTests),
         testCase(DocumentTests.__allTests),
         testCase(NamesTests.__allTests),
+        testCase(ProcessingInstructionTests.__allTests),
         testCase(VersionTests.__allTests),
     ]
 }
