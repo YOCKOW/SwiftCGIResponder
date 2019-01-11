@@ -58,7 +58,15 @@ final class DocumentTests: XCTestCase {
   }
   
   func test_initialization() {
-    let _ = Document(rootElement:Element(name:"html"))
+    let root = HTMLElement(name:"html")
+    let document = Document(rootElement:root)
+    XCTAssertEqual(
+      document.xhtmlString,
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      \(Version.v5._documentType!)
+      \(root.xhtmlString)
+      """)
   }
 }
 

@@ -33,3 +33,9 @@ public final class Miscellany: Node {
     }
   }
 }
+
+extension Sequence where Self.Element == Miscellany {
+  public var xhtmlString: String {
+    return self.map { $0.xhtmlString + "\n" }.joined()
+  }
+}

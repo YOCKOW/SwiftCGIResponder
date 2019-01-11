@@ -6,6 +6,7 @@
  ************************************************************************************************ */
 
 import BonaFideCharacterSet
+import LibExtender
 
 private func _validateXMLVersion(_ string:String) -> Bool {
   let numbers = UnicodeScalarSet(unicodeScalarsIn:"0"..."9")
@@ -38,6 +39,21 @@ open class Document {
       self.version = version
       self.miscellanies = miscellanies
     }
+    
+    public var xhtmlString: String {
+      guard let charset = self.stringEncoding.ianaCharacterSetName else {
+        fatalError("Unsupported String Encoding.")
+      }
+      guard let doctype = self.version._documentType else {
+        fatalError("The version of XHTML must be specified.")
+      }
+      
+      return """
+        <?xml version="\(self.xmlVersion)" encoding="\(charset)"?>
+        \(doctype)
+        \(self.miscellanies.xhtmlString)
+        """
+    }
   }
   
   open var prolog: Prolog
@@ -57,5 +73,11 @@ open class Document {
     
     self.rootElement = rootElement
     self.rootElement.document = self
+  }
+}
+
+extension Document {
+  public var xhtmlString: String {
+    return self.prolog.xhtmlString + self.rootElement.xhtmlString + self.miscellanies.xhtmlString
   }
 }
