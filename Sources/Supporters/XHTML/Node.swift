@@ -10,3 +10,6 @@
 public protocol Node: class {
   var xhtmlString: String { get }
 }
+
+public protocol DescendantNode: Node {
+}

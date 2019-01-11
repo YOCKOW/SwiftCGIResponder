@@ -6,10 +6,10 @@
  ************************************************************************************************ */
  
  
-open class Element: Node {
+open class Element: DescendantNode {
   open var name: QualifiedName
   open var attributes: Attributes? = nil
-  open var children: [Element] = []
+  open var children: [DescendantNode] = []
   open weak var parent: Element? = nil
   
   public init(name:QualifiedName) {
