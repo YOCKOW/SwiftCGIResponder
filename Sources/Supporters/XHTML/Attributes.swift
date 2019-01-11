@@ -59,6 +59,17 @@ extension Attributes {
   }
 }
 
+extension Attributes: ExpressibleByDictionaryLiteral {
+  public typealias Key = AttributeName
+  public typealias Value = String
+  public init(dictionaryLiteral elements: (AttributeName, String)...) {
+    self.init()
+    for element in elements {
+      self[element.0] = element.1
+    }
+  }
+}
+
 extension Attributes: Sequence {
   public func makeIterator() -> DictionaryIterator<AttributeName, String> {
     return self._attributes.makeIterator()

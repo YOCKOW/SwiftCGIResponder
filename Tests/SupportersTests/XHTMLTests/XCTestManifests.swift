@@ -19,6 +19,12 @@ extension DocumentTests {
     ]
 }
 
+extension ElementTests {
+    static let __allTests = [
+        ("test_xhtmlString", test_xhtmlString),
+    ]
+}
+
 extension NamesTests {
     static let __allTests = [
         ("test_attributeName", test_attributeName),
@@ -45,6 +51,7 @@ public func __allTests() -> [XCTestCaseEntry] {
         testCase(AttributesTests.__allTests),
         testCase(CommentTests.__allTests),
         testCase(DocumentTests.__allTests),
+        testCase(ElementTests.__allTests),
         testCase(NamesTests.__allTests),
         testCase(ProcessingInstructionTests.__allTests),
         testCase(VersionTests.__allTests),
