@@ -39,3 +39,25 @@ open class Element: DescendantNode {
     return result
   }
 }
+
+extension Element {
+  private func _value(for name:AttributeName) -> String? {
+    if let attributes = self.attributes, let value = attributes[name] {
+      return value
+    }
+    guard let parent = self.parent else { return nil }
+    return parent._value(for:name)
+  }
+  
+  
+  public func namespace(for prefix:NoncolonizedName) -> String? {
+    return self._value(for:.userDefinedNamespaceDeclaration(prefix))
+  }
+  
+  public func namespace(for name:QualifiedName) -> String? {
+    if let prefix = name.prefix {
+      return self.namespace(for:prefix)
+    }
+    return self._value(for:.defaultNamespaceDeclaration)
+  }
+}
