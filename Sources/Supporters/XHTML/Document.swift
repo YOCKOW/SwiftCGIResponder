@@ -41,23 +41,21 @@ open class Document {
   }
   
   open var prolog: Prolog
-  open var rootElement: Element
+  open var rootElement: HTMLElement
   open var miscellanies: [Miscellany] = []
   
   public init(
     xmlVersion:String = "1.0",
     stringEncoding: String.Encoding = .utf8,
     version: Version = .v5,
-    rootElement:Element
+    rootElement: HTMLElement
   ) {
     self.prolog = Prolog(xmlVersion:xmlVersion,
                          stringEncoding:stringEncoding,
                          version:version,
                          miscellanies:[])
     
-    guard rootElement.name.localName == "html" else {
-      fatalError("Root Element of XHTML must be <html>")
-    }
     self.rootElement = rootElement
+    self.rootElement.document = self
   }
 }
