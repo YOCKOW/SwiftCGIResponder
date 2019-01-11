@@ -58,6 +58,7 @@ final class DocumentTests: XCTestCase {
   }
   
   func test_initialization() {
+    let _ = Document(rootElement:Element(name:"html"))
   }
 }
 
