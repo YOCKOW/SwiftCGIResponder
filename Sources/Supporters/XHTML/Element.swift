@@ -63,6 +63,21 @@ open class Element: DescendantNode {
     
     return result
   }
+  
+  public func append(_ child:DescendantNode) {
+    child.parent = self
+    self._children.append(child)
+  }
+  
+  public func insert(_ child:DescendantNode, at index:Int) {
+    child.parent = self
+    self._children.insert(child, at:index)
+  }
+  
+  public func removeChild(at index:Int) {
+    let child = self._children.remove(at:index)
+    child.parent = nil
+  }
 }
 
 extension Element {
