@@ -43,9 +43,28 @@ extension Attributes {
     }
   }
   
+  private func _namespace(for name:QualifiedName) -> String? {
+    for (attrName, value) in self._attributes {
+      switch attrName {
+      case .defaultNamespace:
+        if name.prefix == nil { return value }
+      case .userDefinedNamespace(let ncName):
+        if let prefix = name.prefix, prefix == ncName { return value }
+      default:
+        continue
+      }
+    }
+    guard let element = self.element else { return nil }
+    return element.namespace(for:name)
+  }
   public subscript(localName localName:NoncolonizedName, uri uri:String?) -> String? {
-    if let _ = uri {
-      fatalError("Unimplemented yet: identifying the URI associated with an attribute.")
+    if let namespace = uri {
+      guard let list = self._attributesForLocalName[localName] else { return nil }
+      for (name, value) in list {
+        guard case .attributeName(let qName) = name else { continue }
+        if self._namespace(for:qName) == namespace { return value }
+      }
+      return nil
     } else {
       return self[.attributeName(QualifiedName(localName:localName))]
     }

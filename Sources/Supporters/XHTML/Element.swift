@@ -72,6 +72,7 @@ extension Element {
   
   public func namespace(for name:QualifiedName) -> String? {
     if let prefix = name.prefix {
+      if prefix == "xmlns" { return nil }
       return self.namespace(for:prefix)
     }
     return self._value(for:.defaultNamespace)

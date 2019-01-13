@@ -3,6 +3,7 @@ import XCTest
 extension AttributesTests {
     static let __allTests = [
         ("test_initialzation", test_initialzation),
+        ("test_namespace", test_namespace),
     ]
 }
 
