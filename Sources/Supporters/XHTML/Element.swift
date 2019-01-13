@@ -24,7 +24,18 @@ open class Element: DescendantNode {
     }
   }
   
-  open var children: [DescendantNode] = []
+  private var _children: [DescendantNode] = []
+  public var children: [DescendantNode] {
+    get {
+      return self._children
+    }
+    set {
+      self._children = newValue
+      for child in self._children {
+        child.parent = self
+      }
+    }
+  }
   
   public init(name:QualifiedName) {
     self.name = name
