@@ -27,9 +27,9 @@ extension Attributes {
     set {
       self._attributes[name] = newValue
       switch name {
-      case .defaultNamespaceDeclaration:
+      case .defaultNamespace:
         break
-      case .userDefinedNamespaceDeclaration(let ncName):
+      case .userDefinedNamespace(let ncName):
         if self._attributesForLocalName[ncName] == nil {
           self._attributesForLocalName[ncName] = [:]
         }

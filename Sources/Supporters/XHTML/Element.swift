@@ -67,13 +67,13 @@ extension Element {
   
   
   public func namespace(for prefix:NoncolonizedName) -> String? {
-    return self._value(for:.userDefinedNamespaceDeclaration(prefix))
+    return self._value(for:.userDefinedNamespace(prefix))
   }
   
   public func namespace(for name:QualifiedName) -> String? {
     if let prefix = name.prefix {
       return self.namespace(for:prefix)
     }
-    return self._value(for:.defaultNamespaceDeclaration)
+    return self._value(for:.defaultNamespace)
   }
 }

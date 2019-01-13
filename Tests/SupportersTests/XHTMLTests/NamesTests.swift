@@ -21,8 +21,8 @@ final class NamesTests: XCTestCase {
   }
   
   func test_attributeName() {
-    XCTAssertEqual(AttributeName("xmlns"), .defaultNamespaceDeclaration)
-    XCTAssertEqual(AttributeName("xmlns:mine"), .userDefinedNamespaceDeclaration("mine"))
+    XCTAssertEqual(AttributeName("xmlns"), .defaultNamespace)
+    XCTAssertEqual(AttributeName("xmlns:mine"), .userDefinedNamespace("mine"))
     XCTAssertEqual(AttributeName("p:n"), .attributeName(QualifiedName("p:n")!))
   }
 }

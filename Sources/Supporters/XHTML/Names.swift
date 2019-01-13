@@ -90,19 +90,19 @@ public struct QualifiedName: CustomStringConvertible, Hashable, ExpressibleByStr
 /// Represents the name of [Attribute](https://www.w3.org/TR/REC-xml-names/#NT-Attribute).
 public enum AttributeName: CustomStringConvertible, Hashable, ExpressibleByStringLiteral {
   /// Default namespace
-  case defaultNamespaceDeclaration
+  case defaultNamespace
   
   /// Namespace declaration; "prefix" is the associated value.
-  case userDefinedNamespaceDeclaration(NoncolonizedName)
+  case userDefinedNamespace(NoncolonizedName)
   
   /// Ordinary attribute
   case attributeName(QualifiedName)
   
   public var description: String {
     switch self {
-    case .defaultNamespaceDeclaration:
+    case .defaultNamespace:
       return "xmlns"
-    case .userDefinedNamespaceDeclaration(let ncName):
+    case .userDefinedNamespace(let ncName):
       return "xmlns:\(ncName.description)"
     case .attributeName(let qName):
       return qName.description
@@ -111,10 +111,10 @@ public enum AttributeName: CustomStringConvertible, Hashable, ExpressibleByStrin
   
   public init?(_ string:String) {
     if string == "xmlns" {
-      self = .defaultNamespaceDeclaration
+      self = .defaultNamespace
     } else if let qName = QualifiedName(string) {
       if let prefix = qName.prefix, prefix == "xmlns" {
-        self = .userDefinedNamespaceDeclaration(qName.localName)
+        self = .userDefinedNamespace(qName.localName)
       } else {
         self = .attributeName(qName)
       }
