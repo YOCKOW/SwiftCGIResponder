@@ -8,8 +8,24 @@
  
 open class Element: DescendantNode {
   open var name: QualifiedName
-  open var attributes: Attributes? = nil
+  
+  private var _attributes: Attributes? = nil
+  public var attributes: Attributes? {
+    get {
+      return self._attributes
+    }
+    set {
+      if var newAttributes = newValue {
+        newAttributes.element = self
+        self._attributes = newAttributes
+      } else {
+        self._attributes = nil
+      }
+    }
+  }
+  
   open var children: [DescendantNode] = []
+  
   open weak var parent: Element? = nil
   
   public init(name:QualifiedName) {

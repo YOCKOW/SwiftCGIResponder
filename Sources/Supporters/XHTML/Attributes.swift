@@ -10,6 +10,9 @@ public struct Attributes {
   private var _attributes:[AttributeName:String]
   private var _attributesForLocalName:[NoncolonizedName:[AttributeName:String]]
   
+  /// Owner of the attributes.
+  public internal(set) weak var element: Element? = nil
+  
   public init() {
     self._attributes = [:]
     self._attributesForLocalName = [:]
