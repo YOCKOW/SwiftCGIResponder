@@ -12,4 +12,5 @@ public protocol Node: class {
 }
 
 public protocol DescendantNode: Node {
+  var parent: Element? { get }
 }

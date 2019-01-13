@@ -30,9 +30,9 @@ private func _validateTextOfComment(_ text:String) -> Bool {
 
 
 /// Represents the comment.
-public final class Comment: Node {
+public final class Comment: DescendantNode {
   /// Parent node.
-  public internal(set) weak var parent: Node? = nil
+  public internal(set) weak var parent: Element? = nil
   
   private var _text: String
   

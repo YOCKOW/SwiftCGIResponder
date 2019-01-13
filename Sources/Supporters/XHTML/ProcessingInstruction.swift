@@ -9,7 +9,7 @@ import HTTP
 
 /// Represents the processing instruction.
 /// Reference: [XML 1.0 (Fifth Edition) #2.6](https://www.w3.org/TR/REC-xml/#sec-pi)
-public protocol ProcessingInstruction: Node {
+public protocol ProcessingInstruction: DescendantNode {
   var target: NoncolonizedName { get }
   var content: String? { get }
 }
@@ -20,6 +20,7 @@ extension ProcessingInstruction {
 }
 
 public class AnyProcessingInstruction: ProcessingInstruction {
+  public internal(set) var parent: Element? = nil
   public var target: NoncolonizedName
   public var content: String?
   public init(target:NoncolonizedName, content:String?) {
@@ -31,6 +32,8 @@ public class AnyProcessingInstruction: ProcessingInstruction {
 /// Represents the processing instruction
 /// such as "<\?xml-stylesheet type="text/css" href="style.css"?>"
 open class XMLStyleSheet: ProcessingInstruction {
+  public internal(set) var parent: Element? = nil
+  
   public var type: MIMEType
   public var hypertextReference: String
   
