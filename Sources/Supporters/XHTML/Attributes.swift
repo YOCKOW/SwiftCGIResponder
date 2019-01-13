@@ -20,6 +20,7 @@ public struct Attributes {
 }
 
 extension Attributes {
+  /// Returns the attribute value with the specified `name`.
   public subscript(_ name:AttributeName) -> String? {
     get {
       return self._attributes[name]
@@ -57,6 +58,8 @@ extension Attributes {
     guard let element = self.element else { return nil }
     return element.namespace(for:name)
   }
+  
+  /// Returns the attribute value that is identified by a local name and URI.
   public subscript(localName localName:NoncolonizedName, uri uri:String?) -> String? {
     if let namespace = uri {
       guard let list = self._attributesForLocalName[localName] else { return nil }
