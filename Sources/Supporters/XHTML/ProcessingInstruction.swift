@@ -4,47 +4,65 @@
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
- 
+
+import Foundation
 import HTTP
 
 /// Represents the processing instruction.
 /// Reference: [XML 1.0 (Fifth Edition) #2.6](https://www.w3.org/TR/REC-xml/#sec-pi)
-public protocol ProcessingInstruction: DescendantNode {
-  var target: NoncolonizedName { get }
-  var content: String? { get }
-}
-extension ProcessingInstruction {
-  public var xhtmlString: String {
-    return "<?\(self.target.description) \(self.content ?? "")?>"
-  }
-}
-
-public class AnyProcessingInstruction: ProcessingInstruction {
-  public internal(set) var parent: Element? = nil
-  public var target: NoncolonizedName
-  public var content: String?
+open class ProcessingInstruction: DescendantNode {
+  open var target: NoncolonizedName
+  open var content: String?
+  
   public init(target:NoncolonizedName, content:String?) {
     self.target = target
     self.content = content
+  }
+  
+  public override var xhtmlString: String {
+    return "<?\(self.target.description) \(self.content ?? "")?>"
   }
 }
 
 /// Represents the processing instruction
 /// such as "<\?xml-stylesheet type="text/css" href="style.css"?>"
 open class XMLStyleSheet: ProcessingInstruction {
-  public internal(set) var parent: Element? = nil
-  
   public var type: MIMEType
   public var hypertextReference: String
   
-  public var target: NoncolonizedName { return "xml-stylesheet" }
-  public var content: String? {
-    // TODO: Validate the string
-    return "type=\"\(self.type.description)\" href=\"\(self.hypertextReference)\""
+  open override var target: NoncolonizedName {
+    get {
+      return "xml-stylesheet"
+    }
+    set {
+      // do nothing
+    }
+  }
+  
+  open override var content: String? {
+    get {
+      // TODO: Validate the string
+      return "type=\"\(self.type.description)\" href=\"\(self.hypertextReference)\""
+    }
+    set {
+      let pseudoElementString = "<element \(newValue ?? "") />"
+      guard let element = try? XMLElement(xmlString:pseudoElementString) else {
+        fatalError("Invalid string for the content of xml-stylesheet")
+      }
+      guard let type = element.attribute(forName:"type")?.stringValue.flatMap(MIMEType.init) else {
+        fatalError("Invalid type.")
+      }
+      guard let href = element.attribute(forName:"href")?.stringValue else {
+        fatalError("Invalid href.")
+      }
+      self.type = type
+      self.hypertextReference = href
+    }
   }
   
   public init(type:MIMEType, hypertextReference:String) {
     self.type = type
     self.hypertextReference = hypertextReference
+    super.init(target:"xml-stylesheet", content:"")
   }
 }

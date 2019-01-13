@@ -26,17 +26,15 @@ open class Element: DescendantNode {
   
   open var children: [DescendantNode] = []
   
-  open weak var parent: Element? = nil
-  
   public init(name:QualifiedName) {
     self.name = name
   }
   
-  public var xhtmlString: String {
-    var result = "<\(self.name.description) "
+  public override var xhtmlString: String {
+    var result = "<\(self.name.description)"
     
     if let attrs = self.attributes {
-      result +=
+      result += " " +
         attrs.map { (name:AttributeName, value:String) -> String in
           return "\(name.description)=\"\(value._addingAmpersandEncoding())\""
         }.joined(separator:" ")

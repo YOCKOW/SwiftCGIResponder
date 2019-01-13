@@ -31,9 +31,6 @@ private func _validateTextOfComment(_ text:String) -> Bool {
 
 /// Represents the comment.
 public final class Comment: DescendantNode {
-  /// Parent node.
-  public internal(set) weak var parent: Element? = nil
-  
   private var _text: String
   
   /// The text of comment.
@@ -52,7 +49,7 @@ public final class Comment: DescendantNode {
     self._text = text
   }
   
-  public var xhtmlString:String {
+  public override var xhtmlString:String {
     return "<!--\(self.text)-->"
   }
 }
