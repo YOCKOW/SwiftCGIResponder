@@ -5,6 +5,8 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
+import Foundation
+
 import BonaFideCharacterSet
 import LibExtender
 
@@ -79,6 +81,10 @@ open class Document {
 extension Document {
   public var xhtmlString: String {
     return self.prolog.xhtmlString + self.rootElement.xhtmlString + self.miscellanies.xhtmlString
+  }
+  
+  public var xhtmlData: Data? {
+    return self.xhtmlString.data(using:self.prolog.stringEncoding)
   }
 }
 
