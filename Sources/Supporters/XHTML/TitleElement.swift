@@ -7,5 +7,5 @@
 
 /// /// Represents "\<title\>...\</title\>"
 open class TitleElement: SpecifiedElement {
-  internal override static var _localName: NoncolonizedName { return "title" }
+  open override class var localName: NoncolonizedName { return "title" }
 }
