@@ -10,7 +10,7 @@ import HTTP
 
 /// Represents the processing instruction.
 /// Reference: [XML 1.0 (Fifth Edition) #2.6](https://www.w3.org/TR/REC-xml/#sec-pi)
-open class ProcessingInstruction: DescendantNode {
+open class ProcessingInstruction: Node {
   open var target: NoncolonizedName
   open var content: String?
   
@@ -19,7 +19,7 @@ open class ProcessingInstruction: DescendantNode {
     self.content = content
   }
   
-  public override var xhtmlString: String {
+  open override var xhtmlString: String {
     return "<?\(self.target.description) \(self.content ?? "")?>"
   }
 }

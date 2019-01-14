@@ -6,7 +6,7 @@
  ************************************************************************************************ */
  
  
-open class Element: DescendantNode {
+open class Element: Node {
   open var name: QualifiedName
   
   private var _attributes: Attributes? = nil
@@ -24,8 +24,8 @@ open class Element: DescendantNode {
     }
   }
   
-  private var _children: [DescendantNode] = []
-  public var children: [DescendantNode] {
+  private var _children: [Node] = []
+  public var children: [Node] {
     get {
       return self._children
     }
@@ -41,7 +41,7 @@ open class Element: DescendantNode {
     self.name = name
   }
   
-  public override var xhtmlString: String {
+  open override var xhtmlString: String {
     var result = "<\(self.name.description)"
     
     if let attrs = self.attributes {
@@ -64,12 +64,12 @@ open class Element: DescendantNode {
     return result
   }
   
-  public func append(_ child:DescendantNode) {
+  public func append(_ child:Node) {
     child.parent = self
     self._children.append(child)
   }
   
-  public func insert(_ child:DescendantNode, at index:Int) {
+  public func insert(_ child:Node, at index:Int) {
     child.parent = self
     self._children.insert(child, at:index)
   }

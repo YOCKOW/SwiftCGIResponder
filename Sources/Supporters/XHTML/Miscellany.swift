@@ -14,7 +14,7 @@ public final class Miscellany: Node {
   
   private var _node: _Node
   
-  public var xhtmlString: String {
+  public override var xhtmlString: String {
     switch self._node {
     case .comment(let comment): return comment.xhtmlString
     case .processingInstruction(let pi): return pi.xhtmlString

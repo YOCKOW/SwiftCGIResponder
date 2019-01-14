@@ -7,6 +7,10 @@
 
 /// The nodes in the abstract, logical tree structure
 /// that represents an XHTML document like `XMLNode`.
-public protocol Node: class {
-  var xhtmlString: String { get }
+open class Node {
+  /// The string representation as it would appear in an XHTML document.
+  open var xhtmlString: String { return "<!-- `var xhtmlString: String` must be overridden. -->" }
+  
+  /// The parent node.
+  public internal(set) var parent: Element? = nil
 }

@@ -30,7 +30,7 @@ private func _validateTextOfComment(_ text:String) -> Bool {
 
 
 /// Represents the comment.
-public final class Comment: DescendantNode {
+public final class Comment: Node {
   private var _text: String
   
   /// The text of comment.
