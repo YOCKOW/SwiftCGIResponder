@@ -20,4 +20,11 @@ open class HTMLElement: SpecifiedElement {
     }
     return nil
   }
+  
+  public var body: BodyElement? {
+    for child in self.children {
+      if case let bodyElement as BodyElement = child { return bodyElement }
+    }
+    return nil
+  }
 }
