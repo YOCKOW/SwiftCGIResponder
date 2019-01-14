@@ -28,10 +28,7 @@ extension Node {
                          attributes:Attributes? = nil,
                          children:[Node] = []) -> Node
   {
-    let element = HTMLElement(name:name)
-    element.attributes = attributes
-    element.children = children
-    return element
+    return HTMLElement(name:name, attributes:attributes, children:children)
   }
   
   /// Create an XHTML text node.

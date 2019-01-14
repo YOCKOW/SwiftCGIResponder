@@ -46,6 +46,16 @@ open class Element: Node {
     self.name = name
   }
   
+  /// Initialize with `name`, and then add `attributes` and `children`.
+  public convenience init(name:QualifiedName,
+                          attributes:Attributes?,
+                          children:[Node])
+  {
+    self.init(name:name)
+    self.attributes = attributes
+    self.children = children
+  }
+  
   open override var xhtmlString: String {
     var result = "<\(self.name.description)"
     
