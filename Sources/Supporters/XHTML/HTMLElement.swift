@@ -13,4 +13,11 @@ open class HTMLElement: SpecifiedElement {
   open override var isEmpty: Bool { return false }
   
   open internal(set) weak var document: Document? = nil
+  
+  public var head: HeadElement? {
+    for child in self.children {
+      if case let headElement as HeadElement = child { return headElement }
+    }
+    return nil
+  }
 }

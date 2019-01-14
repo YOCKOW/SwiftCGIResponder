@@ -81,3 +81,15 @@ extension Document {
     return self.prolog.xhtmlString + self.rootElement.xhtmlString + self.miscellanies.xhtmlString
   }
 }
+
+extension Document {
+  public var title: String? {
+    get {
+      return self.rootElement.head?.title?.title
+    }
+    set {
+      let newTitle = newValue ?? ""
+      self.rootElement.head?.title?.title = newTitle
+    }
+  }
+}

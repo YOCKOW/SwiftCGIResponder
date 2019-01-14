@@ -26,4 +26,11 @@ open class HeadElement: SpecifiedElement {
       }
     }
   }
+  
+  public var title: TitleElement? {
+    for child in self.children {
+      if case let titleElement as TitleElement = child { return titleElement }
+    }
+    return nil
+  }
 }
