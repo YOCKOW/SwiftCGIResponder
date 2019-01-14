@@ -18,6 +18,9 @@ open class HTMLElement: Element {
     }
   }
   
+  /// Always `false` because HTML element must have children.
+  open override var isEmpty: Bool { return false }
+  
   open internal(set) weak var document: Document? = nil
   
   public override init(name:QualifiedName) {

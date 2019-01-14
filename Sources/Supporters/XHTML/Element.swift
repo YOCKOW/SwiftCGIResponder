@@ -37,6 +37,11 @@ open class Element: Node {
     }
   }
   
+  /// Returns the Boolean value that indicates whether the receiver is an empty-element or not.
+  open var isEmpty: Bool {
+    return self._children.isEmpty
+  }
+  
   public init(name:QualifiedName) {
     self.name = name
   }
@@ -51,7 +56,7 @@ open class Element: Node {
         }.joined(separator:" ")
     }
     
-    if self.children.isEmpty {
+    if self.isEmpty {
       result += " />"
     } else {
       result += ">"
