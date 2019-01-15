@@ -121,4 +121,13 @@ extension Element {
     }
     return self._value(for:.defaultNamespace)
   }
+  
+  /// Returns "xmlns" if `uri` is default namespace.
+  internal func _prefix(for uri:String) -> NoncolonizedName? {
+    if let prefix = self.attributes?.__prefix(for:uri) {
+      return prefix
+    }
+    guard let parent = self.parent else { return nil }
+    return parent._prefix(for:uri)
+  }
 }

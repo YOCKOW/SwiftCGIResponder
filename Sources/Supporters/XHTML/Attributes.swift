@@ -54,17 +54,54 @@ extension Attributes {
     return element.namespace(for:qName)
   }
   
-  /// Returns the attribute value that is identified by a local name and URI.
-  public subscript(localName localName:NoncolonizedName, uri uri:String?) -> String? {
-    if let namespace = uri {
-      guard let list = self._attributesForLocalName[localName] else { return nil }
-      for (name, value) in list {
-        guard case .attributeName(let qName) = name else { continue }
-        if self._namespace(for:qName) == namespace { return value }
+  /// Returns "xmlns" if `uri` is default namespace.
+  internal func __prefix(for uri:String) -> NoncolonizedName? {
+    for (name, value) in self._attributes {
+      if value != uri { continue }
+      switch name {
+      case .defaultNamespace: return "xmlns"
+      case .userDefinedNamespace(let ncName): return ncName
+      default: break
       }
-      return nil
+    }
+    return nil
+  }
+  
+  internal func _prefix(for uri:String) -> NoncolonizedName? {
+    if let element = self.element {
+      return element._prefix(for:uri)
     } else {
-      return self[.attributeName(QualifiedName(localName:localName))]
+      return self.__prefix(for:uri)
+    }
+  }
+  
+  /// The attribute value that is identified by a local name and URI.
+  public subscript(localName localName:NoncolonizedName, uri uri:String?) -> String? {
+    get {
+      if let namespace = uri {
+        guard let list = self._attributesForLocalName[localName] else { return nil }
+        for (name, value) in list {
+          guard case .attributeName(let qName) = name else { continue }
+          if self._namespace(for:qName) == namespace { return value }
+        }
+        return nil
+      } else {
+        return self[.attributeName(QualifiedName(localName:localName))]
+      }
+    }
+    set {
+      if let namespace = uri {
+        guard let prefix = self._prefix(for:namespace) else {
+          fatalError("No namespace for \(namespace)")
+        }
+        if prefix == "xmlns" {
+          self[.attributeName(QualifiedName(localName:localName))] = newValue
+        } else {
+          self[.attributeName(QualifiedName(prefix:prefix, localName:localName))] = newValue
+        }
+      } else {
+        self[.attributeName(QualifiedName(localName:localName))] = newValue
+      }
     }
   }
 }
