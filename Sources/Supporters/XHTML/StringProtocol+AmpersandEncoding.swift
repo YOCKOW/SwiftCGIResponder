@@ -40,7 +40,8 @@ extension StringProtocol {
   }
 }
 
-private let _allowedScalars = UnicodeScalarSet.xmlNameCharacterScalars.union(.xmlWhitespaces)
+private let _allowedScalars =
+  UnicodeScalarSet.xmlNameCharacterScalars.union(.xmlWhitespaces).union(UnicodeScalarSet(unicodeScalarsIn:"\u{20}"..<"\u{7F}"))
 extension StringProtocol {
   internal func _addingAmpersandEncoding() -> String {
     return self.addingAmpersandEncoding(withAllowedUnicodeScalars:_allowedScalars)
