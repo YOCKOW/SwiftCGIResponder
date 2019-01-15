@@ -17,6 +17,7 @@ extension DocumentTests {
     static let __allTests = [
         ("test_detectXHTMLInfo", test_detectXHTMLInfo),
         ("test_initialization", test_initialization),
+        ("test_tree", test_tree),
     ]
 }
 

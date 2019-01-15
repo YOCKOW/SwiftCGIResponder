@@ -68,5 +68,16 @@ final class DocumentTests: XCTestCase {
       \(root.xhtmlString)
       """)
   }
+  
+  func test_tree() {
+    let document = Document(
+      rootElement:.init(name:"html", attributes:nil, children:[
+        .head(children:[.title("My XHTML.")]),
+        .body(children:[])
+      ])
+    )
+    
+    XCTAssertEqual(document.title, "My XHTML.")
+  }
 }
 

@@ -55,8 +55,10 @@ extension Node {
   /// Create an \<title\> element.
   public static func title(name:QualifiedName = "title",
                            attributes:Attributes? = nil,
-                           children:[Node] = []) -> Node
+                           _ title: String) -> Node
   {
-    return TitleElement(name:name, attributes:attributes, children:children)
+    let titleElement = TitleElement(name:name, attributes:attributes)
+    titleElement.title = title
+    return titleElement
   }
 }

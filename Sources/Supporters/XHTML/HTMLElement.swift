@@ -27,4 +27,24 @@ open class HTMLElement: SpecifiedElement {
     }
     return nil
   }
+  
+  public override convenience init(name:QualifiedName) {
+    self.init(name:name, attributes:nil)
+  }
+  
+  public required init(name:QualifiedName, attributes:Attributes?) {
+    var attrs: Attributes = attributes ?? [:]
+    if attrs._namespace(for:name) == nil {
+      let attrName: AttributeName =
+        (name.prefix == nil) ? .defaultNamespace : .userDefinedNamespace(name.prefix!)
+      attrs[attrName] = String._xhtmlNamespace
+    }
+    super.init(name:name)
+    self.attributes = attrs
+  }
+  
+  public convenience init(name:QualifiedName, attributes:Attributes?, children:[Node]) {
+    self.init(name:name, attributes:attributes)
+    self.children = children
+  }
 }
