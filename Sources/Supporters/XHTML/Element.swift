@@ -46,13 +46,18 @@ open class Element: Node {
     self.name = name
   }
   
+  /// Initialize with `name`, and then add `attributes`.
+  public required convenience init(name:QualifiedName, attributes:Attributes?) {
+    self.init(name:name)
+    self.attributes = attributes
+  }
+  
   /// Initialize with `name`, and then add `attributes` and `children`.
   public convenience init(name:QualifiedName,
                           attributes:Attributes?,
                           children:[Node])
   {
-    self.init(name:name)
-    self.attributes = attributes
+    self.init(name:name, attributes:attributes)
     self.children = children
   }
   

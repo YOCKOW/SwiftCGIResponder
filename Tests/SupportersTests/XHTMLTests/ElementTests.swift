@@ -15,6 +15,12 @@ final class ElementTests: XCTestCase {
     
     XCTAssertEqual(element.xhtmlString, "<element name=\"value&amp;value\" />")
   }
+  
+  func test_classSelector() {
+    let element =
+      Element(name:"title", attributes:["xmlns":"http://www.w3.org/1999/xhtml"], parent:nil)
+    XCTAssertTrue(element is TitleElement)
+  }
 }
 
 

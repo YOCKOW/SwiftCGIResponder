@@ -44,19 +44,14 @@ extension Attributes {
     }
   }
   
-  private func _namespace(for name:QualifiedName) -> String? {
-    for (attrName, value) in self._attributes {
-      switch attrName {
-      case .defaultNamespace:
-        if name.prefix == nil { return value }
-      case .userDefinedNamespace(let ncName):
-        if let prefix = name.prefix, prefix == ncName { return value }
-      default:
-        continue
-      }
+  internal func _namespace(for qName:QualifiedName) -> String? {
+    let attributeName: AttributeName =
+      (qName.prefix != nil) ? .userDefinedNamespace(qName.prefix!) : .defaultNamespace
+    if let ns = self[attributeName] {
+      return ns
     }
     guard let element = self.element else { return nil }
-    return element.namespace(for:name)
+    return element.namespace(for:qName)
   }
   
   /// Returns the attribute value that is identified by a local name and URI.

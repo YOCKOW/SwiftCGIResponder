@@ -22,6 +22,7 @@ extension DocumentTests {
 
 extension ElementTests {
     static let __allTests = [
+        ("test_classSelector", test_classSelector),
         ("test_xhtmlString", test_xhtmlString),
     ]
 }
