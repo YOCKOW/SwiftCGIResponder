@@ -7,7 +7,7 @@
 
 extension Element {
   /// The class to select a class that the parser will use to create element instances.
-  /// The registered classes will not used
+  /// The registered classes will not be used
   /// if the namespace of the QName of the element is not XHTML's.
   public final class ClassSelector {
     private init() {}
