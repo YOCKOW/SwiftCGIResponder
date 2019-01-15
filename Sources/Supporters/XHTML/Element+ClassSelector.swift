@@ -30,15 +30,12 @@ extension Element {
   }
 }
 
-
-private let _xhtmlNamespace = "http://www.w3.org/1999/xhtml"
-
 extension QualifiedName {
   /// Whether the name's namespace is XHTML or not.
   /// **Doesn't consider the parent nodes.**
   fileprivate func _namespaceIsXHTML(with attributes:Attributes?) -> Bool {
     guard let attributes = attributes else { return false }
-    guard let ns = attributes._namespace(for:self), ns == _xhtmlNamespace else { return false }
+    guard let ns = attributes._namespace(for:self), ns._isXHTMLNamespace else { return false }
     return true
   }
 }
@@ -61,7 +58,7 @@ extension _ElementClassSelector {
       if name._namespaceIsXHTML(with:attributes) {
         return true
       }
-      if let ns = parent?.namespace(for:name), ns == _xhtmlNamespace {
+      if let ns = parent?.namespace(for:name), ns._isXHTMLNamespace {
         return true
       }
       return false
