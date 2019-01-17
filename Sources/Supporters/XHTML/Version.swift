@@ -53,6 +53,12 @@ public enum Version: Hashable {
   /// XHTML5
   case v5
   
+  /// XHTML5.1
+  case v5_1
+  
+  /// XHTML5.2
+  case v5_2
+  
   /// Unspecified
   case unspecified
 }
@@ -83,7 +89,7 @@ extension Version {
       return "<!DOCTYPE html PUBLIC \"-//WAPFORUM//DTD XHTML Mobile 1.2//EN\" \"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd\">"
     case .mobileProfile1_3:
       return Version.basic1_1._documentType
-    case .v5:
+    case .v5, .v5_1, .v5_2:
       return "<!DOCTYPE html>"
     case .unspecified:
       return nil
@@ -101,7 +107,7 @@ private let _doctypesWithoutSpaces:[String:Version] = [
   "<!DOCTYPEhtmlPUBLIC\"-//WAPFORUM//DTDXHTMLMobile1.0//EN\"\"http://www.wapforum.org/DTD/xhtml-mobile10.dtd\">":.mobileProfile1_0,
   "<!DOCTYPEhtmlPUBLIC\"-//WAPFORUM//DTDXHTMLMobile1.1//EN\"\"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile11.dtd\">":.mobileProfile1_1,
   "<!DOCTYPEhtmlPUBLIC\"-//WAPFORUM//DTDXHTMLMobile1.2//EN\"\"http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd\">":.mobileProfile1_2,
-  "<!DOCTYPEhtml>":.v5,
+  "<!DOCTYPEhtml>":.v5_2,
 ]
 extension String {
   fileprivate func _removeWhitespacesAndNewlines() -> String {
