@@ -14,7 +14,7 @@ open class Node: Equatable {
   /// The parent node.
   public internal(set) var parent: Element? = nil
   
-  public func isEqual(to another:Node) -> Bool { return self === another }
+  public func isEqual(to other:Node) -> Bool { return self === other }
   public static func == (lhs: Node, rhs: Node) -> Bool {
     return lhs.isEqual(to:rhs)
   }

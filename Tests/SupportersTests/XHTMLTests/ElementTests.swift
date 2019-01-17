@@ -22,6 +22,13 @@ final class ElementTests: XCTestCase {
     XCTAssertTrue(element is TitleElement)
   }
   
+  func test_equatable() {
+    let element1 = Element(name:"foo", attributes:["name":"value"], children:[.text("Text")])
+    let element2 = Element(name:"foo", attributes:["name":"value"], children:[.text("Text")])
+    XCTAssertTrue(element1 !== element2)
+    XCTAssertEqual(element1, element2)
+  }
+  
   func test_namespace() {
     let grandchild = Element(name:"grandchild", attributes:["name":"value", "myns:name":"my value"])
     let child = Element(name:"child", attributes:["xmlns:myns":"http://my/ns"], children:[grandchild])

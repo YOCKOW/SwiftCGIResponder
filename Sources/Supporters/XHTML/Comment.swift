@@ -44,6 +44,11 @@ public final class Comment: Node {
     }
   }
   
+  public override func isEqual(to other: Node) -> Bool {
+    guard case let otherComment as Comment = other else { return false }
+    return self._text == otherComment._text
+  }
+  
   public init?(_ text:String) {
     guard _validateTextOfComment(text) else { return nil }
     self._text = text

@@ -42,6 +42,15 @@ open class Element: Node {
     return self._children.isEmpty
   }
   
+  public override func isEqual(to other: Node) -> Bool {
+    guard case let anotherElement as Element = other else { return false }
+    return (
+      self.name == anotherElement.name &&
+        self.attributes == anotherElement.attributes &&
+        self.children == anotherElement.children
+    )
+  }
+  
   public init(name:QualifiedName) {
     self.name = name
   }

@@ -6,7 +6,7 @@
  ************************************************************************************************ */
 
 /// Represents attributes of XHTML Element.
-public struct Attributes {
+public struct Attributes: Equatable {
   private var _attributes:[AttributeName:String]
   private var _attributesForLocalName:[NoncolonizedName:[AttributeName:String]]
   
@@ -16,6 +16,10 @@ public struct Attributes {
   public init() {
     self._attributes = [:]
     self._attributesForLocalName = [:]
+  }
+  
+  public static func ==(lhs:Attributes, rhs:Attributes) -> Bool {
+    return lhs._attributes == rhs._attributes
   }
 }
 

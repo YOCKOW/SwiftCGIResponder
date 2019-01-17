@@ -12,6 +12,11 @@ open class Text: Node {
     self.text = text
   }
   
+  public override func isEqual(to other: Node) -> Bool {
+    guard case let otherText as Text = other else { return false }
+    return self.text == otherText.text
+  }
+  
   open override var xhtmlString: String {
     return self.text._addingAmpersandEncoding()
   }
