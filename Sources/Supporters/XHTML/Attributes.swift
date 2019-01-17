@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  Attributes.swift
-   © 2018 YOCKOW.
+   © 2018-2019 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -44,35 +44,47 @@ extension Attributes {
     }
   }
   
-  internal func _namespace(for qName:QualifiedName) -> String? {
-    let attributeName: AttributeName =
-      (qName.prefix != nil) ? .userDefinedNamespace(qName.prefix!) : .defaultNamespace
-    if let ns = self[attributeName] {
-      return ns
-    }
-    guard let element = self.element else { return nil }
-    return element.namespace(for:qName)
+  internal func _namespace(for prefix:NoncolonizedName?) -> String? {
+    return self[(prefix != nil) ? .userDefinedNamespace(prefix!) : .defaultNamespace]
   }
   
-  /// Returns "xmlns" if `uri` is default namespace.
-  internal func __prefix(for uri:String) -> NoncolonizedName? {
+  internal func _namespace(for qName:QualifiedName) -> String? {
+    return self._namespace(for:qName.prefix)
+  }
+  
+  /// Returns URI that specifies namespace for `prefix`.
+  public func namespace(for prefix:NoncolonizedName?) -> String? {
+    if let element = self.element {
+      return element.namespace(for:prefix)
+    }
+    return self._namespace(for:prefix)
+  }
+  
+  /// Returns URI that specifies namespace for prefix of `qName`.
+  public func namespace(for qName:QualifiedName) -> String? {
+    return self.namespace(for:qName.prefix)
+  }
+  
+  internal func _prefix(for uri:String) -> NoncolonizedName?? {
     for (name, value) in self._attributes {
       if value != uri { continue }
       switch name {
-      case .defaultNamespace: return "xmlns"
+      case .defaultNamespace: return Optional<NoncolonizedName>.none
       case .userDefinedNamespace(let ncName): return ncName
       default: break
       }
     }
-    return nil
+    return Optional<Optional<NoncolonizedName>>.none
   }
   
-  internal func _prefix(for uri:String) -> NoncolonizedName? {
+  /// Returns prefix for namespace specified by `uri`.
+  /// Returns `Optional<NoncolonizedName>.none` if the namespace is default.
+  /// Returns `Optional<Optional<NoncolonizedName>>.none` if there is no namespace specified by `uri`.
+  public func prefix(for uri:String) -> NoncolonizedName?? {
     if let element = self.element {
-      return element._prefix(for:uri)
-    } else {
-      return self.__prefix(for:uri)
+      return element.prefix(for:uri)
     }
+    return self._prefix(for:uri)
   }
   
   /// The attribute value that is identified by a local name and URI.
@@ -82,7 +94,7 @@ extension Attributes {
         guard let list = self._attributesForLocalName[localName] else { return nil }
         for (name, value) in list {
           guard case .attributeName(let qName) = name else { continue }
-          if self._namespace(for:qName) == namespace { return value }
+          if self.namespace(for:qName) == namespace { return value }
         }
         return nil
       } else {
@@ -91,7 +103,7 @@ extension Attributes {
     }
     set {
       if let namespace = uri {
-        guard let prefix = self._prefix(for:namespace) else {
+        guard let prefix = self.prefix(for:namespace) else {
           fatalError("No namespace for \(namespace)")
         }
         if prefix == "xmlns" {

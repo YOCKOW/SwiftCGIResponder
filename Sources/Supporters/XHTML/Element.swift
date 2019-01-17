@@ -101,33 +101,29 @@ open class Element: Node {
 }
 
 extension Element {
-  private func _value(for name:AttributeName) -> String? {
-    if let attributes = self.attributes, let value = attributes[name] {
-      return value
+  /// Returns URI that specifies namespace for `prefix`.
+  public func namespace(for prefix:NoncolonizedName?) -> String? {
+    // Don't call `Attributes.namespace(for:)`, or induce infinite loop.
+    if let namespace = self._attributes?._namespace(for:prefix) {
+      return namespace
     }
     guard let parent = self.parent else { return nil }
-    return parent._value(for:name)
+    return parent.namespace(for:prefix)
   }
   
-  
-  public func namespace(for prefix:NoncolonizedName) -> String? {
-    return self._value(for:.userDefinedNamespace(prefix))
+  /// Returns URI that specifies namespace for prefix of `qName`.
+  public func namespace(for qName:QualifiedName) -> String? {
+    return self.namespace(for:qName.prefix)
   }
   
-  public func namespace(for name:QualifiedName) -> String? {
-    if let prefix = name.prefix {
-      if prefix == "xmlns" { return nil }
-      return self.namespace(for:prefix)
-    }
-    return self._value(for:.defaultNamespace)
-  }
-  
-  /// Returns "xmlns" if `uri` is default namespace.
-  internal func _prefix(for uri:String) -> NoncolonizedName? {
-    if let prefix = self.attributes?.__prefix(for:uri) {
+  /// Returns prefix for namespace specified by `uri`.
+  /// Returns `Optional<NoncolonizedName>.none` if the namespace is default.
+  /// Returns `Optional<Optional<NoncolonizedName>>.none` if there is no namespace specified by `uri`.
+  public func prefix(for uri:String) -> NoncolonizedName?? {
+    if let prefix = self._attributes?._prefix(for:uri) {
       return prefix
     }
-    guard let parent = self.parent else { return nil }
-    return parent._prefix(for:uri)
+    guard let parent = self.parent else { return Optional<Optional<NoncolonizedName>>.none }
+    return parent.prefix(for:uri)
   }
 }
