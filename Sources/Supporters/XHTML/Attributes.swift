@@ -21,6 +21,10 @@ public struct Attributes: Equatable {
   public static func ==(lhs:Attributes, rhs:Attributes) -> Bool {
     return lhs._attributes == rhs._attributes
   }
+  
+  public var isEmpty: Bool {
+    return self._attributes.isEmpty
+  }
 }
 
 extension Attributes {

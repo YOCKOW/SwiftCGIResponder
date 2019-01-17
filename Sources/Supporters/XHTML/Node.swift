@@ -23,7 +23,7 @@ open class Node: Equatable {
 extension Node {
   /// Create an \<body\> element.
   public static func body(name:QualifiedName = "body",
-                          attributes:Attributes? = nil,
+                          attributes:Attributes = [:],
                           children:[Node] = []) -> Node
   {
     return BodyElement(name:name, attributes:attributes, children:children)
@@ -38,7 +38,7 @@ extension Node {
   
   /// Create an \<head\> element.
   public static func head(name:QualifiedName = "head",
-                          attributes:Attributes? = nil,
+                          attributes:Attributes = [:],
                           children:[Node] = []) -> Node
   {
     return HeadElement(name:name, attributes:attributes, children:children)
@@ -46,8 +46,8 @@ extension Node {
   
   /// Create an \<html\> element.
   public static func html(name:QualifiedName = "html",
-                         attributes:Attributes? = nil,
-                         children:[Node] = []) -> Node
+                          attributes:Attributes = [:],
+                          children:[Node] = []) -> Node
   {
     return HTMLElement(name:name, attributes:attributes, children:children)
   }
@@ -59,7 +59,7 @@ extension Node {
   
   /// Create an \<title\> element.
   public static func title(name:QualifiedName = "title",
-                           attributes:Attributes? = nil,
+                           attributes:Attributes = [:],
                            _ title: String) -> Node
   {
     let titleElement = TitleElement(name:name, attributes:attributes)

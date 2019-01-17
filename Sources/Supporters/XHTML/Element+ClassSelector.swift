@@ -30,32 +30,20 @@ extension Element {
   }
 }
 
-extension QualifiedName {
-  /// Whether the name's namespace is XHTML or not.
-  /// **Doesn't consider the parent nodes.**
-  fileprivate func _namespaceIsXHTML(with attributes:Attributes?) -> Bool {
-    guard let attributes = attributes else { return false }
-    guard let ns = attributes._namespace(for:self), ns._isXHTMLNamespace else { return false }
-    return true
-  }
-}
-
-
-
 internal protocol _ElementClassSelector {}
 extension Element: _ElementClassSelector {}
 extension _ElementClassSelector {
   internal init(name:QualifiedName,
-                attributes:Attributes?,
+                attributes:Attributes,
                 parent:Element?)
   {
-    if name.localName == "html" && name._namespaceIsXHTML(with:attributes) {
+    if name.localName == "html" && attributes._namespace(for:name)?._isXHTMLNamespace == true {
       self = HTMLElement(name:name, attributes:attributes) as! Self
       return
     }
     
     let namespaceIsXHTML: Bool = ({
-      if name._namespaceIsXHTML(with:attributes) {
+      if let ns = attributes.namespace(for:name), ns._isXHTMLNamespace {
         return true
       }
       if let ns = parent?.namespace(for:name), ns._isXHTMLNamespace {

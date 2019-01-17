@@ -29,11 +29,11 @@ open class HTMLElement: SpecifiedElement {
   }
   
   public override convenience init(name:QualifiedName) {
-    self.init(name:name, attributes:nil)
+    self.init(name:name, attributes:[:])
   }
   
-  public required init(name:QualifiedName, attributes:Attributes?) {
-    var attrs: Attributes = attributes ?? [:]
+  public required init(name:QualifiedName, attributes:Attributes) {
+    var attrs = attributes
     if attrs._namespace(for:name) == nil {
       let attrName: AttributeName =
         (name.prefix == nil) ? .defaultNamespace : .userDefinedNamespace(name.prefix!)
@@ -43,7 +43,7 @@ open class HTMLElement: SpecifiedElement {
     self.attributes = attrs
   }
   
-  public convenience init(name:QualifiedName, attributes:Attributes?, children:[Node]) {
+  public convenience init(name:QualifiedName, attributes:Attributes, children:[Node]) {
     self.init(name:name, attributes:attributes)
     self.children = children
   }

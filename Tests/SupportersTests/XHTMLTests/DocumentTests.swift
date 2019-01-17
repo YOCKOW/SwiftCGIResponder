@@ -71,7 +71,7 @@ final class DocumentTests: XCTestCase {
   
   func test_tree() {
     let document = Document(
-      rootElement:.init(name:"html", attributes:nil, children:[
+      rootElement:.init(name:"html", attributes:[:], children:[
         .head(children:[.title("My XHTML.")]),
         .body(children:[])
       ])

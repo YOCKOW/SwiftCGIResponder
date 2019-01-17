@@ -54,15 +54,15 @@ final class ElementTests: XCTestCase {
     XCTAssertEqual(root.prefix(for:"http://default/ns"), Optional<NoncolonizedName>.none)
     XCTAssertEqual(root.prefix(for:"http://invalid/ns"), Optional<Optional<NoncolonizedName>>.none)
     
-    XCTAssertEqual(grandchild.attributes?[localName:"name", uri:nil], "value")
-    XCTAssertEqual(grandchild.attributes?[localName:"name", uri:"http://default/ns"], "value")
-    XCTAssertEqual(grandchild.attributes?[localName:"name", uri:"http://my/ns"], "my value")
+    XCTAssertEqual(grandchild.attributes[localName:"name", uri:nil], "value")
+    XCTAssertEqual(grandchild.attributes[localName:"name", uri:"http://default/ns"], "value")
+    XCTAssertEqual(grandchild.attributes[localName:"name", uri:"http://my/ns"], "my value")
     
-    grandchild.attributes?[localName:"name", uri:"http://my/ns"] = "another value"
-    XCTAssertEqual(grandchild.attributes?[localName:"name", uri:"http://my/ns"], "another value")
+    grandchild.attributes[localName:"name", uri:"http://my/ns"] = "another value"
+    XCTAssertEqual(grandchild.attributes[localName:"name", uri:"http://my/ns"], "another value")
 
-    child.attributes?[localName:"name", uri:"http://my/ns"] = "child value"
-    XCTAssertEqual(child.attributes?["myns:name"], "child value")
+    child.attributes[localName:"name", uri:"http://my/ns"] = "child value"
+    XCTAssertEqual(child.attributes["myns:name"], "child value")
   }
 }
 

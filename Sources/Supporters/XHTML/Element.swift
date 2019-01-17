@@ -9,18 +9,15 @@
 open class Element: Node {
   open var name: QualifiedName
   
-  private var _attributes: Attributes? = nil
-  public var attributes: Attributes? {
+  private var _attributes: Attributes = [:]
+  public var attributes: Attributes {
     get {
       return self._attributes
     }
     set {
-      if var newAttributes = newValue {
-        newAttributes.element = self
-        self._attributes = newAttributes
-      } else {
-        self._attributes = nil
-      }
+      self._attributes.element = nil
+      self._attributes = newValue
+      self._attributes.element = self
     }
   }
   
@@ -56,14 +53,14 @@ open class Element: Node {
   }
   
   /// Initialize with `name`, and then add `attributes`.
-  public required convenience init(name:QualifiedName, attributes:Attributes?) {
+  public required convenience init(name:QualifiedName, attributes:Attributes) {
     self.init(name:name)
     self.attributes = attributes
   }
   
   /// Initialize with `name`, and then add `attributes` and `children`.
   public convenience init(name:QualifiedName,
-                          attributes:Attributes?,
+                          attributes:Attributes,
                           children:[Node])
   {
     self.init(name:name, attributes:attributes)
@@ -73,9 +70,9 @@ open class Element: Node {
   open override var xhtmlString: String {
     var result = "<\(self.name.description)"
     
-    if let attrs = self.attributes {
+    if !self.attributes.isEmpty {
       result += " " +
-        attrs.map { (name:AttributeName, value:String) -> String in
+        self.attributes.map { (name:AttributeName, value:String) -> String in
           return "\(name.description)=\"\(value._addingAmpersandEncoding())\""
         }.joined(separator:" ")
     }
@@ -113,7 +110,7 @@ extension Element {
   /// Returns URI that specifies namespace for `prefix`.
   public func namespace(for prefix:NoncolonizedName?) -> String? {
     // Don't call `Attributes.namespace(for:)`, or induce infinite loop.
-    if let namespace = self._attributes?._namespace(for:prefix) {
+    if let namespace = self._attributes._namespace(for:prefix) {
       return namespace
     }
     guard let parent = self.parent else { return nil }
@@ -129,7 +126,7 @@ extension Element {
   /// Returns `Optional<NoncolonizedName>.none` if the namespace is default.
   /// Returns `Optional<Optional<NoncolonizedName>>.none` if there is no namespace specified by `uri`.
   public func prefix(for uri:String) -> NoncolonizedName?? {
-    if let prefix = self._attributes?._prefix(for:uri) {
+    if let prefix = self._attributes._prefix(for:uri) {
       return prefix
     }
     guard let parent = self.parent else { return Optional<Optional<NoncolonizedName>>.none }
