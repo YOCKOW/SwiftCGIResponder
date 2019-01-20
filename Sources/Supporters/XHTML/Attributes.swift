@@ -63,7 +63,7 @@ extension Attributes {
   /// Returns URI that specifies namespace for `prefix`.
   public func namespace(for prefix:NoncolonizedName?) -> String? {
     if let element = self.element {
-      return element.namespace(for:prefix)
+      return element.namespace(for:prefix == nil ? element.name.prefix : prefix)
     }
     return self._namespace(for:prefix)
   }
