@@ -32,7 +32,7 @@ final class VersionTests: XCTestCase {
       .v1_1
     )
     
-    XCTAssertEqual(Version(_documentType:"<!DOCTYPE\n    html>"), .v5)
+    XCTAssertEqual(Version(_documentType:"<!DOCTYPE\n    html>"), .v5_2)
     
   }
 }

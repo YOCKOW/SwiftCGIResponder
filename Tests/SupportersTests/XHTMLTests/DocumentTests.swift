@@ -46,7 +46,7 @@ private let xhtml5_utf32be_data = xhtml5_string.data(using:.utf32BigEndian)!
 final class DocumentTests: XCTestCase {
   func test_detectXHTMLInfo() {
     let infoOfSimpleXHTML5 = simpleXHTML5_data.xhtmlInfo
-    XCTAssertTrue(infoOfSimpleXHTML5 == (xmlVersion:"1.0", stringEncoding:.utf8, version:.v5),
+    XCTAssertTrue(infoOfSimpleXHTML5 == (xmlVersion:"1.0", stringEncoding:.utf8, version:.v5_2),
                   "\(infoOfSimpleXHTML5)")
     
     
