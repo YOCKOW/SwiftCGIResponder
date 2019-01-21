@@ -90,7 +90,9 @@ extension Attributes {
   /// Returns `Optional<Optional<NoncolonizedName>>.none` if there is no namespace specified by `uri`.
   public func prefix(for uri:String) -> NoncolonizedName?? {
     if let element = self.element {
-      return element.prefix(for:uri)
+      let prefix = element.prefix(for:uri)
+      if prefix == element.name.prefix { return Optional<NoncolonizedName>.none }
+      return prefix
     }
     return self._prefix(for:uri)
   }
