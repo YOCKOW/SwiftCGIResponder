@@ -8,40 +8,11 @@
 import XCTest
 @testable import XHTML
 
-private let simpleXHTML5_string =
-  """
-  <?xml version="1.0" encoding="UTF-8"?>
-  <!-- Comment before DOCTYPE -->
-  <?processing-instruction-before-doctype some-attribute='some-value'?>
-  <!DOCTYPE html>
-  <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-      <title>XHTML5</title>
-    </head>
-    <body>
-      <div>I am XHTML5.</div>
-      <div id="ID&quot;&apos;&lt;&gt;" data-user-name="YOCKOW">ID</div>
-    </body>
-  </html>
-  """
-private let simpleXHTML5_data = simpleXHTML5_string.data(using:.utf8)!
+import TestResources
 
-private let xhtml5_string =
-  """
-  <?xml version="1.0" encoding="UTF-8"?>
-  <?xml-stylesheet type="text/css" href="test.css"?>
-  <xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml">
-    <xhtml:head>
-      <xhtml:title xml:id="title">XHTML5</xhtml:title>
-      <xhtml:script><![CDATA[ window.alert("XHTML5!") ]]></xhtml:script>
-    </xhtml:head>
-    <xhtml:body>
-      <xhtml:div>I am also XHTML5.</xhtml:div>
-    </xhtml:body>
-  </xhtml:html>
-  """
-private let xhtml5_data = xhtml5_string.data(using:.utf8)!
-private let xhtml5_utf32be_data = xhtml5_string.data(using:.utf32BigEndian)!
+private let simpleXHTML5_data = TestResources.shared.data(for:"XHTML/SimpleXHTML5.utf8.xhtml")!
+private let xhtml5_data = TestResources.shared.data(for:"XHTML/XHTML5.utf8.xhtml")!
+private let xhtml5_utf16be_data = TestResources.shared.data(for:"XHTML/XHTML5.utf16be.xhtml")!
 
 final class DocumentTests: XCTestCase {
   func test_detectXHTMLInfo() {
@@ -54,7 +25,9 @@ final class DocumentTests: XCTestCase {
     XCTAssertTrue(infoOfXHTML5 == (xmlVersion:"1.0", stringEncoding:.utf8, version:nil),
                   "\(infoOfXHTML5)")
     
-    XCTAssertTrue(infoOfXHTML5 == xhtml5_utf32be_data.xhtmlInfo)
+    let infoOfXHTML5UTF16BE = xhtml5_utf16be_data.xhtmlInfo
+    XCTAssertTrue(infoOfXHTML5UTF16BE == (xmlVersion:"1.0", stringEncoding:.utf16BigEndian, version:nil),
+                  "\(infoOfXHTML5UTF16BE)")
   }
   
   func test_initialization() {
