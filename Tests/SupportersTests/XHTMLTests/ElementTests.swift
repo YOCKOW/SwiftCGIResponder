@@ -64,6 +64,82 @@ final class ElementTests: XCTestCase {
     child.attributes[localName:"name", uri:"http://my/ns"] = "child value"
     XCTAssertEqual(child.attributes["myns:name"], "child value")
   }
+  
+  func test_globalAttributes() {
+    let html = HTMLElement(name:"xhtml:html", attributes:["xmlns:xhtml":._xhtmlNamespace])
+    let element = Element(name:"xhtml:element")
+    html.append(element)
+    
+    element.attributes["accesskey"] = "k"
+    XCTAssertEqual(element.globalAttributes.accessKey, "k")
+    element.globalAttributes.accessKey = "a"
+    XCTAssertEqual(element.attributes["accesskey"], "a")
+    
+    element.attributes["class"] = "class1 class2"
+    XCTAssertEqual(element.globalAttributes.class, ["class1", "class2"])
+    element.globalAttributes.class = ["anotherClass1", "anotherClass2"]
+    XCTAssertEqual(element.attributes["class"], "anotherClass1 anotherClass2")
+    
+    element.attributes["contenteditable"] = "inherit"
+    XCTAssertEqual(element.globalAttributes.contentEditable, nil)
+    element.globalAttributes.contentEditable = true
+    XCTAssertEqual(element.attributes["contenteditable"], "true")
+    
+    element.attributes["dir"] = "auto"
+    XCTAssertEqual(element.globalAttributes.direction, .auto)
+    element.globalAttributes.direction = .leftToRight
+    XCTAssertEqual(element.attributes["dir"], "ltr")
+    
+    element.attributes["dropzone"] = "link"
+    XCTAssertEqual(element.globalAttributes.dropZone, .link)
+    element.globalAttributes.dropZone = .copy
+    XCTAssertEqual(element.attributes["dropzone"], "copy")
+    
+    element.attributes["hidden"] = "hidden"
+    XCTAssertEqual(element.globalAttributes.hidden, true)
+    element.globalAttributes.hidden = false
+    XCTAssertEqual(element.attributes["hidden"], nil)
+    
+    element.attributes["id"] = "id1"
+    XCTAssertEqual(element.globalAttributes.identifier, "id1")
+    element.globalAttributes.identifier = "id2"
+    XCTAssertEqual(element.attributes["id"], "id2")
+    
+    element.attributes["lang"] = "ja"
+    XCTAssertEqual(element.globalAttributes.language, "ja")
+    element.globalAttributes.language = "en"
+    XCTAssertEqual(element.attributes["lang"], "en")
+    
+    element.attributes["spellcheck"] = "false"
+    XCTAssertEqual(element.globalAttributes.spellCheck, false)
+    element.globalAttributes.spellCheck = true
+    XCTAssertEqual(element.attributes["spellcheck"], "true")
+    
+    element.attributes["style"] = "color:green;"
+    XCTAssertEqual(element.globalAttributes.style, "color:green;")
+    element.globalAttributes.style = "color:blue;"
+    XCTAssertEqual(element.attributes["style"], "color:blue;")
+    
+    element.attributes["tabindex"] = "1"
+    XCTAssertEqual(element.globalAttributes.tabIndex, 1)
+    element.globalAttributes.tabIndex = 100
+    XCTAssertEqual(element.attributes["tabindex"], "100")
+    
+    element.attributes["title"] = "title1"
+    XCTAssertEqual(element.globalAttributes.title, "title1")
+    element.globalAttributes.title = "title2"
+    XCTAssertEqual(element.attributes["title"], "title2")
+    
+    element.attributes["translate"] = "no"
+    XCTAssertEqual(element.globalAttributes.translate, false)
+    element.globalAttributes.translate = true
+    XCTAssertEqual(element.attributes["translate"], "yes")
+    
+    element.attributes["data-abc-def"] = "some data"
+    XCTAssertEqual(element.globalAttributes.dataSet["abcDef"], "some data")
+    element.globalAttributes.dataSet["abcDef"] = "another data"
+    XCTAssertEqual(element.attributes["data-abc-def"], "another data")
+  }
 }
 
 

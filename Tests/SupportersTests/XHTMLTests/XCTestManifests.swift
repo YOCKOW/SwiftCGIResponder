@@ -25,6 +25,7 @@ extension ElementTests {
     static let __allTests = [
         ("test_classSelector", test_classSelector),
         ("test_equatable", test_equatable),
+        ("test_globalAttributes", test_globalAttributes),
         ("test_namespace", test_namespace),
         ("test_xhtmlString", test_xhtmlString),
     ]
