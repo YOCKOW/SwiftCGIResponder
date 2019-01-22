@@ -36,6 +36,13 @@ extension Node {
     return comment
   }
   
+  public static func form(name:QualifiedName = "form",
+                          attributes:Attributes = [:],
+                          children:[Node] = []) -> Node
+  {
+    return FormElement(name:name, attributes:attributes, children:children)
+  }
+  
   /// Create an \<head\> element.
   public static func head(name:QualifiedName = "head",
                           attributes:Attributes = [:],
