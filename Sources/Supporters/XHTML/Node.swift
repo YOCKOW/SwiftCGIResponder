@@ -52,6 +52,18 @@ extension Node {
     return HTMLElement(name:name, attributes:attributes, children:children)
   }
   
+  /// Create an \<input\> element.
+  public static func input(name:QualifiedName = "input",
+                           type:InputElement.TypeValue,
+                           nameAttribute:String? = nil,
+                           value:String? = nil,
+                           attributes:Attributes = [:]) -> Node
+  {
+    return InputElement(name:name,
+                        type:type, nameAttribute:nameAttribute, value:value,
+                        attributes:attributes)
+  }
+  
   /// Create an XHTML text node.
   public static func text(_ text:String) -> Node {
     return Text(text)
