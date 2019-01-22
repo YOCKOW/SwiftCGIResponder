@@ -15,6 +15,7 @@ extension Element {
     
     private var _list:[NoncolonizedName:Element.Type] = [
       "body":BodyElement.self,
+      "form":FormElement.self,
       "head":HeadElement.self,
       "input":InputElement.self,
       "title":TitleElement.self,
