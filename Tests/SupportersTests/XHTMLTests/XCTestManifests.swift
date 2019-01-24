@@ -39,6 +39,12 @@ extension NamesTests {
     ]
 }
 
+extension ParserTests {
+    static let __allTests = [
+        ("test_parseSimpleXHTML5", test_parseSimpleXHTML5),
+    ]
+}
+
 extension ProcessingInstructionTests {
     static let __allTests = [
         ("test_XMLStyleSheet", test_XMLStyleSheet),
@@ -59,6 +65,7 @@ public func __allTests() -> [XCTestCaseEntry] {
         testCase(DocumentTests.__allTests),
         testCase(ElementTests.__allTests),
         testCase(NamesTests.__allTests),
+        testCase(ParserTests.__allTests),
         testCase(ProcessingInstructionTests.__allTests),
         testCase(VersionTests.__allTests),
     ]

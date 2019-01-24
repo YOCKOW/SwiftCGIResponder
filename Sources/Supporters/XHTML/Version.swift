@@ -64,6 +64,10 @@ public enum Version: Hashable {
 }
 
 extension Version {
+  public static let latest: Version = .v5_2
+}
+
+extension Version {
   internal var _documentType: String? {
     switch self {
     case .v1_0(let hVersion):
