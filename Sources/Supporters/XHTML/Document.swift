@@ -32,7 +32,7 @@ open class Document {
     
     public init(xmlVersion: String = "1.0",
                 stringEncoding: String.Encoding = .utf8,
-                version: Version = .v5,
+                version: Version = .v5_2,
                 miscellanies: [Miscellany] = [])
     {
       guard _validateXMLVersion(xmlVersion) else { fatalError("Unsupported XML Verion: \(xmlVersion)") }
@@ -63,18 +63,29 @@ open class Document {
   open var miscellanies: [Miscellany] = []
   
   public init(
+    prolog:Prolog,
+    rootElement:HTMLElement,
+    miscellanies: [Miscellany] = []
+  ) {
+    self.prolog = prolog
+    self.rootElement = rootElement
+    self.miscellanies = miscellanies
+    self.rootElement.document = self
+  }
+  
+  public convenience init(
     xmlVersion:String = "1.0",
     stringEncoding: String.Encoding = .utf8,
-    version: Version = .v5,
-    rootElement: HTMLElement
+    version: Version = .v5_2,
+    rootElement: HTMLElement,
+    miscellanies: [Miscellany] = []
   ) {
-    self.prolog = Prolog(xmlVersion:xmlVersion,
-                         stringEncoding:stringEncoding,
-                         version:version,
-                         miscellanies:[])
-    
-    self.rootElement = rootElement
-    self.rootElement.document = self
+    self.init(prolog:Prolog(xmlVersion:xmlVersion,
+                            stringEncoding:stringEncoding,
+                            version:version,
+                            miscellanies:[]),
+              rootElement:rootElement,
+              miscellanies:miscellanies)
   }
 }
 
