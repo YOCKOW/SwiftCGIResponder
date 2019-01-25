@@ -11,6 +11,7 @@ open class Parser: NSObject, XMLParserDelegate {
   public enum Error: Swift.Error {
     case xmlError(XMLParser.ErrorCode)
     case rootElementIsNotHTML
+    case duplicatedRootElement
     case misplacedCDATA
     case unexpectedError
   }
@@ -107,8 +108,11 @@ open class Parser: NSObject, XMLParserDelegate {
     let element = Element(name:tagName, attributes:attributes, parent:self._processingElement)
     
     if element is HTMLElement {
-      precondition(self._document == nil && self._processingElement == nil,
-                   "html element must be the only root element of XHTML.")
+      guard self._document == nil && self._processingElement == nil else {
+        self.parser(parser, parseErrorOccurred:Error.duplicatedRootElement)
+        return
+      }
+      
       self._document = Document(prolog:self._prolog, rootElement:element as! HTMLElement)
       self._processingElement = element
     } else {
