@@ -45,7 +45,12 @@ open class Parser: NSObject, XMLParserDelegate {
       if let error = xmlParser.parserError { throw error }
       throw Error.unexpectedError
     }
-    guard let document = delegate._document else { throw Error.unexpectedError }
+    guard let document = delegate._document else {
+      if let error = delegate._error {
+        throw error
+      }
+      throw Error.unexpectedError
+    }
     return document
   }
   
