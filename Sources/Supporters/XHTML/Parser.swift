@@ -11,6 +11,7 @@ open class Parser: NSObject, XMLParserDelegate {
   public enum Error: Swift.Error {
     case xmlError(XMLParser.ErrorCode)
     case rootElementIsNotHTML
+    case misplacedCDATA
     case unexpectedError
   }
   
@@ -148,5 +149,23 @@ open class Parser: NSObject, XMLParserDelegate {
         return
       }
     }
+  }
+  
+  public func parser(_ parser: XMLParser, foundCDATA CDATABlock: Data) {
+    guard
+      let cdata = String(data:CDATABlock, encoding:.utf8),
+      let section = CDATASection(cdata)
+    else
+    {
+      self.parser(parser, parseErrorOccurred:Error.xmlError(.invalidCharacterError))
+      return
+    }
+    
+    guard let processingElement = self._processingElement else {
+      self.parser(parser, parseErrorOccurred:Error.misplacedCDATA)
+      return
+    }
+    
+    processingElement.append(section)
   }
 }
