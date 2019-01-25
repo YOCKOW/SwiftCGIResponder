@@ -41,6 +41,7 @@ extension NamesTests {
 
 extension ParserTests {
     static let __allTests = [
+        ("test_errors", test_errors),
         ("test_parseSimpleXHTML5", test_parseSimpleXHTML5),
     ]
 }
