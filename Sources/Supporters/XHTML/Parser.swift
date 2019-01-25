@@ -8,11 +8,11 @@
 import Foundation
 
 open class Parser: NSObject, XMLParserDelegate {
-  public enum Error: Swift.Error {
+  public enum Error: Swift.Error, Equatable {
     case xmlError(XMLParser.ErrorCode)
     case rootElementIsNotHTML
-    case duplicatedRootElement
-    case misplacedCDATA
+    // case duplicatedRootElement // Parser Fails
+    // case misplacedCDATA // Parser Fails
     case unexpectedError
   }
   
@@ -108,10 +108,10 @@ open class Parser: NSObject, XMLParserDelegate {
     let element = Element(name:tagName, attributes:attributes, parent:self._processingElement)
     
     if element is HTMLElement {
-      guard self._document == nil && self._processingElement == nil else {
-        self.parser(parser, parseErrorOccurred:Error.duplicatedRootElement)
-        return
-      }
+//      guard self._document == nil && self._processingElement == nil else {
+//        self.parser(parser, parseErrorOccurred:Error.duplicatedRootElement)
+//        return
+//      }
       
       self._document = Document(prolog:self._prolog, rootElement:element as! HTMLElement)
       self._processingElement = element
@@ -166,7 +166,7 @@ open class Parser: NSObject, XMLParserDelegate {
     }
     
     guard let processingElement = self._processingElement else {
-      self.parser(parser, parseErrorOccurred:Error.misplacedCDATA)
+      // self.parser(parser, parseErrorOccurred:Error.misplacedCDATA)
       return
     }
     
