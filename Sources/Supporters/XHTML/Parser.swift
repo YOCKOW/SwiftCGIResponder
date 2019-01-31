@@ -7,6 +7,21 @@
 
 import Foundation
 
+extension Element {
+  fileprivate func _trimTexts() -> Void {
+    for child in self.children {
+      switch child {
+      case let text as Text:
+        text.text = text.text.trimmingUnicodeScalars(in:.xmlWhitespaces)
+      case let element as Element:
+        element._trimTexts()
+      default:
+        break
+      }
+    }
+  }
+}
+
 open class Parser: NSObject, XMLParserDelegate {
   public enum Error: Swift.Error, Equatable {
     case xmlError(XMLParser.ErrorCode)
@@ -51,6 +66,7 @@ open class Parser: NSObject, XMLParserDelegate {
       }
       throw Error.unexpectedError
     }
+    document.rootElement._trimTexts()
     return document
   }
   
@@ -150,11 +166,14 @@ open class Parser: NSObject, XMLParserDelegate {
   }
   
   public func parser(_ parser: XMLParser, foundCharacters string: String) {
-    let textNode = Text(string.trimmingUnicodeScalars(in:.xmlWhitespaces))
     if let processingElement = self._processingElement {
-      processingElement.append(textNode)
+      if case let lastChild as Text = processingElement.children.last {
+        lastChild.text += string
+      } else {
+        processingElement.append(Text(string))
+      }
     } else {
-      guard textNode.text.isEmpty else {
+      guard string.consists(of:.xmlWhitespaces) else {
         self.parser(parser, parseErrorOccurred:Error.xmlError(.invalidCharacterError))
         return
       }
