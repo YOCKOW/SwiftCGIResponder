@@ -133,3 +133,23 @@ extension Element {
     return parent.prefix(for:uri)
   }
 }
+
+extension Element {
+  /// Returns an instance of `Element` representing the element whose id property matches
+  /// the specified `identifier`.
+  public func element(for identifier:String) -> Element? {
+    if self.attributes[localName:"id", uri:._xhtmlNamespace] == identifier {
+      return self
+    }
+    
+    for child in self.children {
+      if case let childElement as Element = child,
+        let theElement = childElement.element(for:identifier)
+      {
+        return theElement
+      }
+    }
+    
+    return nil
+  }
+}

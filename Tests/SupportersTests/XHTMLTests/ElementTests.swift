@@ -8,6 +8,8 @@
 import XCTest
 @testable import XHTML
 
+import TestResources
+
 final class ElementTests: XCTestCase {
   func test_xhtmlString() {
     let element = Element(name:"element")
@@ -139,6 +141,20 @@ final class ElementTests: XCTestCase {
     XCTAssertEqual(element.globalAttributes.dataSet["abcDef"], "some data")
     element.globalAttributes.dataSet["abcDef"] = "another data"
     XCTAssertEqual(element.attributes["data-abc-def"], "another data")
+  }
+  
+  func test_id() {
+    let document =
+      try! Parser.parse(TestResources.shared.data(for:"XHTML/XHTML5ForVariousTests.xhtml")!)
+    
+    let element = document.element(for:"My ID")
+    XCTAssertNotNil(element)
+    
+    guard case let text as Text = element?.children.first else {
+      XCTFail("Unexpected element.")
+      return
+    }
+    XCTAssertEqual(text.text, "The identifier of this element is \"My ID\"")
   }
 }
 

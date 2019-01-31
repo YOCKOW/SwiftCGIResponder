@@ -110,3 +110,11 @@ extension Document {
     }
   }
 }
+
+extension Document {
+  /// Returns an instance of `Element` representing the element whose id property matches
+  /// the specified `identifier`.
+  public func element(for identifier:String) -> Element? {
+    return self.rootElement.element(for:identifier)
+  }
+}
