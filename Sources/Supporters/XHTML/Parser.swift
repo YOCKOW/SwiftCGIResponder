@@ -69,6 +69,7 @@ open class Parser: NSObject, XMLParserDelegate {
   
   ///// As `XMLParserDelegate` /////
   
+  /// The parser encounters a fatal error.
   public func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
     self._error = parseError
     parser.abortParsing()
