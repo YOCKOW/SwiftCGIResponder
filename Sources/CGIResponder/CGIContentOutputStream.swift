@@ -43,6 +43,11 @@ extension CGIContentOutputStream {
     case .url(let url):
       if url.isFileURL { try self._write(contentAtPath:url.path) }
       else { self.write(try Data(contentsOf:url)) }
+    case .xhtml(let document):
+      guard let data = document.xhtmlData else {
+        throw CGIResponderError.unexpectedError(message:"Cannot generate data of XHTML.")
+      }
+      self.write(data)
     case .lazy(let closure):
       try self.write(closure())
     }
