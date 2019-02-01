@@ -108,7 +108,13 @@ extension Attributes {
         }
         return nil
       } else {
-        return self[.attributeName(QualifiedName(localName:localName))]
+        // uri == nil
+        if let value = self[.attributeName(QualifiedName(localName:localName))] {
+          return value
+        } else if let prefix = self.element?.name.prefix {
+          return self[.attributeName(QualifiedName(prefix:prefix, localName:localName))]
+        }
+        return nil
       }
     }
     set {
