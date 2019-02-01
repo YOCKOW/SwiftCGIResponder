@@ -8,6 +8,7 @@
 // Exports types
 
 import HTTP
+import XHTML
 
 /* ********************************************************************************************** */
 
@@ -27,6 +28,13 @@ public typealias HTTPLastModifiedHeaderFieldDelegate = HTTP.LastModifiedHeaderFi
 
 /* Protocols */
 public typealias HTTPHeaderFieldValueConvertible = HTTP.HeaderFieldValueConvertible
+
+/* XHTMLs */
+public typealias XHTMLAttributes = XHTML.Attributes
+public typealias XHTMLDocument = XHTML.Document
+public typealias XHTMLElement = XHTML.Element
+public typealias XHTMLParser = XHTML.Parser
+public typealias XHTMLVersion = XHTML.Version
 
 /* Others */
 public typealias ContentType = HTTP.MIMEType

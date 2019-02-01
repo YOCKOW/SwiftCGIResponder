@@ -28,6 +28,9 @@ public enum CGIContent {
   case url(URL)
   public init(url:URL) { self = .url(url) }
   
+  case xhtml(XHTMLDocument)
+  public init(xhtml document:XHTMLDocument) { self = .xhtml(document) }
+  
   case lazy(() -> CGIContent)
   public init(creator:@escaping () -> CGIContent) { self = .lazy(creator) }
 }

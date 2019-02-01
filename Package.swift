@@ -28,7 +28,17 @@ let supporters: [Supporter] = [
     [
       .byName(name:"SwiftUnicodeSupplement"),
     ]
-  )
+  ),
+  (
+    "XHTML",
+    [
+      .byName(name:"SwiftBonaFideCharacterSet"),
+      .byName(name:"SwiftRanges"),
+      .target(name:"HTTP"),
+      .target(name:"LibExtender"),
+      .target(name:"TestResources")
+    ]
+  ),
 ]
 
 let mainTargetDependencies: [Target.Dependency] = [
@@ -52,6 +62,13 @@ packageTargets.append(.testTarget(
   name:"CGIResponderTests",
   dependencies:[.byName(name:"CGIResponder")],
   path:"Tests/CGIResponderTests"
+))
+
+// Resources for tests.
+productTargets.append("TestResources")
+packageTargets.append(.target(
+  name:"TestResources",
+  path:"Tests/TestResources"
 ))
 
 // Supporters
