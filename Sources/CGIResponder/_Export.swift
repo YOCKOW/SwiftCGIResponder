@@ -30,9 +30,9 @@ public typealias HTTPLastModifiedHeaderFieldDelegate = HTTP.LastModifiedHeaderFi
 public typealias HTTPHeaderFieldValueConvertible = HTTP.HeaderFieldValueConvertible
 
 /* XHTMLs */
-public typealias XHTMLDocument = XHTML.Document
-public typealias XHTMLElement = XHTML.Element
-public typealias XHTMLTextHolderElement = XHTML.TextHolderElement
+//public typealias XHTMLDocument = XHTML.Document
+//public typealias XHTMLElement = XHTML.Element
+//public typealias XHTMLTextHolderElement = XHTML.TextHolderElement
 public typealias XHTMLVersion = XHTML.Version
 
 /* Others */

@@ -8,36 +8,49 @@
 import XCTest
 @testable import XHTML
 
+import TestResources
+
+private let simpleXHTML5_data = TestResources.shared.data(for:"XHTML/SimpleXHTML5.utf8.xhtml")!
+private let xhtml5_data = TestResources.shared.data(for:"XHTML/XHTML5.utf8.xhtml")!
+private let xhtml5_utf16be_data = TestResources.shared.data(for:"XHTML/XHTML5.utf16be.xhtml")!
+
 final class DocumentTests: XCTestCase {
+  func test_detectXHTMLInfo() {
+    let infoOfSimpleXHTML5 = simpleXHTML5_data.xhtmlInfo
+    XCTAssertTrue(infoOfSimpleXHTML5 == (xmlVersion:"1.0", stringEncoding:.utf8, version:.v5_2),
+                  "\(infoOfSimpleXHTML5)")
+    
+    
+    let infoOfXHTML5 = xhtml5_data.xhtmlInfo
+    XCTAssertTrue(infoOfXHTML5 == (xmlVersion:"1.0", stringEncoding:.utf8, version:nil),
+                  "\(infoOfXHTML5)")
+    
+    let infoOfXHTML5UTF16BE = xhtml5_utf16be_data.xhtmlInfo
+    XCTAssertTrue(infoOfXHTML5UTF16BE == (xmlVersion:"1.0", stringEncoding:.utf16BigEndian, version:nil),
+                  "\(infoOfXHTML5UTF16BE)")
+  }
+  
   func test_initialization() {
-    let simpleXHTML5_string = """
-      <?xml version="1.0" encoding="UTF-8"?>
-      <!DOCTYPE html>
-      <html xmlns="http://www.w3.org/1999/xhtml">
-        <head><title>XHTML5</title></head>
-        <body><div>I am XHTML5.</div><div id="ID&quot;&apos;" data-user-name="YOCKOW">ID</div></body>
-      </html>
+    let root = HTMLElement(name:"html")
+    let document = Document(rootElement:root)
+    XCTAssertEqual(
+      document.xhtmlString,
       """
+      <?xml version="1.0" encoding="utf-8"?>
+      \(Version.v5._documentType!)
+      \(root.xhtmlString)
+      """)
+  }
+  
+  func test_tree() {
+    let document = Document(
+      rootElement:.init(name:"html", attributes:[:], children:[
+        .head(children:[.title("My XHTML.")]),
+        .body(children:[])
+      ])
+    )
     
-    let xhtml5_string = """
-      <?xml version="1.0" encoding="UTF-8"?>
-      <?xml-stylesheet type="text/css" href="test.css"?>
-      <xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml">
-        <xhtml:head>
-          <xhtml:title xml:id="title">XHTML5</xhtml:title>
-          <xhtml:script><![CDATA[ window.alert("XHTML5!") ]]></xhtml:script>
-        </xhtml:head>
-        <xhtml:body>
-          <xhtml:div>I am also XHTML5.</xhtml:div>
-        </xhtml:body>
-      </xhtml:html>
-      """
-    
-    let simpleXHTML5 = Document(xmlString:simpleXHTML5_string)
-    let xhtml5 = Document(xmlString:xhtml5_string)
-    
-    XCTAssertNotNil(simpleXHTML5)
-    XCTAssertNotNil(xhtml5)
+    XCTAssertEqual(document.title, "My XHTML.")
   }
 }
 

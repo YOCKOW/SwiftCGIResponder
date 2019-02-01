@@ -1,69 +1,120 @@
 /* *************************************************************************************************
  Document.swift
-   © 2017-2018 YOCKOW.
+   © 2019 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
- 
+
 import Foundation
+
+import BonaFideCharacterSet
 import LibExtender
 
-/// Represents the XHTML document.
-/// This is NOT a subclass of `XMLDocument`, but utilizes it.
-public struct Document {
-  private var __xmlDocument: XMLDocument!
-  private var _xmlDocument: XMLDocument {
-    get { return self.__xmlDocument }
-    set { self.__xmlDocument = (newValue.copy() as! XMLDocument) }
+private func _validateXMLVersion(_ string:String) -> Bool {
+  let numbers = UnicodeScalarSet(unicodeScalarsIn:"0"..."9")
+  guard string.count >= 3 else { return false }
+  guard string.hasPrefix("1.") else { return false }
+  guard
+    string[string.index(string.startIndex, offsetBy:2)..<string.endIndex].consists(of:numbers) else
+  {
+    return false
   }
-  
-  private init?(_ xmlDocument:XMLDocument) {
-    guard
-      let localNameOfRootElement = xmlDocument.rootElement()?.localName,
-      localNameOfRootElement == "html" else
-    {
-      return nil
-    }
-    self._xmlDocument = xmlDocument
-  }
-  
-  /// Initialize with a given string.
-  public init?(xmlString string:String, options mask:XMLNode.Options = []) {
-    guard let document = try? XMLDocument(xmlString:string, options:mask) else { return nil }
-    self.init(document)
-  }
-  
-  /// Create an empty document.
-  public init?(version:Version,
-               xmlVersion:String = "1.0", stringEncoding encoding:String.Encoding = .utf8,
-               options mask:XMLNode.Options = []) {
-    guard xmlVersion == "1.0" || xmlVersion == "1.1" else { return nil }
-    guard let charset = encoding.ianaCharacterSetName else { return nil }
-    guard let doctype = version._documentType else { return nil }
+  return true
+}
+
+/// Represents the document of XHTML
+open class Document {
+  public class Prolog {
+    public var xmlVersion: String
+    public var stringEncoding: String.Encoding
+    public var version: Version
+    public var miscellanies: [Miscellany]
     
-    let string =
-      "<?xml version=\"\(xmlVersion)\" encoding=\"\(charset)\" ?>\n" +
-      "\(doctype)\n" +
-      "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head><title></title></head><body></body></html>"
-    self.init(xmlString:string, options:mask)
+    public init(xmlVersion: String = "1.0",
+                stringEncoding: String.Encoding = .utf8,
+                version: Version = .v5_2,
+                miscellanies: [Miscellany] = [])
+    {
+      guard _validateXMLVersion(xmlVersion) else { fatalError("Unsupported XML Verion: \(xmlVersion)") }
+      self.xmlVersion = xmlVersion
+      self.stringEncoding = stringEncoding
+      self.version = version
+      self.miscellanies = miscellanies
+    }
+    
+    public var xhtmlString: String {
+      guard let charset = self.stringEncoding.ianaCharacterSetName else {
+        fatalError("Unsupported String Encoding.")
+      }
+      guard let doctype = self.version._documentType else {
+        fatalError("The version of XHTML must be specified.")
+      }
+      
+      return """
+        <?xml version="\(self.xmlVersion)" encoding="\(charset)"?>
+        \(doctype)
+        \(self.miscellanies.xhtmlString)
+        """
+    }
+  }
+  
+  open var prolog: Prolog
+  open var rootElement: HTMLElement
+  open var miscellanies: [Miscellany] = []
+  
+  public init(
+    prolog:Prolog,
+    rootElement:HTMLElement,
+    miscellanies: [Miscellany] = []
+  ) {
+    self.prolog = prolog
+    self.rootElement = rootElement
+    self.miscellanies = miscellanies
+    self.rootElement.document = self
+  }
+  
+  public convenience init(
+    xmlVersion:String = "1.0",
+    stringEncoding: String.Encoding = .utf8,
+    version: Version = .v5_2,
+    rootElement: HTMLElement,
+    miscellanies: [Miscellany] = []
+  ) {
+    self.init(prolog:Prolog(xmlVersion:xmlVersion,
+                            stringEncoding:stringEncoding,
+                            version:version,
+                            miscellanies:[]),
+              rootElement:rootElement,
+              miscellanies:miscellanies)
   }
 }
 
-// For output.
 extension Document {
-  public var xmlData: Data {
-    return self._xmlDocument.xmlData
+  public var xhtmlString: String {
+    return self.prolog.xhtmlString + self.rootElement.xhtmlString + self.miscellanies.xhtmlString
   }
   
-  public func xmlData(options mask:XMLNode.Options = []) -> Data {
-    return self._xmlDocument.xmlData(options:mask)
+  public var xhtmlData: Data? {
+    return self.xhtmlString.data(using:self.prolog.stringEncoding)
   }
-  
-  public var xmlString: String {
-    return self._xmlDocument.xmlString
+}
+
+extension Document {
+  public var title: String? {
+    get {
+      return self.rootElement.head?.title?.title
+    }
+    set {
+      let newTitle = newValue ?? ""
+      self.rootElement.head?.title?.title = newTitle
+    }
   }
-  
-  public func xmlString(options mask:XMLNode.Options = []) -> String {
-    return self._xmlDocument.xmlString(options:mask)
+}
+
+extension Document {
+  /// Returns an instance of `Element` representing the element whose id property matches
+  /// the specified `identifier`.
+  public func element(for identifier:String) -> Element? {
+    return self.rootElement.element(for:identifier)
   }
 }
