@@ -21,6 +21,14 @@ open class Node: Equatable {
 }
 
 extension Node {
+  /// Create an \<a\> element.
+  public static func a(name:QualifiedName = "a",
+                       href:String, text:String,
+                       attributes:Attributes = [:]) -> Node
+  {
+    return AnchorElement(name: name, hypertextReference: href, text: text, attributes: attributes)
+  }
+  
   /// Create an \<body\> element.
   public static func body(name:QualifiedName = "body",
                           attributes:Attributes = [:],
