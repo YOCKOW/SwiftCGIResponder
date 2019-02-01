@@ -29,6 +29,11 @@ extension Node {
     return BodyElement(name:name, attributes:attributes, children:children)
   }
   
+  /// Create a \<br /> element.
+  public static func br(name:QualifiedName = "br", attributes:Attributes = [:]) -> Node {
+    return LineBreakElement(name: name, attributes: attributes)
+  }
+  
   /// Create an XHTML comment node.
   /// Fatal error will occur if `text` is invalid for XML comment.
   public static func comment(_ text:String) -> Node {
