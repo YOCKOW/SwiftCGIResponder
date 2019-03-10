@@ -209,8 +209,8 @@ extension FormData.Iterator: IteratorProtocol {
     
     // if `filename` is nil, regard the data as simple string.
     guard let value: FormData.Item.Value = ({
+      temporaryFile.seek(toFileOffset:0)
       if filename == nil {
-        temporaryFile.seek(toFileOffset:0)
         guard let string = String(data:temporaryFile.availableData, encoding:stringEncoding) else {
           return nil
         }
