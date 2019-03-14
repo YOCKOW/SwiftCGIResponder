@@ -81,7 +81,7 @@ final class ClientTests: XCTestCase {
         let tmpDir = TemporaryDirectory(prefix:"CGIResponder-ClientTests-")
         defer { tmpDir.close() }
         
-        var iterator = Client.client.request.formDataIterator(using:tmpDir)
+        var iterator = Client.client.request.formDataIterator(savingUploadedFilesIn:tmpDir)
         XCTAssertNotNil(iterator)
         
         let firstItem = iterator?.next()

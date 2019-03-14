@@ -87,7 +87,7 @@ extension Client.Request {
   /// * Calling this method more than once will return meaningless iterator.
   /// * The uploaded files may be lost unless copying them to another location,
   ///   because, the temporary directory will be removed at the end of program.
-  public func formDataIterator(using temporaryDirectory:TemporaryDirectory) -> FormData.Iterator? {
+  public func formDataIterator(savingUploadedFilesIn temporaryDirectory:TemporaryDirectory)-> FormData.Iterator? {
     guard
       let clientContentType = self._client.contentType,
       clientContentType.type == .multipart && clientContentType.subtype == "form-data",
