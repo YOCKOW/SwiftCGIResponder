@@ -10,6 +10,9 @@ import TemporaryFile
 
 /// A content to be output via CGI.
 public enum CGIContent {
+  /// No content will be put out.
+  case none
+  
   case data(Data)
   public init(data:Data) { self = .data(data) }
   
