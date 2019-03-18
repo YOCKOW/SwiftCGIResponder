@@ -21,7 +21,7 @@ public struct CGIResponder {
   
   public init(status: HTTPStatusCode  = .ok,
               header: HTTPHeader = HTTPHeader([]),
-              content: CGIContent = .string("", encoding:.utf8))
+              content: CGIContent = .none)
   {
     self.status = status
     self.header = header

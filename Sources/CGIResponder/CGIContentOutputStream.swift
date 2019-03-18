@@ -27,6 +27,8 @@ extension CGIContentOutputStream {
   /// Write the content represented by `content` to the receiver.
   public mutating func write(_ content:CGIContent) throws {
     switch content {
+    case .none:
+      break
     case .data(let data):
       self.write(data)
     case .fileHandle(let fh):
