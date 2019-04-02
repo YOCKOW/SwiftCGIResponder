@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  ContentDisposition.swift
-   © 2017-2018 YOCKOW.
+   © 2017-2019 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -27,22 +27,10 @@ extension ContentDisposition: Equatable, Hashable {
     return lhs.value == rhs.value && lhs.parameters == rhs.parameters
   }
   
-  #if swift(>=4.2)
   public func hash(into hasher:inout Hasher) {
     hasher.combine(self.value)
     hasher.combine(self.parameters)
   }
-  #else
-  public var hashValue: Int {
-    var hh = self.value.hashValue
-    if let parameters = self.parameters {
-      for (key, value) in parameters {
-        hh ^= key.hashValue ^ value.hashValue
-      }
-    }
-    return hh
-  }
-  #endif
 }
 
 extension ContentDisposition: CustomStringConvertible {

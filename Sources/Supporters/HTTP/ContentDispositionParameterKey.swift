@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  ContentDispositionParameterKey.swift
-   © 2018 YOCKOW.
+   © 2018-2019 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -16,16 +16,13 @@ public struct ContentDispositionParameterKey: RawRepresentable {
 }
 
 extension ContentDispositionParameterKey: Hashable {
-  #if swift(>=4.1.50)
-  #else
   public static func ==(lhs:ContentDispositionParameterKey, rhs:ContentDispositionParameterKey) -> Bool {
     return lhs.rawValue == rhs.rawValue
   }
   
-  public var hashValue: Int {
-    return self.rawValue.hashValue
+  public func hash(into hasher:inout Hasher) {
+    hasher.combine(self.rawValue)
   }
-  #endif
 }
 
 extension ContentDispositionParameterKey: ExpressibleByStringLiteral {

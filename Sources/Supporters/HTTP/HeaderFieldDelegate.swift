@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  HeaderFieldDelegate.swift
-   © 2018 YOCKOW.
+   © 2018-2019 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -35,15 +35,9 @@ extension HeaderFieldDelegate where ValueSource: Equatable {
 }
 
 extension HeaderFieldDelegate where ValueSource: Hashable {
-  #if swift(>=4.2)
   public func hash(into hasher:inout Hasher) {
     hasher.combine(self.source)
   }
-  #else
-  public var hashValue: Int {
-    return self.source.hashValue
-  }
-  #endif
 }
 
 /// Header field whose type is `appendable`.

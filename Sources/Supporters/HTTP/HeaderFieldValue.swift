@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  HeaderFieldValue.swift
-   © 2017-2018 YOCKOW.
+   © 2017-2019 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -41,14 +41,8 @@ extension HeaderFieldValue: ExpressibleByStringLiteral {
 extension HeaderFieldValue: Equatable {}
 
 extension HeaderFieldValue: Hashable {
-  #if swift(>=4.2)
   public func hash(into hasher:inout Hasher) {
     hasher.combine(self.rawValue)
   }
-  #else
-  public var hashValue: Int {
-    return self.rawValue.hashValue
-  }
-  #endif
 }
 

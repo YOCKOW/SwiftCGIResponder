@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  MIMEType.swift
-   © 2017-2018 YOCKOW.
+   © 2017-2019 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -87,22 +87,12 @@ public struct MIMEType {
       )
     }
     
-    #if swift(>=4.2)
     public func hash(into hasher:inout Hasher) {
       hasher.combine(self._type)
       hasher.combine(self._tree)
       hasher.combine(self._subtype)
       hasher.combine(self._suffix)
     }
-    #else
-    public var hashValue: Int {
-      var hh = self._type.hashValue
-      if let tree = self._tree { hh ^= tree.hashValue }
-      hh ^= self._subtype.hashValue
-      if let suffix = self._suffix { hh ^= suffix.hashValue }
-      return hh
-    }
-    #endif
   }
   
   internal var _core: _Core
@@ -159,22 +149,10 @@ extension MIMEType: Hashable {
     return lhs._core == rhs._core && lhs._parameters == rhs._parameters
   }
   
-  #if swift(>=4.2)
   public func hash(into hasher:inout Hasher) {
     hasher.combine(self._core)
     hasher.combine(self._parameters)
   }
-  #else
-  public var hashValue: Int {
-    var hh = self._core.hashValue
-    if let parameters = self.parameters {
-      for (key,value) in parameters {
-        hh ^= key.hashValue ^ value.hashValue
-      }
-    }
-    return hh
-  }
-  #endif
 }
 
 extension MIMEType {

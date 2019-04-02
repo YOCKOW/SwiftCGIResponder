@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  ETagList.swift
-   © 2018 YOCKOW.
+   © 2018-2019 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -46,21 +46,12 @@ extension ETagList: Hashable {
     }
   }
   
-  #if swift(>=4.2)
   public func hash(into hasher:inout Hasher) {
     switch self {
     case .any: hasher.combine(Int.max)
     case .list(let array): hasher.combine(array)
     }
   }
-  #else
-  public var hashValue: Int {
-    switch self {
-    case .any: return Int.max
-    case .list(let array): return array.hashValue
-    }
-  }
-  #endif
 }
 
 extension ETagList: CustomStringConvertible {

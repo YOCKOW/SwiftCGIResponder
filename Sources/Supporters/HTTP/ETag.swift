@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  ETag.swift
-   © 2017-2018 YOCKOW.
+   © 2017-2019 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -99,7 +99,6 @@ extension ETag: Equatable {
 }
 
 extension ETag: Hashable {
-  #if swift(>=4.2)
   public func hash(into hasher:inout Hasher) {
     switch self {
     case .weak(let tag): hasher.combine("weak:" + tag)
@@ -107,15 +106,6 @@ extension ETag: Hashable {
     case .any: hasher.combine("*")
     }
   }
-  #else
-  public var hashValue: Int {
-    switch self {
-    case .weak(let string): return ~string.hashValue
-    case .strong(let string): return string.hashValue
-    case .any: return 0
-    }
-  }
-  #endif
 }
 
 infix operator =~: ComparisonPrecedence
