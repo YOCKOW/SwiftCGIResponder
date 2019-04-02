@@ -2,7 +2,7 @@
 // This file was created automatically
 //   from https://raw.githubusercontent.com/apple/swift-corelibs-foundation/master/CoreFoundation/String.subproj/CFString.h
 //        https://raw.githubusercontent.com/apple/swift-corelibs-foundation/master/CoreFoundation/String.subproj/CFStringEncodingExt.h
-//     ETags: ["\"7c2e67497918e7c04a86c35868f81108a2633df0\"","\"d368b8678a4f15585a1e03b7154c77e0e20388d9\""]
+//     ETags: ["\"59735ff9008dd8a7d7a053cd2ae17aa5f8ab78a1\"","\"d368b8678a4f15585a1e03b7154c77e0e20388d9\""]
 
 import CoreFoundation
 

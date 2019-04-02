@@ -2,7 +2,7 @@
 // This file was created automatically
 //   from https://www.iana.org/assignments/message-headers/perm-headers.csv
 //        https://www.iana.org/assignments/message-headers/prov-headers.csv
-//     Last-Modified: 2018-10-11 17:10:28 +0000
+//     Last-Modified: 2019-04-01 18:10:15 +0000
 
 extension HeaderFieldName {
   public static let aIM = HeaderFieldName(rawValue:"A-IM")!
@@ -32,7 +32,9 @@ extension HeaderFieldName {
   public static let cPEP = HeaderFieldName(rawValue:"C-PEP")!
   public static let cPEPInfo = HeaderFieldName(rawValue:"C-PEP-Info")!
   public static let cacheControl = HeaderFieldName(rawValue:"Cache-Control")!
+  public static let calManagedID = HeaderFieldName(rawValue:"Cal-Managed-ID")!
   public static let calDAVTimezones = HeaderFieldName(rawValue:"CalDAV-Timezones")!
+  public static let cdnLoop = HeaderFieldName(rawValue:"CDN-Loop")!
   public static let close = HeaderFieldName(rawValue:"Close")!
   public static let connection = HeaderFieldName(rawValue:"Connection")!
   public static let contentDisposition = HeaderFieldName(rawValue:"Content-Disposition")!
@@ -61,6 +63,7 @@ extension HeaderFieldName {
   public static let earlyData = HeaderFieldName(rawValue:"Early-Data")!
   public static let eTag = HeaderFieldName(rawValue:"ETag")!
   public static let expect = HeaderFieldName(rawValue:"Expect")!
+  public static let expectCT = HeaderFieldName(rawValue:"Expect-CT")!
   public static let expires = HeaderFieldName(rawValue:"Expires")!
   public static let ext = HeaderFieldName(rawValue:"Ext")!
   public static let forwarded = HeaderFieldName(rawValue:"Forwarded")!
@@ -94,6 +97,7 @@ extension HeaderFieldName {
   public static let optionalWWWAuthenticate = HeaderFieldName(rawValue:"Optional-WWW-Authenticate")!
   public static let orderingType = HeaderFieldName(rawValue:"Ordering-Type")!
   public static let origin = HeaderFieldName(rawValue:"Origin")!
+  public static let oscore = HeaderFieldName(rawValue:"OSCORE")!
   public static let overwrite = HeaderFieldName(rawValue:"Overwrite")!
   public static let p3p = HeaderFieldName(rawValue:"P3P")!
   public static let pep = HeaderFieldName(rawValue:"PEP")!
@@ -119,6 +123,7 @@ extension HeaderFieldName {
   public static let range = HeaderFieldName(rawValue:"Range")!
   public static let redirectRef = HeaderFieldName(rawValue:"Redirect-Ref")!
   public static let referer = HeaderFieldName(rawValue:"Referer")!
+  public static let replayNonce = HeaderFieldName(rawValue:"Replay-Nonce")!
   public static let retryAfter = HeaderFieldName(rawValue:"Retry-After")!
   public static let safe = HeaderFieldName(rawValue:"Safe")!
   public static let scheduleReply = HeaderFieldName(rawValue:"Schedule-Reply")!
@@ -137,6 +142,7 @@ extension HeaderFieldName {
   public static let soapAction = HeaderFieldName(rawValue:"SoapAction")!
   public static let statusURI = HeaderFieldName(rawValue:"Status-URI")!
   public static let strictTransportSecurity = HeaderFieldName(rawValue:"Strict-Transport-Security")!
+  public static let sunset = HeaderFieldName(rawValue:"Sunset")!
   public static let surrogateCapability = HeaderFieldName(rawValue:"Surrogate-Capability")!
   public static let surrogateControl = HeaderFieldName(rawValue:"Surrogate-Control")!
   public static let tcn = HeaderFieldName(rawValue:"TCN")!
@@ -179,7 +185,10 @@ extension HeaderFieldName {
   public static let resolverLocation = HeaderFieldName(rawValue:"Resolver-Location")!
   public static let subOK = HeaderFieldName(rawValue:"SubOK")!
   public static let subst = HeaderFieldName(rawValue:"Subst")!
+  public static let timingAllowOrigin = HeaderFieldName(rawValue:"Timing-Allow-Origin")!
   public static let title = HeaderFieldName(rawValue:"Title")!
+  public static let traceparent = HeaderFieldName(rawValue:"Traceparent")!
+  public static let tracestate = HeaderFieldName(rawValue:"Tracestate")!
   public static let uaColor = HeaderFieldName(rawValue:"UA-Color")!
   public static let uaMedia = HeaderFieldName(rawValue:"UA-Media")!
   public static let uaPixels = HeaderFieldName(rawValue:"UA-Pixels")!
