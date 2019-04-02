@@ -6,7 +6,7 @@
  ************************************************************************************************ */
 
 import BonaFideCharacterSet
-import LibExtender
+import yExtensions
 
 private func _validateNCName(_ string:String) -> Bool {
   guard

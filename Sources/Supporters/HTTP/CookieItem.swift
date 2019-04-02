@@ -5,7 +5,7 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
-import LibExtender
+import yExtensions
 
 /// Represents a single name-value pair for cookie.
 public struct CookieItem {

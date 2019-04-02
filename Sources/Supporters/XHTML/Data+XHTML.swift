@@ -7,7 +7,7 @@
 
 import BonaFideCharacterSet
 import Foundation
-import LibExtender
+import yExtensions
 
 // "Prolog" consists of only ASCII characters (except contents of comments).
 // So, Non-ASCII characters can be ignored to detect XML/XHTML version.

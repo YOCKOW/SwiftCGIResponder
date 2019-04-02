@@ -5,6 +5,7 @@ import PackageDescription
 
 let packageDependencies:[Package.Dependency] = [
   .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from:"1.4.1"),
+  .package(url:"https://github.com/YOCKOW/SwiftExtensions.git", from:"0.1.0"),
   .package(url:"https://github.com/YOCKOW/SwiftNetwork.git", from:"0.7.2"),
   .package(url:"https://github.com/YOCKOW/SwiftRanges.git", from: "2.0.0"),
   .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from:"1.1.0"),
@@ -17,15 +18,9 @@ let supporters: [Supporter] = [
     "HTTP",
     [
       .byName(name:"SwiftBonaFideCharacterSet"),
+      .byName(name:"SwiftYOCKOWExtensions"),
       .byName(name:"SwiftNetwork"),
       .byName(name:"SwiftRanges"),
-      .byName(name:"SwiftUnicodeSupplement"),
-      .target(name:"LibExtender"),
-    ]
-  ),
-  (
-    "LibExtender",
-    [
       .byName(name:"SwiftUnicodeSupplement"),
     ]
   ),
@@ -33,9 +28,9 @@ let supporters: [Supporter] = [
     "XHTML",
     [
       .byName(name:"SwiftBonaFideCharacterSet"),
+      .byName(name:"SwiftYOCKOWExtensions"),
       .byName(name:"SwiftRanges"),
       .target(name:"HTTP"),
-      .target(name:"LibExtender"),
       .target(name:"TestResources")
     ]
   ),

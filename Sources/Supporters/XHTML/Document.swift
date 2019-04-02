@@ -8,7 +8,7 @@
 import Foundation
 
 import BonaFideCharacterSet
-import LibExtender
+import yExtensions
 
 private func _validateXMLVersion(_ string:String) -> Bool {
   let numbers = UnicodeScalarSet(unicodeScalarsIn:"0"..."9")

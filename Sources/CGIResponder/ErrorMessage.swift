@@ -5,7 +5,7 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
  
-import LibExtender
+import yExtensions
 
 public struct ErrorMessage: RawRepresentable {
   public let rawValue: String

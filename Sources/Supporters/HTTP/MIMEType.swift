@@ -5,7 +5,7 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
-import LibExtender
+import yExtensions
 
 /// # MIMEType
 /// Represents MIME Type (a.k.a. media type and content type)

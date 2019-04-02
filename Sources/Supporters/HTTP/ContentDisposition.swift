@@ -5,7 +5,7 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
-import LibExtender
+import yExtensions
 import Foundation
 
 /// Represents "Content-Disposition"

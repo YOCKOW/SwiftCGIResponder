@@ -12,6 +12,7 @@ It's an experimental library under development, and useless as of now.
 ## Dependencies
 
 * [SwiftBonaFideCharacterSet](https://github.com/YOCKOW/SwiftBonaFideCharacterSet)
+* [SwiftExtensions](https://github.com/YOCKOW/SwiftExtensions)
 * [SwiftNetwork](https://github.com/YOCKOW/SwiftNetwork)
 * [SwiftRanges](https://github.com/YOCKOW/SwiftRanges)
 * [SwiftTemporaryFile](https://github.com/YOCKOW/SwiftTemporaryFile)
