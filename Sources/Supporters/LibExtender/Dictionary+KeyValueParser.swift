@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  Dictionary+KeyValueParser.swift
-   © 2017-2018 YOCKOW.
+   © 2017-2019 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -134,9 +134,9 @@ extension Dictionary where Key == String, Value == String {
               keyAndValueAreSeparatedBy kvSeparator:String = "=",
               pairsAreSeparatedBy pairSeparator:String = ";")
   {
-    try! self.init(parsing:string,
-                   keyAndValueAreSeparatedBy:kvSeparator,
-                   pairsAreSeparatedBy:pairSeparator,
-                   converter:{ return ($0, $1) })
+    self.init(parsing:string,
+              keyAndValueAreSeparatedBy:kvSeparator,
+              pairsAreSeparatedBy:pairSeparator,
+              converter:{ return ($0, $1) })
   }
 }

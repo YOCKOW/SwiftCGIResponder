@@ -212,8 +212,8 @@ extension Element.GlobalAttributes {
       
       var index = input.startIndex
       while true {
-        defer { index = input.index(after:index) }
         if index == input.endIndex { break }
+        defer { index = input.index(after:index) }
         
         var scalar = input[index]
         if scalar == "-" {

@@ -1,14 +1,14 @@
-// swift-tools-version:4.2
+// swift-tools-version:5.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let packageDependencies:[Package.Dependency] = [
-  .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from:"1.4.0"),
-  .package(url:"https://github.com/YOCKOW/SwiftNetwork.git", from:"0.7.1"),
-  .package(url:"https://github.com/YOCKOW/SwiftRanges.git", from: "1.3.2"),
-  .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from:"1.0.2"),
-  .package(url:"https://github.com/YOCKOW/SwiftUnicodeSupplement.git", from:"0.4.0"),
+  .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from:"1.4.1"),
+  .package(url:"https://github.com/YOCKOW/SwiftNetwork.git", from:"0.7.2"),
+  .package(url:"https://github.com/YOCKOW/SwiftRanges.git", from: "2.0.0"),
+  .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from:"1.1.0"),
+  .package(url:"https://github.com/YOCKOW/SwiftUnicodeSupplement.git", from:"0.5.0"),
 ]
 
 typealias Supporter = (name:String, dependencies:[Target.Dependency])
@@ -98,6 +98,6 @@ let package = Package(
   ],
   dependencies:packageDependencies,
   targets:packageTargets,
-  swiftLanguageVersions:[.v4, .v4_2]
+  swiftLanguageVersions:[.v4, .v4_2, .v5]
 )
 
