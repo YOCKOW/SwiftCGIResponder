@@ -6,31 +6,20 @@ import PackageDescription
 let packageDependencies:[Package.Dependency] = [
   .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from:"1.4.1"),
   .package(url:"https://github.com/YOCKOW/SwiftExtensions.git", from:"0.1.0"),
-  .package(url:"https://github.com/YOCKOW/SwiftNetwork.git", from:"0.7.2"),
+  .package(url:"https://github.com/YOCKOW/SwiftNetwork.git", from:"0.8.0"),
   .package(url:"https://github.com/YOCKOW/SwiftRanges.git", from: "2.0.0"),
   .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from:"1.1.0"),
-  .package(url:"https://github.com/YOCKOW/SwiftUnicodeSupplement.git", from:"0.5.0"),
 ]
 
 typealias Supporter = (name:String, dependencies:[Target.Dependency])
 let supporters: [Supporter] = [
   (
-    "HTTP",
+    "XHTML",
     [
       .byName(name:"SwiftBonaFideCharacterSet"),
       .byName(name:"SwiftYOCKOWExtensions"),
       .byName(name:"SwiftNetwork"),
       .byName(name:"SwiftRanges"),
-      .byName(name:"SwiftUnicodeSupplement"),
-    ]
-  ),
-  (
-    "XHTML",
-    [
-      .byName(name:"SwiftBonaFideCharacterSet"),
-      .byName(name:"SwiftYOCKOWExtensions"),
-      .byName(name:"SwiftRanges"),
-      .target(name:"HTTP"),
       .target(name:"TestResources")
     ]
   ),
