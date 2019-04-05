@@ -6,7 +6,7 @@ import PackageDescription
 let packageDependencies:[Package.Dependency] = [
   .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from:"1.4.1"),
   .package(url:"https://github.com/YOCKOW/SwiftExtensions.git", from:"0.1.0"),
-  .package(url:"https://github.com/YOCKOW/SwiftNetwork.git", from:"0.8.0"),
+  .package(url:"https://github.com/YOCKOW/SwiftNetworkGear.git", from:"0.8.1"),
   .package(url:"https://github.com/YOCKOW/SwiftRanges.git", from: "2.0.0"),
   .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from:"1.1.0"),
 ]
@@ -18,7 +18,7 @@ let supporters: [Supporter] = [
     [
       .byName(name:"SwiftBonaFideCharacterSet"),
       .byName(name:"SwiftYOCKOWExtensions"),
-      .byName(name:"SwiftNetwork"),
+      .byName(name:"SwiftNetworkGear"),
       .byName(name:"SwiftRanges"),
       .target(name:"TestResources")
     ]
@@ -26,7 +26,7 @@ let supporters: [Supporter] = [
 ]
 
 let mainTargetDependencies: [Target.Dependency] = [
-  .byName(name:"SwiftNetwork"),
+  .byName(name:"SwiftNetworkGear"),
   .byName(name:"SwiftTemporaryFile"),
 ] + supporters.map {
     .byName(name:$0.name)
