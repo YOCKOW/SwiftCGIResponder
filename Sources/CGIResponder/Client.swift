@@ -8,7 +8,7 @@
 import BonaFideCharacterSet
 import Foundation
 import HTTP
-import Network
+import NetworkGear
 import TemporaryFile
 
 /// Represents the client.
