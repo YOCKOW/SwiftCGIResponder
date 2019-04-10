@@ -6,7 +6,7 @@
  ************************************************************************************************ */
 
 import Foundation
-import LibExtender
+import yExtensions
 
 /// The principal structure that can respond to the client.
 public struct CGIResponder {

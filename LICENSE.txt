@@ -1,5 +1,5 @@
 The MIT License (MIT)
-Copyright (c) 2017 YOCKOW
+Copyright (c) 2017-2019 YOCKOW
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 and associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -15,10 +15,3 @@ NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPO
 NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
 OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-====================================================================================================
-*** Acknowledgements ***
-
-"Sources/Supporters/LibExtender/CFStringEncodings.swift"
-  was extracted and converted from the code in Swift Project that is licensed under Apache License
-  v2.0 with Runtime Library Exception. Please read the source file for more information.

@@ -6,7 +6,7 @@
  ************************************************************************************************ */
  
 import Foundation
-import Network
+import NetworkGear
 
 /// Represents server (information)
 public class Server {

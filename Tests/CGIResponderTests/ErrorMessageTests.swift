@@ -9,7 +9,7 @@ import XCTest
 
 import Foundation
 @testable import CGIResponder
-@testable import LibExtender
+@testable import yExtensions
 
 /// Check output of `warn(_: separator: terminator:)`
 func checkWarning(_ expected:@autoclosure () -> ErrorMessage,
