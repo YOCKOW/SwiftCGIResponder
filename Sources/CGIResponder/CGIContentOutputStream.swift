@@ -40,8 +40,6 @@ extension CGIContentOutputStream {
         throw CGIResponderError.unexpectedError(message:"No data available: \(string)")
       }
       self.write(data)
-    case .temporaryFile(let temporaryFile):
-      temporaryFile.write(to:&self)
     case .url(let url):
       if url.isFileURL { try self._write(contentAtPath:url.path) }
       else { self.write(try Data(contentsOf:url)) }
@@ -60,4 +58,3 @@ extension FileHandle: CGIContentOutputStream {}
 
 extension Data: CGIContentOutputStream {}
 
-extension TemporaryFile: CGIContentOutputStream {}

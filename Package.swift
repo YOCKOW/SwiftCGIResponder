@@ -14,7 +14,7 @@ let package = Package(
     .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from:"1.4.1"),
     .package(url:"https://github.com/YOCKOW/SwiftExtensions.git", from:"0.1.1"),
     .package(url:"https://github.com/YOCKOW/SwiftNetworkGear.git", from:"0.8.1"),
-    .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from:"1.1.0"),
+    .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from:"2.0.0"),
     .package(url:"https://github.com/YOCKOW/SwiftXHTML.git", .exact("0.1.0-dev20190408")),
   ],
   targets: [
@@ -30,7 +30,7 @@ let package = Package(
         "SwiftXHTML"
       ]
     ),
-    .testTarget(name: "CGIResponderTests",dependencies: ["CGIResponder"]),
+    .testTarget(name: "CGIResponderTests",dependencies: ["CGIResponder", "SwiftTemporaryFile"]),
   ],
   swiftLanguageVersions: [.v4, .v4_2, .v5]
 )

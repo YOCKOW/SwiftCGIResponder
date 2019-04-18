@@ -8,20 +8,18 @@
 @testable import CGIResponder
 
 import Foundation
+import TemporaryFile
 
 func withStandardInput(data:Data, _ body:() throws -> Void) rethrows {
-  let path = NSTemporaryDirectory() + UUID().uuidString
-  
-  _ = FileManager.default.createFile(atPath:path, contents:nil, attributes:nil)
-  
-  let originalStandardInput = FileHandle._changeableStandardInput
-  let tmpFile = FileHandle(forUpdatingAtPath:path)!
-  FileHandle._changeableStandardInput = tmpFile
-  defer {
-    FileHandle._changeableStandardInput = originalStandardInput
+  try TemporaryFile {
+    let originalStandardInput = FileHandle._changeableStandardInput
+    FileHandle._changeableStandardInput = $0
+    defer {
+      FileHandle._changeableStandardInput = originalStandardInput
+    }
+    
+    $0.write(data)
+    $0.seek(toFileOffset:0)
+    try body()
   }
-  
-  tmpFile.write(data)
-  tmpFile.seek(toFileOffset:0)
-  try body()
 }

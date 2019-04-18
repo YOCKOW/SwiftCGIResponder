@@ -18,15 +18,16 @@ public enum CGIContent {
   
   case fileHandle(FileHandle)
   public init(fileHandle:FileHandle) { self = .fileHandle(fileHandle) }
+  public init(temporaryFile: TemporaryFile) { self = .fileHandle(temporaryFile) }
+  public static func temporaryFile(_ temporaryFile: TemporaryFile) -> CGIContent {
+    return .init(temporaryFile: temporaryFile)
+  }
   
   case path(String)
   public init(fileAtPath path:String) { self = .path(path) }
   
   case string(String, encoding:String.Encoding)
   public init(string:String, encoding:String.Encoding = .utf8) { self = .string(string, encoding:encoding) }
-  
-  case temporaryFile(TemporaryFile)
-  public init(temporaryFile:TemporaryFile) { self = .temporaryFile(temporaryFile) }
   
   case url(URL)
   public init(url:URL) { self = .url(url) }
