@@ -216,7 +216,7 @@ extension FormData.Iterator: IteratorProtocol {
         }
         return FormData.Item.Value(content:.string(string, encoding:stringEncoding))
       } else {
-        return FormData.Item.Value(content:.temporaryFile(temporaryFile),
+        return FormData.Item.Value(content:.init(temporaryFile:temporaryFile),
                                    filename:filename,
                                    contentType:nilableContentType)
       }

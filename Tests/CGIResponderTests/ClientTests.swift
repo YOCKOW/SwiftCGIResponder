@@ -102,7 +102,7 @@ final class ClientTests: XCTestCase {
         XCTAssertEqual(thirdItem?.value.filename, "Filename.txt")
         XCTAssertEqual(thirdItem?.value.contentType,
                        ContentType(pathExtension:.txt, parameters:["charset":"UTF-8"]))
-        guard case .temporaryFile(let temporaryFile)? = thirdItem?.value.content else { XCTFail(); return }
+        guard case .fileHandle(let temporaryFile)? = thirdItem?.value.content else { XCTFail(); return }
         temporaryFile.seek(toFileOffset:0)
         XCTAssertEqual(temporaryFile.availableData, "Hello, World!\n".data(using:.utf8))
         
