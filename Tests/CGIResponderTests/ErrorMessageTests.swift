@@ -10,34 +10,26 @@ import XCTest
 import Foundation
 @testable import CGIResponder
 @testable import yExtensions
+import TemporaryFile
 
 /// Check output of `warn(_: separator: terminator:)`
 func checkWarning(_ expected:@autoclosure () -> ErrorMessage,
                   file: StaticString = #file,
                   line: UInt = #line,
                   _ body:() throws -> Void) rethrows -> Void {
-  let path = NSTemporaryDirectory() + UUID().uuidString
-  
-  _ = FileManager.default.createFile(atPath:path, contents:nil, attributes:nil)
-  
-  let originalStandardError = FileHandle._changeableStandardError
-  let tmpFile = FileHandle(forUpdatingAtPath:path)!
-  FileHandle._changeableStandardError = tmpFile
-  defer {
-    FileHandle._changeableStandardError = originalStandardError
+  try TemporaryFile {
+    let originalStandardError = FileHandle._changeableStandardError
+    FileHandle._changeableStandardError = $0
+    defer { FileHandle._changeableStandardError = originalStandardError }
     
-    tmpFile.seek(toFileOffset:0)
-    let data = tmpFile.availableData
-    tmpFile.closeFile()
+    try body()
     
-    try! FileManager.default.removeItem(atPath:path)
+    $0.seek(toFileOffset: 0)
+    let data = $0.availableData
     
     let message = String(data:data, encoding:.utf8)!.trimmingCharacters(in:.whitespacesAndNewlines)
-    
     XCTAssertEqual(message, expected().rawValue, file:file, line:line)
   }
-  
-  try body()
 }
 
 final class ErrorMessageTests: XCTestCase {
