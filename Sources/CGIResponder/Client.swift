@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  Client.swift
-   © 2017-2018 YOCKOW.
+   © 2017-2019 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -171,9 +171,7 @@ extension Client.Request {
       return result
     }
     
-    guard let queryString = EnvironmentVariables.default["QUERY_STRING"] else {
-      return nil
-    }
+    guard let queryString = self.queryString else { return nil }
     var result = _parse(queryString)
     
     // Handle Posted Data
@@ -189,6 +187,11 @@ extension Client.Request {
     }
     
     return result
+  }
+  
+  /// The value of "QUERY_STRING".
+  public var queryString: String? {
+    return EnvironmentVariables.default["QUERY_STRING"]
   }
   
   /// The User Agent.
