@@ -141,6 +141,11 @@ extension Client.Request {
     return HTTPMethod(rawValue:EnvironmentVariables.default["REQUEST_METHOD"] ?? "?")
   }
   
+  /// The value of "REQUEST_URI".
+  public var path: String? {
+    return EnvironmentVariables.default["REQUEST_URI"]
+  }
+  
   /// The value of "PATH_INFO".
   public var pathInfo: String? {
     return EnvironmentVariables.default["PATH_INFO"]
