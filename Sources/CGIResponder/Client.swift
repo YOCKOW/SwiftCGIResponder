@@ -141,6 +141,11 @@ extension Client.Request {
     return HTTPMethod(rawValue:EnvironmentVariables.default["REQUEST_METHOD"] ?? "?")
   }
   
+  /// The value of "PATH_INFO".
+  public var pathInfo: String? {
+    return EnvironmentVariables.default["PATH_INFO"]
+  }
+  
   /// Retuns array of `URLQueryItem` generated from "QUERY_STRING" and
   /// posted data (if content type is "application/x-www-form-urlencoded").
   /// Inadequate items may be returned if other functions have already read the standard input.
