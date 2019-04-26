@@ -108,6 +108,11 @@ extension Client.Request {
                              temporaryDirectory:temporaryDirectory)
   }
   
+  /// Returns hostname of the client's request.
+  public var hostname: Domain? {
+    return EnvironmentVariables.default["HTTP_HOST"].flatMap{ Domain($0, options: .loose) }
+  }
+  
   /// An array of ETags generated from the value of `HTTP_IF_MATCH`
   public var ifMatch: HTTPETagList? {
     guard let ifMatch_string = EnvironmentVariables.default["HTTP_IF_MATCH"] else { return nil }
