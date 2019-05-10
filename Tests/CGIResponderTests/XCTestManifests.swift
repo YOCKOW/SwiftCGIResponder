@@ -16,6 +16,7 @@ extension CGIResponderTests {
     // to regenerate.
     static let __allTests__CGIResponderTests = [
         ("test_contentType", test_contentType),
+        ("test_defaultContentType", test_defaultContentType),
         ("test_expectedStatus_Date", test_expectedStatus_Date),
         ("test_expectedStatus_ETag", test_expectedStatus_ETag),
         ("test_response", test_response),
