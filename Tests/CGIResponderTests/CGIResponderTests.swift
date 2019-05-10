@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  CGIResponderTests.swift
-   © 2017-2018 YOCKOW.
+   © 2017-2019 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -22,6 +22,20 @@ final class CGIResponderTests: XCTestCase {
     XCTAssertEqual(responder.contentType.type, .text)
     XCTAssertEqual(responder.contentType.subtype, "plain")
     XCTAssertEqual(responder.stringEncoding, .utf8)
+  }
+  
+  func test_defaultContentType() {
+    var responder = CGIResponder(content:.path("/my.image.png"))
+    XCTAssertEqual(responder._defaultContentType, ContentType("image/png"))
+    
+    responder.content = .string("CONTENT", encoding: .japaneseEUC)
+    XCTAssertEqual(responder._defaultContentType, ContentType("text/plain; charset=euc-jp"))
+    
+    responder.content = .url(URL(fileURLWithPath: "/my.style.css"))
+    XCTAssertEqual(responder._defaultContentType, ContentType("text/css"))
+    
+    responder.content = .xhtml(XHTMLDocument(rootElement: .init(name: "html")))
+    XCTAssertEqual(responder._defaultContentType, ContentType("application/xhtml+xml; charset=utf-8"))
   }
   
   func test_expectedStatus_ETag() {
