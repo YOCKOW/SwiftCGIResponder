@@ -39,3 +39,42 @@ public enum CGIContent {
   public init(creator:@escaping () -> CGIContent) { self = .lazy(creator) }
 }
 
+extension CGIContent {
+  /// Determine the content type
+  internal var _defaultContentType: ContentType {
+    let octetStreamContentType = ContentType(type:.application, subtype:"octet-stream")!
+    
+    func _parameters(encoding: String.Encoding) -> ContentType.Parameters? {
+      guard let charset = encoding.ianaCharacterSetName else { return nil }
+      return ["charset": charset]
+    }
+    
+    func _contentType(pathExtension: String,
+                      parameters: ContentType.Parameters? = nil) -> ContentType
+    {
+      return ContentType.PathExtension(rawValue:pathExtension).flatMap {
+        ContentType(pathExtension:$0, parameters: parameters)
+      } ?? octetStreamContentType
+    }
+    
+    switch self {
+    case .path(let path):
+      guard
+        let indexAfterDot = path.lastIndex(of: ".").flatMap(path.index(after:)),
+        indexAfterDot < path.endIndex
+        else {
+          return octetStreamContentType
+      }
+      return _contentType(pathExtension: String(path[indexAfterDot..<path.endIndex]))
+    case .string(_, encoding: let encoding):
+      return ContentType(pathExtension: .txt, parameters: _parameters(encoding: encoding))!
+    case .url(let url):
+      return _contentType(pathExtension: url.pathExtension)
+    case .xhtml(let document):
+      let encoding = document.prolog.stringEncoding
+      return ContentType(pathExtension: .xhtml, parameters: _parameters(encoding: encoding))!
+    default:
+      return octetStreamContentType
+    }
+  }
+}

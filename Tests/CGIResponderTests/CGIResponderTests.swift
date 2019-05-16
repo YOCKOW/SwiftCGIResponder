@@ -24,20 +24,6 @@ final class CGIResponderTests: XCTestCase {
     XCTAssertEqual(responder.stringEncoding, .utf8)
   }
   
-  func test_defaultContentType() {
-    var responder = CGIResponder(content:.path("/my.image.png"))
-    XCTAssertEqual(responder._defaultContentType, ContentType("image/png"))
-    
-    responder.content = .string("CONTENT", encoding: .japaneseEUC)
-    XCTAssertEqual(responder._defaultContentType, ContentType("text/plain; charset=euc-jp"))
-    
-    responder.content = .url(URL(fileURLWithPath: "/my.style.css"))
-    XCTAssertEqual(responder._defaultContentType, ContentType("text/css"))
-    
-    responder.content = .xhtml(XHTMLDocument(rootElement: .init(name: "html")))
-    XCTAssertEqual(responder._defaultContentType, ContentType("application/xhtml+xml; charset=utf-8"))
-  }
-  
   func test_expectedStatus_ETag() {
     let eTag: HTTPETag = .strong("ETAG")
     var responder = CGIResponder()

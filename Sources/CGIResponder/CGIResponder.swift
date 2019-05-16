@@ -30,52 +30,12 @@ public struct CGIResponder {
 }
 
 extension CGIResponder {
-  /// Determine the content type for `.content`
-  ///
-  /// It's `internal` to be testable.
-  internal var _defaultContentType: ContentType {
-    let octetStreamContentType = ContentType(type:.application, subtype:"octet-stream")!
-    
-    func _parameters(encoding: String.Encoding) -> ContentType.Parameters? {
-      guard let charset = encoding.ianaCharacterSetName else { return nil }
-      return ["charset":charset]
-    }
-    
-    func _contentType(pathExtension: String,
-                      parameters: ContentType.Parameters? = nil) -> ContentType
-    {
-      return ContentType.PathExtension(rawValue:pathExtension).flatMap {
-        ContentType(pathExtension:$0, parameters: parameters)
-      } ?? octetStreamContentType
-    }
-    
-    switch self.content {
-    case .path(let path):
-      guard
-        let indexAfterDot = path.lastIndex(of: ".").flatMap(path.index(after:)),
-        indexAfterDot < path.endIndex
-        else {
-        return octetStreamContentType
-      }
-      return _contentType(pathExtension: String(path[indexAfterDot..<path.endIndex]))
-    case .string(_, encoding: let encoding):
-      return ContentType(pathExtension: .txt, parameters: _parameters(encoding: encoding))!
-    case .url(let url):
-      return _contentType(pathExtension: url.pathExtension)
-    case .xhtml(let document):
-      let encoding = document.prolog.stringEncoding
-      return ContentType(pathExtension: .xhtml, parameters: _parameters(encoding: encoding))!
-    default:
-      return octetStreamContentType
-    }
-  }
-  
   /// The content type of the response.
   /// This property is computed from `HTTPHeader`.
   public var contentType: ContentType {
     get {
       guard let field = self.header[.contentType].first else {
-        return self._defaultContentType
+        return self.content._defaultContentType
       }
       return field.source as! ContentType
     }
@@ -190,7 +150,7 @@ extension CGIResponder {
     // Requires `Content-Type:`
     var header = self.header
     if header[.contentType].count < 1 {
-      header.insert(.contentType(self._defaultContentType))
+      header.insert(.contentType(self.content._defaultContentType))
     }
     try output.write(CGIContent(string:header.description))
     
