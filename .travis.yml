@@ -7,7 +7,7 @@ matrix:
     - &macos
       name: "Tests on macOS"
       os: osx
-      osx_image: xcode10.2
+      osx_image: xcode10.3
       sudo: required
       language: objective-c
       script: &tests
@@ -16,11 +16,11 @@ matrix:
         - swift test -Xswiftc -swift-version -Xswiftc 4
 
     - <<: *macos
-      name: "Release Builds on macOS"
-      script: &release_builds
-        - swift build --configuration release  -Xswiftc -swift-version -Xswiftc 5
-        - swift build --configuration release  -Xswiftc -swift-version -Xswiftc 4.2
-        - swift build --configuration release  -Xswiftc -swift-version -Xswiftc 4
+      name: "Tests with release mode on macOS"
+      script: &tests_with_release_mode
+        - swift test --configuration release -Xswiftc -enable-testing -Xswiftc -swift-version -Xswiftc 5
+        - swift test --configuration release -Xswiftc -enable-testing -Xswiftc -swift-version -Xswiftc 4.2
+        - swift test --configuration release -Xswiftc -enable-testing -Xswiftc -swift-version -Xswiftc 4
 
     - &linux
       name: "Tests on Linux"
@@ -29,7 +29,7 @@ matrix:
       sudo: required
       language: ruby
       before_install:
-        - export SWIFT_ARCHIVE_URL="https://swift.org/builds/swift-5.0.2-release/ubuntu1604/swift-5.0.2-RELEASE/swift-5.0.2-RELEASE-ubuntu16.04.tar.gz"
+        - export SWIFT_ARCHIVE_URL="https://swift.org/builds/swift-5.0.3-release/ubuntu1604/swift-5.0.3-RELEASE/swift-5.0.3-RELEASE-ubuntu16.04.tar.gz"
         - curl ${SWIFT_ARCHIVE_URL} -o ../swift.tar.gz
         - mkdir ../swift
         - tar xzf ../swift.tar.gz -C ../swift --strip-components 2
@@ -37,5 +37,5 @@ matrix:
       script: *tests
 
     - <<: *linux
-      name: "Release Builds on Linux"
-      script: *release_builds
+      name: "Tests with release mode on Linux"
+      script: *tests_with_release_mode
