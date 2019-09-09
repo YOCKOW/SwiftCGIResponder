@@ -3,6 +3,7 @@
 /Packages
 /Package.resolved
 /*.xcodeproj
+/.swiftpm
 
 /SwiftKeywords.yml
 /UnicodeLicenseAgreement.txt
