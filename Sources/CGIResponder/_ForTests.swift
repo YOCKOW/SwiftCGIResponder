@@ -6,7 +6,8 @@
  ************************************************************************************************ */
  
 import Foundation
+import yProtocols
 
-extension FileHandle {
-  internal static var _changeableStandardInput: FileHandle = .standardInput
-}
+internal var _changeableStandardError: AnyFileHandle = .init(.standardError)
+internal var _changeableStandardInput: AnyFileHandle = .init(.standardInput)
+

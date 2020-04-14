@@ -6,7 +6,9 @@
  ************************************************************************************************ */
 
 import Foundation
+import NetworkGear
 import yExtensions
+import yProtocols
 
 /// The principal structure that can respond to the client.
 public struct CGIResponder {
@@ -115,8 +117,8 @@ extension CGIResponder {
    ```
    */
   public func respond() throws {
-    var stdout = FileHandle.standardOutput
-    try self.respond(to:&stdout)
+    var stdout = AnyFileHandle(FileHandle.standardOutput)
+    try self.respond(to: &stdout)
   }
   
   /// For debug purpose, you can specify output.

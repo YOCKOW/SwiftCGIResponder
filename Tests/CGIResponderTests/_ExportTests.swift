@@ -8,6 +8,8 @@
 import XCTest
 @testable import CGIResponder
 
+import NetworkGear
+
 final class ExportTests: XCTestCase {
   func test_HTTPETag() {
     XCTAssertEqual(HTTPETag("*"), .any)

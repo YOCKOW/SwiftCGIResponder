@@ -9,7 +9,6 @@ import XCTest
 
 import Foundation
 @testable import CGIResponder
-@testable import yExtensions
 import TemporaryFile
 
 /// Check output of `warn(_: separator: terminator:)`
@@ -18,14 +17,14 @@ func checkWarning(_ expected:@autoclosure () -> ErrorMessage,
                   line: UInt = #line,
                   _ body:() throws -> Void) rethrows -> Void {
   try TemporaryFile {
-    let originalStandardError = FileHandle._changeableStandardError
-    FileHandle._changeableStandardError = $0
-    defer { FileHandle._changeableStandardError = originalStandardError }
+    let originalStandardError = _changeableStandardError
+    _changeableStandardError = .init($0)
+    defer { _changeableStandardError = originalStandardError }
     
     try body()
     
-    $0.seek(toFileOffset: 0)
-    let data = $0.availableData
+    try $0.seek(toOffset: 0)
+    guard let data = try $0.readToEnd() else { throw NSError(domain: "Unxpected error.", code: -1) }
     
     let message = String(data:data, encoding:.utf8)!.trimmingCharacters(in:.whitespacesAndNewlines)
     XCTAssertEqual(message, expected().rawValue, file:file, line:line)

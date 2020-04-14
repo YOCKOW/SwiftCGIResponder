@@ -7,7 +7,6 @@
 
 import BonaFideCharacterSet
 import Foundation
-import HTTP
 import NetworkGear
 import TemporaryFile
 
@@ -87,14 +86,16 @@ extension Client.Request {
   /// * Calling this method more than once will return meaningless iterator.
   /// * The uploaded files may be lost unless copying them to another location,
   ///   because, the temporary directory will be removed at the end of program.
-  public func formDataIterator(savingUploadedFilesIn temporaryDirectory:TemporaryDirectory)-> FormData.Iterator? {
+  public func formDataIterator(
+    savingUploadedFilesIn temporaryDirectory:TemporaryDirectory
+  ) throws -> FormData.Iterator {
     guard
       let clientContentType = self._client.contentType,
       clientContentType.type == .multipart && clientContentType.subtype == "form-data",
       let clientContentTypeParameters = clientContentType.parameters,
       let boundary = clientContentTypeParameters["boundary"], !boundary.isEmpty else
     {
-      return nil
+      throw FormData.Iterator.Error.invalidRequest
     }
     
     let clientStringEncoding: String.Encoding = ({
@@ -103,9 +104,9 @@ extension Client.Request {
       return encoding
     })()
     
-    return FormData.Iterator(boundary:boundary,
-                             stringEncoding:clientStringEncoding,
-                             temporaryDirectory:temporaryDirectory)
+    return try FormData.Iterator(boundary: boundary,
+                                 stringEncoding: clientStringEncoding,
+                                 temporaryDirectory: temporaryDirectory)
   }
   
   /// Returns hostname of the client's request.
@@ -190,8 +191,8 @@ extension Client.Request {
           type.type == .application, type.subtype == "x-www-form-urlencoded",
       let size = self._client.contentLength, size > 0
     {
-      let data = FileHandle._changeableStandardInput.readData(ofLength:size)
-      if let string = String(data:data, encoding:.utf8) {
+      let data = try! _changeableStandardInput.read(upToCount: size)
+      if let string = data.flatMap({ String(data: $0, encoding: .utf8) }) {
         result.append(contentsOf:_parse(string))
       }
     }

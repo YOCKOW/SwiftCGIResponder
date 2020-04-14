@@ -5,11 +5,15 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
+import NetworkGear
+
 /// Errors related to `CGIResponder`
 public enum CGIResponderError: Error {
+  case dataConversionFailure
   case invalidArgument
   case illegalOperation
-  case missingRequiredHTTPHeaderField(name:HTTPHeaderFieldName)
+  case missingRequiredHTTPHeaderField(name: HTTPHeaderFieldName)
+  case stringConversionFailure
   case unexpectedError(message:String)
 }
 
