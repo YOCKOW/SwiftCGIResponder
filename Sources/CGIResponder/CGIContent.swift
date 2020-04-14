@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  CGIContent.swift
-   © 2017-2018 YOCKOW.
+   © 2017-2018, 2020 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -18,10 +18,9 @@ public enum CGIContent {
   
   case fileHandle(FileHandle)
   public init(fileHandle:FileHandle) { self = .fileHandle(fileHandle) }
-  public init(temporaryFile: TemporaryFile) { self = .fileHandle(temporaryFile) }
-  public static func temporaryFile(_ temporaryFile: TemporaryFile) -> CGIContent {
-    return .init(temporaryFile: temporaryFile)
-  }
+  
+  case temporaryFile(TemporaryFile)
+  public init(temporaryFile: TemporaryFile) { self = .temporaryFile(temporaryFile) }
   
   case path(String)
   public init(fileAtPath path:String) { self = .path(path) }

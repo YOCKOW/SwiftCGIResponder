@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  _StandardInputTests.swift
-   © 2018 YOCKOW.
+   © 2018, 2020 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -9,17 +9,17 @@
 
 import Foundation
 import TemporaryFile
+import yProtocols
 
 func withStandardInput(data:Data, _ body:() throws -> Void) rethrows {
   try TemporaryFile {
-    let originalStandardInput = FileHandle._changeableStandardInput
-    FileHandle._changeableStandardInput = $0
-    defer {
-      FileHandle._changeableStandardInput = originalStandardInput
-    }
+    let originalStandardInput = _changeableStandardInput
+    _changeableStandardInput = AnyFileHandle($0)
     
-    $0.write(data)
-    $0.seek(toFileOffset:0)
+    try $0.write(contentsOf: data)
+    try $0.seek(toOffset: 0)
     try body()
+    
+    _changeableStandardInput = originalStandardInput
   }
 }

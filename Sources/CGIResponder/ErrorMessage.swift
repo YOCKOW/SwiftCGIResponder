@@ -1,19 +1,28 @@
 /* *************************************************************************************************
  ErrorMessage.swift
-   © 2017-2018 YOCKOW.
+   © 2017-2018, 2020 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
  
+import NetworkGear
 import yExtensions
+import yProtocols
 
 public struct ErrorMessage: RawRepresentable {
   public let rawValue: String
   public init(rawValue:String) { self.rawValue = rawValue }
 }
 
-public func warn(message:ErrorMessage) {
-  warn(message.rawValue)
+
+
+internal func warn(message: ErrorMessage, output: AnyFileHandle) {
+  try! output.write(contentsOf: message.rawValue.data(using: .utf8)!)
+}
+
+
+public func warn(message: ErrorMessage) {
+  warn(message: message, output: _changeableStandardError)
 }
 
 extension ErrorMessage: ExpressibleByStringLiteral {
@@ -39,6 +48,10 @@ extension ErrorMessage {
   
   internal static func cannotOpenFileAtPath(_ path:String) -> ErrorMessage {
     return ErrorMessage(rawValue:"Cannot open file at \"\(path)\".")
+  }
+  
+  internal static func error(_ error: Error) -> ErrorMessage {
+    return ErrorMessage(rawValue: "Unexpected error occurred: \(error.localizedDescription)")
   }
   
   internal static func statusCodeInconsistency(_ actual:HTTPStatusCode,

@@ -9,7 +9,7 @@ import XCTest
 @testable import CGIResponder
 
 import Foundation
-import HTTP
+import NetworkGear
 import TemporaryFile
 
 final class CGIResponderTests: XCTestCase {
@@ -93,16 +93,15 @@ final class CGIResponderTests: XCTestCase {
     }
   }
   
-  func test_response() {
+  func test_response() throws {
     let CRLF = "\u{0D}\u{0A}"
     
     var responder = CGIResponder()
     
     func check(_ expected:String,
                expectedWarning:ErrorMessage? = nil,
-               file:StaticString = #file, line:UInt = #line)
-    {
-      TemporaryFile {
+               file: StaticString = #file, line: UInt = #line) throws {
+      try TemporaryFile {
         var output = $0
         let respond:() -> Void = { try! responder.respond(to:&output) }
         if let warning = expectedWarning {
@@ -111,7 +110,7 @@ final class CGIResponderTests: XCTestCase {
           respond()
         }
         
-        output.seek(toFileOffset:0)
+        try output.seek(toOffset:0)
         let data = output.availableData
         XCTAssertEqual(expected, String(data:data, encoding:.utf8), file:file, line:line)
       }
@@ -122,7 +121,7 @@ final class CGIResponderTests: XCTestCase {
     responder.stringEncoding = .utf8
     responder.content = .init(string:"CGI")
     
-    check(
+    try check(
       "Status: 200 OK\(CRLF)" +
       "Content-Type: text/plain; charset=utf-8\(CRLF)" +
       "\(CRLF)" +
@@ -130,7 +129,7 @@ final class CGIResponderTests: XCTestCase {
     )
     
     responder.stringEncoding = .ascii
-    check(
+    try check(
       "Status: 200 OK\(CRLF)" +
       "Content-Type: text/plain; charset=us-ascii\(CRLF)" +
       "\(CRLF)" +

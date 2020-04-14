@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  ClientTests.swift
-   © 2018 YOCKOW.
+   © 2018, 2020 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -52,7 +52,7 @@ final class ClientTests: XCTestCase {
     }
   }
   
-  func test_formDataItems() {
+  func test_formDataItems() throws {
     let CRLF = "\u{0D}\u{0A}"
     let boundary = "----this-is-test-boundary----"
     let testString =
@@ -76,38 +76,39 @@ final class ClientTests: XCTestCase {
       "ここまでは読み込まないでね。"
     let testData = testString.data(using:.utf8)!
     
-    withEnvironmentVariables(["CONTENT_TYPE":"multipart/form-data; boundary=\(boundary)"]) {
-      withStandardInput(data:testData) {
-        let tmpDir = TemporaryDirectory(prefix:"CGIResponder-ClientTests-")
-        defer { tmpDir.close() }
+    try withEnvironmentVariables(["CONTENT_TYPE":"multipart/form-data; boundary=\(boundary)"]) {
+      try withStandardInput(data: testData) {
+        let tmpDir = try TemporaryDirectory(prefix: "CGIResponder-ClientTests-")
         
-        var iterator = Client.client.request.formDataIterator(savingUploadedFilesIn:tmpDir)
+        var iterator = try Client.client.request.formDataIterator(savingUploadedFilesIn: tmpDir)
         XCTAssertNotNil(iterator)
         
-        let firstItem = iterator?.next()
+        let firstItem = iterator.next()
         XCTAssertNotNil(firstItem)
         XCTAssertEqual(firstItem?.name, "Key")
         guard case .string(let firstValue, encoding:_)? = firstItem?.value.content else { XCTFail(); return }
         XCTAssertEqual(firstValue, "Value")
         
-        let secondItem = iterator?.next()
+        let secondItem = iterator.next()
         XCTAssertNotNil(secondItem)
         XCTAssertEqual(secondItem?.name, "AnotherKey")
         guard case .string(let secondValue, encoding:_)? = secondItem?.value.content else { XCTFail(); return }
         XCTAssertEqual(secondValue, "AnotherValue")
         
-        let thirdItem = iterator?.next()
+        let thirdItem = iterator.next()
         XCTAssertNotNil(thirdItem)
         XCTAssertEqual(thirdItem?.name, "File")
         XCTAssertEqual(thirdItem?.value.filename, "Filename.txt")
         XCTAssertEqual(thirdItem?.value.contentType,
                        ContentType(pathExtension:.txt, parameters:["charset":"UTF-8"]))
-        guard case .fileHandle(let temporaryFile)? = thirdItem?.value.content else { XCTFail(); return }
-        temporaryFile.seek(toFileOffset:0)
+        guard case .temporaryFile(let temporaryFile) = thirdItem?.value.content else { XCTFail(); return }
+        try temporaryFile.seek(toOffset: 0)
         XCTAssertEqual(temporaryFile.availableData, "Hello, World!\n".data(using:.utf8))
         
-        let fourthItem = iterator?.next()
+        let fourthItem = iterator.next()
         XCTAssertNil(fourthItem)
+        
+        try tmpDir.close()
       }
     }
   }
