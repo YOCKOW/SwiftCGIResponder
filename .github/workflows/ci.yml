@@ -5,9 +5,15 @@ on:
       - '**'
     tags:
       - '!**'
+    paths:
+      - '**/*.swift'
+      - '.github/workflows/*.yml'
   pull_request:
     branches:
       - '**'
+    paths:
+      - '**/*.swift'
+      - '.github/workflows/*.yml'
 jobs:
   test:
     strategy:
