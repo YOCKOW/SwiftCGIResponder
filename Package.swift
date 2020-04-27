@@ -36,6 +36,7 @@ let package = Package(
         "CGIResponder",
         "SwiftNetworkGear",
         "SwiftTemporaryFile",
+        "SwiftXHTML",
         "ySwiftExtensions",
       ]
     ),
