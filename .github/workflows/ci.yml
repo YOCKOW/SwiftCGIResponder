@@ -3,14 +3,12 @@ on:
   push:
     branches:
       - '**'
-    tags:
-      - '!**'
+    tags-ignore:
+      - '**'
     paths:
       - '**/*.swift'
       - '.github/workflows/*.yml'
   pull_request:
-    branches:
-      - '**'
     paths:
       - '**/*.swift'
       - '.github/workflows/*.yml'
@@ -32,15 +30,14 @@ jobs:
       uses: actions/cache@v1
       with:
         path: .build
-        key: build-${{ github.workspace }}-${{ runner.os }}-${{ matrix.swift-compat-ver }}-${{ hashFiles('Package.*') }}-${{ hashFiles('Sources/**/*.swift') }}
+        key: build-${{ github.workspace }}-${{ runner.os }}-${{ matrix.swift-compat-ver }}-${{ hashFiles('**/*.swift') }}
         restore-keys: |
-          build-${{ github.workspace }}-${{ runner.os }}-${{ matrix.swift-compat-ver }}-${{ hashFiles('Package.*') }}-
           build-${{ github.workspace }}-${{ runner.os }}-${{ matrix.swift-compat-ver }}-
           build-${{ github.workspace }}-${{ runner.os }}-
           build-${{ github.workspace }}-
     - uses: YOCKOW/Action-setup-swift@master
       with:
-        swift-version: '5.2'
+        swift-version: '5.2.2'
     - name: Try to build products with debug mode.
       run: |
         swift build --configuration debug -Xswiftc -swift-version -Xswiftc ${{ matrix.swift-compat-ver }}
