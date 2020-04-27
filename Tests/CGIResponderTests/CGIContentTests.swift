@@ -8,8 +8,10 @@
 import XCTest
 @testable import CGIResponder
 
+import XHTML
+
 final class CGIContentTests: XCTestCase {
-  func test_defaultContentType() {
+  func test_defaultContentType() throws {
     var content: CGIContent = .path("/my.image.png")
     XCTAssertEqual(content._defaultContentType, ContentType("image/png"))
     
@@ -19,7 +21,7 @@ final class CGIContentTests: XCTestCase {
     content = .url(URL(fileURLWithPath: "/my.style.css"))
     XCTAssertEqual(content._defaultContentType, ContentType("text/css"))
     
-    content = .xhtml(XHTMLDocument(rootElement: .init(name: "html")))
+    content = .xhtml(try XHTMLDocument(rootElement: .init(name: "html")))
     XCTAssertEqual(content._defaultContentType, ContentType("application/xhtml+xml; charset=utf-8"))
   }
 }

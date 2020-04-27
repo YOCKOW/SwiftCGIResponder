@@ -7,6 +7,7 @@
 
 import Foundation
 import TemporaryFile
+import XHTML
 
 /// A content to be output via CGI.
 public enum CGIContent {
