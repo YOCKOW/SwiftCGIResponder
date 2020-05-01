@@ -11,11 +11,7 @@ It's an experimental library under development, and useless as of now.
 
 ## Dependencies
 
-* [SwiftBonaFideCharacterSet](https://github.com/YOCKOW/SwiftBonaFideCharacterSet)
-* [SwiftExtensions](https://github.com/YOCKOW/SwiftExtensions)
-* [SwiftNetworkGear](https://github.com/YOCKOW/SwiftNetworkGear)
-* [SwiftTemporaryFile](https://github.com/YOCKOW/SwiftTemporaryFile)
-* [SwiftXHTML](https://github.com/YOCKOW/SwiftXHTML)
+![Dependencies](./dependencies.svg)
 
 
 # Usage

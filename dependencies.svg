@@ -1,0 +1,250 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="875pt" height="479pt" viewBox="0.00 0.00 874.84 478.56" xmlns:xlink="http://www.w3.org/1999/xlink">
+<style>
+a.external_repository_anchor {
+  fill: #0366d6;
+  text-decoration: underline;
+}
+</style><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 474.56)">
+<title>CGIResponderDependenciesGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-474.56 870.84,-474.56 870.84,4 -4,4" />
+
+<g id="node1" class="node">
+<title>BonaFideCharacterSet</title>
+<ellipse fill="none" stroke="black" cx="119.01" cy="-199.28" rx="100.86" ry="25.41" />
+<text text-anchor="middle" x="119.01" y="-202.08" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git" xlink:href="https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git" class="external_repository_anchor">BonaFideCharacterSet</a></text>
+<text text-anchor="middle" x="119.01" y="-188.08" font-family="monospace" font-size="12px">@1.6.2</text>
+</g>
+
+<g id="node5" class="node">
+<title>Predicate</title>
+<ellipse fill="none" stroke="black" cx="222.01" cy="-112.37" rx="48.28" ry="25.41" />
+<text text-anchor="middle" x="222.01" y="-115.17" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftPredicate.git" xlink:href="https://github.com/YOCKOW/SwiftPredicate.git" class="external_repository_anchor">Predicate</a></text>
+<text text-anchor="middle" x="222.01" y="-101.17" font-family="monospace" font-size="12px">@1.2.1</text>
+</g>
+
+<g id="edge1" class="edge">
+<title>BonaFideCharacterSet-&gt;Predicate</title>
+<path fill="none" stroke="black" d="M147.43,-174.85C160.25,-164.28 175.48,-151.73 188.82,-140.73" />
+<polygon fill="black" stroke="black" points="191.36,-143.18 196.85,-134.11 186.91,-137.77 191.36,-143.18" />
+</g>
+
+<g id="node7" class="node">
+<title>Ranges</title>
+<ellipse fill="none" stroke="black" cx="260.01" cy="-25.46" rx="40.41" ry="25.41" />
+<text text-anchor="middle" x="260.01" y="-28.26" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftRanges.git" xlink:href="https://github.com/YOCKOW/SwiftRanges.git" class="external_repository_anchor">Ranges</a></text>
+<text text-anchor="middle" x="260.01" y="-14.26" font-family="monospace" font-size="12px">@3.1.1</text>
+</g>
+
+<g id="edge2" class="edge">
+<title>BonaFideCharacterSet-&gt;Ranges</title>
+<path fill="none" stroke="black" d="M124.62,-173.41C131.07,-149.19 143.64,-112.4 165.01,-86.91 179.42,-69.74 199.97,-55.83 218.28,-45.69" />
+<polygon fill="black" stroke="black" points="220.13,-48.67 227.32,-40.88 216.85,-42.49 220.13,-48.67" />
+</g>
+
+<g id="node2" class="node">
+<title>Bootstring</title>
+<ellipse fill="none" stroke="black" cx="674.01" cy="-25.46" rx="53.23" ry="25.41" />
+<text text-anchor="middle" x="674.01" y="-28.26" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftBootstring.git" xlink:href="https://github.com/YOCKOW/SwiftBootstring.git" class="external_repository_anchor">Bootstring</a></text>
+<text text-anchor="middle" x="674.01" y="-14.26" font-family="monospace" font-size="12px">@1.1.0</text>
+</g>
+
+<g id="node3" class="node">
+<title>CGIResponder</title>
+<polygon fill="none" stroke="black" points="479,-470.56 379.03,-470.56 379.03,-434.56 479,-434.56 479,-470.56" />
+<text text-anchor="middle" x="429.01" y="-448.36" font-family="monospace" font-size="12px">CGIResponder</text>
+</g>
+
+<g id="edge3" class="edge">
+<title>CGIResponder-&gt;BonaFideCharacterSet</title>
+<path fill="none" stroke="black" d="M378.98,-443.7C339.13,-436.06 282.81,-422.07 238.01,-398.56 184.68,-370.56 163.12,-364.39 134.01,-311.65 121.1,-288.24 117.71,-257.99 117.35,-234.92" />
+<polygon fill="black" stroke="black" points="120.85,-234.89 117.38,-224.88 113.85,-234.87 120.85,-234.89" />
+</g>
+
+<g id="node4" class="node">
+<title>NetworkGear</title>
+<ellipse fill="none" stroke="black" cx="620.01" cy="-286.19" rx="65.37" ry="25.41" />
+<text text-anchor="middle" x="620.01" y="-288.99" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftNetworkGear.git" xlink:href="https://github.com/YOCKOW/SwiftNetworkGear.git" class="external_repository_anchor">NetworkGear</a></text>
+<text text-anchor="middle" x="620.01" y="-274.99" font-family="monospace" font-size="12px">@0.12.2</text>
+</g>
+
+<g id="edge4" class="edge">
+<title>CGIResponder-&gt;NetworkGear</title>
+<path fill="none" stroke="black" d="M478.78,-434.46C499.44,-425.8 522.8,-413.83 541.01,-398.56 567.11,-376.68 588.79,-344.29 602.8,-320.07" />
+<polygon fill="black" stroke="black" points="605.92,-321.66 607.78,-311.23 599.82,-318.22 605.92,-321.66" />
+</g>
+
+<g id="node9" class="node">
+<title>TemporaryFile</title>
+<ellipse fill="none" stroke="black" cx="429.01" cy="-373.1" rx="70" ry="25.41" />
+<text text-anchor="middle" x="429.01" y="-375.9" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftTemporaryFile.git" xlink:href="https://github.com/YOCKOW/SwiftTemporaryFile.git" class="external_repository_anchor">TemporaryFile</a></text>
+<text text-anchor="middle" x="429.01" y="-361.9" font-family="monospace" font-size="12px">@3.2.3</text>
+</g>
+
+<g id="edge5" class="edge">
+<title>CGIResponder-&gt;TemporaryFile</title>
+<path fill="none" stroke="black" d="M429.01,-434.37C429.01,-426.81 429.01,-417.64 429.01,-408.77" />
+<polygon fill="black" stroke="black" points="432.51,-408.59 429.01,-398.59 425.51,-408.59 432.51,-408.59" />
+</g>
+
+<g id="node11" class="node">
+<title>XHTML</title>
+<ellipse fill="none" stroke="black" cx="294.01" cy="-373.1" rx="46.52" ry="25.41" />
+<text text-anchor="middle" x="294.01" y="-375.9" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftXHTML.git" xlink:href="https://github.com/YOCKOW/SwiftXHTML.git" class="external_repository_anchor">XHTML</a></text>
+<text text-anchor="middle" x="294.01" y="-361.9" font-family="monospace" font-size="12px">@1.1.2</text>
+</g>
+
+<g id="edge6" class="edge">
+<title>CGIResponder-&gt;XHTML</title>
+<path fill="none" stroke="black" d="M399.05,-434.37C379.97,-423.42 355.02,-409.1 334.23,-397.17" />
+<polygon fill="black" stroke="black" points="335.71,-393.99 325.3,-392.05 332.23,-400.06 335.71,-393.99" />
+</g>
+
+<g id="node12" class="node">
+<title>ySwiftExtensions</title>
+<ellipse fill="none" stroke="black" cx="489.01" cy="-199.28" rx="81.32" ry="25.41" />
+<text text-anchor="middle" x="489.01" y="-202.08" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/ySwiftExtensions.git" xlink:href="https://github.com/YOCKOW/ySwiftExtensions.git" class="external_repository_anchor">ySwiftExtensions</a></text>
+<text text-anchor="middle" x="489.01" y="-188.08" font-family="monospace" font-size="12px">@0.10.2</text>
+</g>
+
+<g id="edge7" class="edge">
+<title>CGIResponder-&gt;ySwiftExtensions</title>
+<path fill="none" stroke="black" d="M469.7,-434.44C484.53,-425.97 499.7,-414.15 508.01,-398.56 535.83,-346.41 518.04,-275.52 503.13,-234.15" />
+<polygon fill="black" stroke="black" points="506.32,-232.68 499.54,-224.55 499.77,-235.14 506.32,-232.68" />
+</g>
+
+<g id="edge8" class="edge">
+<title>NetworkGear-&gt;BonaFideCharacterSet</title>
+<path fill="none" stroke="black" d="M561.07,-275.2C474.71,-260.56 313,-233.16 210.93,-215.86" />
+<polygon fill="black" stroke="black" points="211.39,-212.38 200.94,-214.16 210.22,-219.29 211.39,-212.38" />
+</g>
+
+<g id="edge9" class="edge">
+<title>NetworkGear-&gt;Bootstring</title>
+<path fill="none" stroke="black" d="M634.24,-261.26C640.04,-250.45 646.26,-237.31 650.01,-224.74 666.66,-169.08 671.79,-101.35 673.36,-61.19" />
+<polygon fill="black" stroke="black" points="676.86,-61.22 673.7,-51.11 669.86,-60.99 676.86,-61.22" />
+</g>
+
+<g id="node6" class="node">
+<title>PublicSuffix</title>
+<ellipse fill="none" stroke="black" cx="806.01" cy="-25.46" rx="60.64" ry="25.41" />
+<text text-anchor="middle" x="806.01" y="-28.26" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftPublicSuffix.git" xlink:href="https://github.com/YOCKOW/SwiftPublicSuffix.git" class="external_repository_anchor">PublicSuffix</a></text>
+<text text-anchor="middle" x="806.01" y="-14.26" font-family="monospace" font-size="12px">@2.0.1</text>
+</g>
+
+<g id="edge10" class="edge">
+<title>NetworkGear-&gt;PublicSuffix</title>
+<path fill="none" stroke="black" d="M639.76,-261.69C648.87,-250.63 659.7,-237.17 669.01,-224.74 711.81,-167.6 758.41,-98.56 784.73,-58.86" />
+<polygon fill="black" stroke="black" points="787.75,-60.64 790.35,-50.37 781.91,-56.78 787.75,-60.64" />
+</g>
+
+<g id="edge11" class="edge">
+<title>NetworkGear-&gt;Ranges</title>
+<path fill="none" stroke="black" d="M620.44,-260.44C619.68,-216.79 610.99,-126.97 555.01,-86.91 516.29,-59.2 383.28,-40.31 309.79,-31.72" />
+<polygon fill="black" stroke="black" points="310.17,-28.24 299.84,-30.58 309.37,-35.2 310.17,-28.24" />
+</g>
+
+<g id="node10" class="node">
+<title>UnicodeSupplement</title>
+<ellipse fill="none" stroke="black" cx="454.01" cy="-112.37" rx="92.29" ry="25.41" />
+<text text-anchor="middle" x="454.01" y="-115.17" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftUnicodeSupplement.git" xlink:href="https://github.com/YOCKOW/SwiftUnicodeSupplement.git" class="external_repository_anchor">UnicodeSupplement</a></text>
+<text text-anchor="middle" x="454.01" y="-101.17" font-family="monospace" font-size="12px">@1.0.0</text>
+</g>
+
+<g id="edge12" class="edge">
+<title>NetworkGear-&gt;UnicodeSupplement</title>
+<path fill="none" stroke="black" d="M616.47,-260.72C611.77,-236.11 601.3,-198.4 579.01,-173.82 564.13,-157.4 543.81,-144.98 523.88,-135.8" />
+<polygon fill="black" stroke="black" points="525.03,-132.48 514.47,-131.68 522.23,-138.9 525.03,-132.48" />
+</g>
+
+<g id="edge13" class="edge">
+<title>NetworkGear-&gt;ySwiftExtensions</title>
+<path fill="none" stroke="black" d="M587.3,-263.98C570.49,-253.09 549.81,-239.69 531.76,-227.99" />
+<polygon fill="black" stroke="black" points="533.44,-224.9 523.14,-222.4 529.63,-230.78 533.44,-224.9" />
+</g>
+
+<g id="edge14" class="edge">
+<title>Predicate-&gt;Ranges</title>
+<path fill="none" stroke="black" d="M232.8,-87.26C236.68,-78.6 241.12,-68.68 245.27,-59.4" />
+<polygon fill="black" stroke="black" points="248.57,-60.59 249.46,-50.03 242.18,-57.73 248.57,-60.59" />
+</g>
+
+<g id="node8" class="node">
+<title>StringComposition</title>
+<ellipse fill="none" stroke="black" cx="298.01" cy="-286.19" rx="86.84" ry="25.41" />
+<text text-anchor="middle" x="298.01" y="-288.99" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftStringComposition.git" xlink:href="https://github.com/YOCKOW/SwiftStringComposition.git" class="external_repository_anchor">StringComposition</a></text>
+<text text-anchor="middle" x="298.01" y="-274.99" font-family="monospace" font-size="12px">@1.3.1</text>
+</g>
+
+<g id="edge15" class="edge">
+<title>StringComposition-&gt;Ranges</title>
+<path fill="none" stroke="black" d="M297.3,-260.53C295.85,-222.79 291.52,-148.59 279.01,-86.91 277.24,-78.15 274.68,-68.87 272.01,-60.27" />
+<polygon fill="black" stroke="black" points="275.28,-59 268.86,-50.57 268.62,-61.16 275.28,-59" />
+</g>
+
+<g id="edge16" class="edge">
+<title>StringComposition-&gt;ySwiftExtensions</title>
+<path fill="none" stroke="black" d="M344.25,-264.64C371.33,-252.6 405.69,-237.32 434.13,-224.68" />
+<polygon fill="black" stroke="black" points="435.82,-227.76 443.53,-220.5 432.98,-221.36 435.82,-227.76" />
+</g>
+
+<g id="edge17" class="edge">
+<title>TemporaryFile-&gt;ySwiftExtensions</title>
+<path fill="none" stroke="black" d="M445.62,-348.32C452.49,-337.54 460.01,-324.38 465.01,-311.65 474.76,-286.86 480.9,-257.33 484.52,-234.91" />
+<polygon fill="black" stroke="black" points="488.01,-235.25 486.06,-224.84 481.09,-234.2 488.01,-235.25" />
+</g>
+
+<g id="edge18" class="edge">
+<title>UnicodeSupplement-&gt;Ranges</title>
+<path fill="none" stroke="black" d="M406.06,-90.38C374.17,-76.42 332.67,-58.26 302.07,-44.86" />
+<polygon fill="black" stroke="black" points="303.11,-41.5 292.54,-40.69 300.3,-47.91 303.11,-41.5" />
+</g>
+
+<g id="edge19" class="edge">
+<title>XHTML-&gt;BonaFideCharacterSet</title>
+<path fill="none" stroke="black" d="M253.31,-360.51C226.46,-351.09 192.12,-335.42 169.01,-311.65 148.21,-290.24 135.16,-258.67 127.63,-234.6" />
+<polygon fill="black" stroke="black" points="130.92,-233.4 124.74,-224.8 124.21,-235.38 130.92,-233.4" />
+</g>
+
+<g id="edge20" class="edge">
+<title>XHTML-&gt;NetworkGear</title>
+<path fill="none" stroke="black" d="M328.57,-355.79C335.57,-352.83 342.96,-349.95 350.01,-347.65 416.96,-325.76 495.79,-309.11 550.93,-298.88" />
+<polygon fill="black" stroke="black" points="551.74,-302.29 560.94,-297.05 550.48,-295.41 551.74,-302.29" />
+</g>
+
+<g id="edge21" class="edge">
+<title>XHTML-&gt;Predicate</title>
+<path fill="none" stroke="black" d="M256.25,-357.79C236.27,-348.05 213.54,-333.01 202.01,-311.65 191.27,-291.73 194.86,-282.2 202.01,-260.74 208.34,-241.76 222.69,-243.71 229.01,-224.74 236.17,-203.27 230.32,-196.41 229.01,-173.82 228.53,-165.42 227.67,-156.4 226.71,-147.96" />
+<polygon fill="black" stroke="black" points="230.19,-147.53 225.52,-138.02 223.24,-148.37 230.19,-147.53" />
+</g>
+
+<g id="edge22" class="edge">
+<title>XHTML-&gt;Ranges</title>
+<path fill="none" stroke="black" d="M249.78,-365.14C182.26,-351.76 56.36,-315.32 9.01,-224.74 -40.72,-129.58 127.84,-65.06 213.33,-39.17" />
+<polygon fill="black" stroke="black" points="214.49,-42.48 223.08,-36.28 212.49,-35.77 214.49,-42.48" />
+</g>
+
+<g id="edge23" class="edge">
+<title>XHTML-&gt;StringComposition</title>
+<path fill="none" stroke="black" d="M295.17,-347.54C295.55,-339.53 295.98,-330.48 296.38,-321.88" />
+<polygon fill="black" stroke="black" points="299.89,-321.85 296.86,-311.7 292.89,-321.52 299.89,-321.85" />
+</g>
+
+<g id="edge24" class="edge">
+<title>XHTML-&gt;UnicodeSupplement</title>
+<path fill="none" stroke="black" d="M328.33,-355.81C354.17,-342.77 386.4,-324.59 394.01,-311.65 425.09,-258.81 375.87,-230.58 399.01,-173.82 403.45,-162.95 410.76,-152.79 418.63,-144.02" />
+<polygon fill="black" stroke="black" points="421.26,-146.33 425.63,-136.68 416.2,-141.5 421.26,-146.33" />
+</g>
+
+<g id="edge25" class="edge">
+<title>XHTML-&gt;ySwiftExtensions</title>
+<path fill="none" stroke="black" d="M329.65,-356.56C367.71,-339.87 423.12,-315.24 427.01,-311.65 450.04,-290.42 466.55,-258.64 476.72,-234.45" />
+<polygon fill="black" stroke="black" points="480.06,-235.51 480.56,-224.93 473.57,-232.89 480.06,-235.51" />
+</g>
+
+<g id="edge26" class="edge">
+<title>ySwiftExtensions-&gt;UnicodeSupplement</title>
+<path fill="none" stroke="black" d="M478.89,-173.72C475.48,-165.45 471.61,-156.06 467.96,-147.2" />
+<polygon fill="black" stroke="black" points="471.16,-145.78 464.12,-137.87 464.69,-148.45 471.16,-145.78" />
+</g>
+</g>
+</svg>
