@@ -7,37 +7,21 @@
  
 import Foundation
 import TemporaryFile
-import yNewAPI
+import yExtensions
 import yProtocols
 
 /// To what `CGIContent` can be given.
 /// Inherits from `DataOutputStream`.
 public protocol CGIContentOutputStream: DataOutputStream {
-  mutating func write(_:CGIContent) throws
-}
-
-private extension AnyFileHandle {
-  func _write<Target>(to target: inout Target) throws where Target: CGIContentOutputStream {
-    let originalOffset = try self.offset()
-    
-    while true {
-      // "try?" causes double-optional value in Swift <5.0
-      var nilableData: Data? = nil
-      do { nilableData = try self.read(upToCount: 1024) } catch {}
-      guard let data = nilableData else { break }
-      try target.write(contentsOf: data)
-    }
-    try self.seek(toOffset: originalOffset)
-  }
+  mutating func write(_: CGIContent) throws
 }
 
 extension CGIContentOutputStream {
   /// Default implementation.
   /// Write the content represented by `content` to the receiver.
-  public mutating func write(_ content:CGIContent) throws {
+  public mutating func write(_ content: CGIContent) throws {
     func _write<FH>(contentsOf fileHandle: FH) throws where FH: FileHandleProtocol {
-      let fh = (fileHandle as? AnyFileHandle) ?? AnyFileHandle(fileHandle)
-      try fh._write(to: &self)
+      try fileHandle.write(to: &self)
     }
     
     func _write(contentAtPath path: String) throws {
@@ -45,7 +29,7 @@ extension CGIContentOutputStream {
         warn(message: .cannotOpenFileAtPath(path))
         throw CGIResponderError.illegalOperation
       }
-      try _write(contentsOf: AnyFileHandle(fh))
+      try _write(contentsOf: fh)
     }
     
     switch content {
@@ -54,7 +38,7 @@ extension CGIContentOutputStream {
     case .data(let data):
       try self.write(contentsOf: data)
     case .fileHandle(let fh):
-      try _write(contentsOf: AnyFileHandle(fh))
+      try _write(contentsOf: fh)
     case .temporaryFile(let tmp):
       try _write(contentsOf: tmp)
     case .path(let path): 
@@ -82,6 +66,8 @@ extension CGIContentOutputStream {
 }
 
 extension AnyFileHandle: CGIContentOutputStream {}
+
+extension FileHandle: CGIContentOutputStream {}
 
 extension Data: CGIContentOutputStream {}
 

@@ -9,7 +9,7 @@
 
 import Foundation
 import TemporaryFile
-import yProtocols
+import yExtensions
 
 func withStandardInput(data:Data, _ body:() throws -> Void) rethrows {
   try TemporaryFile {

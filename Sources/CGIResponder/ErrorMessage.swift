@@ -5,6 +5,7 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
  
+import Foundation
 import NetworkGear
 import yExtensions
 import yProtocols
@@ -14,15 +15,9 @@ public struct ErrorMessage: RawRepresentable {
   public init(rawValue:String) { self.rawValue = rawValue }
 }
 
-
-
-internal func warn(message: ErrorMessage, output: AnyFileHandle) {
-  try! output.write(contentsOf: message.rawValue.data(using: .utf8)!)
-}
-
-
+/// Print `message` to the standard error.
 public func warn(message: ErrorMessage) {
-  warn(message: message, output: _changeableStandardError)
+  _changeableStandardError.write(message.rawValue)
 }
 
 extension ErrorMessage: ExpressibleByStringLiteral {

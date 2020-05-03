@@ -3,10 +3,10 @@
 It's an experimental library under development, and useless as of now.
 
 # Requirements
-* Swift 5 (including compatibility mode for 4.2)
+* Swift 5
   * CoreFoundation
   * Foundation
-* macOS >= 10.12 or Linux
+* macOS >= 10.15 or Linux
 * HTTP server software (e.g. Apache or similar software)
 
 ## Dependencies
@@ -42,7 +42,7 @@ You can use [Swift Package Manager](https://github.com/apple/swift-package-manag
 ## Example of `Package.swift`
 
 ```Swift
-// swift-tools-version:4.2
+// swift-tools-version:5.1
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription

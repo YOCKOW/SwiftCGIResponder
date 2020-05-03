@@ -117,7 +117,7 @@ extension CGIResponder {
    ```
    */
   public func respond() throws {
-    var stdout = AnyFileHandle(FileHandle.standardOutput)
+    var stdout = FileHandle.standardOutput
     try self.respond(to: &stdout)
   }
   

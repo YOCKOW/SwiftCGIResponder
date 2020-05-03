@@ -9,6 +9,7 @@ import BonaFideCharacterSet
 import Foundation
 import NetworkGear
 import TemporaryFile
+import yProtocols
 
 /// Represents the client.
 public final class Client {
@@ -157,47 +158,55 @@ extension Client.Request {
     return EnvironmentVariables.default["PATH_INFO"]
   }
   
-  /// Retuns array of `URLQueryItem` generated from "QUERY_STRING" and
-  /// posted data (if content type is "application/x-www-form-urlencoded").
-  /// Inadequate items may be returned if other functions have already read the standard input.
-  public var queryItems: [URLQueryItem]? {
-    func _parse(_ string:String) -> [URLQueryItem] {
-      var result: [URLQueryItem] = []
-      
-      // First, replace "+" with " "
-      // Separator may be "&" or ";"
-      let separator = UnicodeScalarSet(unicodeScalarsIn:"&;")
-      let queryItemStrings = string.replacingOccurrences(of:"+", with:" ").components(separatedBy:separator)
-      for queryItemString in queryItemStrings {
-        let (name_raw, nilable_value_raw) = queryItemString.splitOnce(separator:"=")
-        guard let name = name_raw.removingPercentEncoding else { continue }
-        if let value_raw = nilable_value_raw {
-          guard let value = value_raw.removingPercentEncoding else { continue }
-          result.append(URLQueryItem(name:name, value:value))
-        } else {
-          result.append(URLQueryItem(name:name, value:nil))
-        }
+  internal func _queryItems<FH>(with input: FH) throws -> [URLQueryItem] where FH: FileHandleProtocol {
+    func _parse(_ string: String) throws -> [URLQueryItem] {
+      func _replaced<S>(_ string: S) -> String where S: StringProtocol {
+        return string.replacingOccurrences(of: "+", with: " ")
       }
       
+      var result: [URLQueryItem] = []
+      let splitted = string.split { $0 == "&" || $0 == ";" }
+      for item in splitted {
+        let (name_raw, nilable_value_raw) = item.splitOnce(separator:"=")
+        guard let name = _replaced(name_raw).removingPercentEncoding else {
+          throw NSError(domain: "Invalid name: \(name_raw)", code: -1)
+        }
+        if let value_raw = nilable_value_raw.map({ _replaced($0) }) {
+          guard let value = value_raw.removingPercentEncoding else {
+            throw NSError(domain: "Invalid value: \(value_raw)", code: -1)
+          }
+          result.append(.init(name: name, value: value))
+        } else {
+          result.append(.init(name: name, value: nil))
+        }
+      }
       return result
     }
     
-    guard let queryString = self.queryString else { return nil }
-    var result = _parse(queryString)
+    let queryString = self.queryString ?? ""
+    var result = try _parse(queryString)
     
-    // Handle Posted Data
-    if let method = self.method, method == .post,
+    if let method = self.method,
+      method == .post,
       let type = self._client.contentType,
-          type.type == .application, type.subtype == "x-www-form-urlencoded",
-      let size = self._client.contentLength, size > 0
-    {
-      let data = try! _changeableStandardInput.read(upToCount: size)
-      if let string = data.flatMap({ String(data: $0, encoding: .utf8) }) {
-        result.append(contentsOf:_parse(string))
+      type.type == .application,
+      type.subtype == "x-www-form-urlencoded",
+      let size = self._client.contentLength,
+      size > 0 {
+      let inputData = try input.read(upToCount: size)
+      if let string = inputData.flatMap({ String(data: $0, encoding: .utf8) }) {
+        result.append(contentsOf: try _parse(string))
       }
     }
     
     return result
+  }
+  
+  /// Retuns array of `URLQueryItem` generated from "QUERY_STRING" and
+  /// posted data (if content type is "application/x-www-form-urlencoded").
+  /// Inadequate items may be returned if other functions have already read the standard input.
+  public var queryItems: [URLQueryItem]? {
+    return try? self._queryItems(with: _changeableStandardInput)
   }
   
   /// The value of "QUERY_STRING".
