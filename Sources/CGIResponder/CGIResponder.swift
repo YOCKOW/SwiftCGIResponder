@@ -21,13 +21,29 @@ public struct CGIResponder {
   /// The content.
   public var content: CGIContent
   
-  public init(status: HTTPStatusCode  = .ok,
-              header: HTTPHeader = HTTPHeader([]),
-              content: CGIContent = .none)
-  {
+  internal var _client: Client
+  
+  @usableFromInline
+  internal init(status: HTTPStatusCode  = .ok,
+                header: HTTPHeader = HTTPHeader([]),
+                content: CGIContent = .none,
+                client: Client) {
     self.status = status
     self.header = header
     self.content = content
+    self._client = client
+  }
+  
+  /// Create a responder.
+  ///
+  /// - parameter status: Initial status code
+  /// - parameter header: Initial HTTP Header
+  /// - parameter content: Initial Content
+  @inlinable
+  public init(status: HTTPStatusCode  = .ok,
+              header: HTTPHeader = HTTPHeader([]),
+              content: CGIContent = .none) {
+    self.init(status: status, header: header, content: content, client: Client.client)
   }
 }
 
@@ -72,7 +88,7 @@ extension CGIResponder {
   /// Estimate the expected status by checking ETag or Last-Modified.
   public var expectedStatus: HTTPStatusCode? {
     let header = self.header
-    let req = Client.client.request
+    let req = self._client.request
     
     if let eTagHeaderField = header[.eTag].first, let eTag = eTagHeaderField.source as? HTTPETag {
       if let ifMatch = req.ifMatch {
@@ -94,11 +110,27 @@ extension CGIResponder {
 }
 
 extension CGIResponder {
+  public static let defaultIgnoringError: (Error) -> Bool = {
+    if case let error as CGIResponderError = $0 {
+      switch error {
+      case .statusCodeInconsistency, .stringEncodingInconsistency:
+        return true
+      default:
+        return false
+      }
+    } else {
+      return false
+    }
+  }
+  
   /**
    
    Respond to client; Print HTTP headers (including "Status") and content to standard output.
    Modifications may be made by Web Server.
    Just call this method after everything is ready.
+   
+   - parameter ignoringError: You can ignore errors by passing closure that returns `true`,
+                              although some errors cannot be ignored.
    
    ```Swift
    import CGIResponder
@@ -116,29 +148,39 @@ extension CGIResponder {
    //
    ```
    */
-  public func respond() throws {
-    var stdout = AnyFileHandle(FileHandle.standardOutput)
-    try self.respond(to: &stdout)
+  public func respond(ignoringError: (Error) -> Bool = defaultIgnoringError) throws {
+    var stdout = FileHandle.standardOutput
+    try self.respond(to: &stdout, ignoringError: ignoringError)
   }
   
   /// For debug purpose, you can specify output.
-  public func respond<Respondee:CGIContentOutputStream>(to output:inout Respondee) throws {
-    let status = self.status
+  public func respond<Respondee>(
+    to output: inout Respondee,
+    ignoringError: (Error) -> Bool = defaultIgnoringError
+  ) throws where Respondee: CGIContentOutputStream {
+    func _throwIfNeeded(_ error: Error) throws {
+      if !ignoringError(error) { throw error }
+    }
     
     // Check if there's mismatch about string encoding.
-    if case let .string(_, encoding:encoding) = self.content,
-      let expectedEncoding = self.stringEncoding,
-      encoding != expectedEncoding
-    {
-      warn(message:.stringEncodingInconsistency(encoding, expectedEncoding))
+    if let contentEncoding = self.content._stringEncoding, let specifiedEncoding = self.stringEncoding {
+      if contentEncoding != specifiedEncoding {
+        try _throwIfNeeded(
+          CGIResponderError.stringEncodingInconsistency(actualEncoding: contentEncoding,
+                                                        specifiedEncoding: specifiedEncoding)
+        )
+      }
     }
     
     // Check if `status` is an expected value or not using ETag or Last-Modified
-    if let expectedStatus = self.expectedStatus, status != expectedStatus {
-      warn(message:.statusCodeInconsistency(status, expectedStatus))
+    if let expectedStatus = self.expectedStatus, self.status != expectedStatus {
+      try _throwIfNeeded(
+        CGIResponderError.statusCodeInconsistency(expectedStatusCode: expectedStatus,
+                                                  specifiedStatusCode: self.status)
+      )
     }
     
-    if status.rawValue / 100 == 3 {
+    if self.status.rawValue == 201 || self.status.rawValue / 100 == 3 {
       guard self.header[.location].count > 0 else {
         throw CGIResponderError.missingRequiredHTTPHeaderField(name:.location)
       }

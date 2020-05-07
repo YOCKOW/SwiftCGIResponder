@@ -21,8 +21,8 @@ jobs:
           - macOS-latest
         swift-compat-ver:
           - '5'
-          - '4.2'
-          - '4'
+          # - '4.2'
+          # - '4'
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2

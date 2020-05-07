@@ -34,21 +34,17 @@ final class CGIResponderTests: XCTestCase {
     responder.header.insert(HTTPHeaderField.eTag(eTag))
     XCTAssertNil(responder.expectedStatus)
     
-    withEnvironmentVariables([HTTP_IF_MATCH:"\"ETAG\""]) {
-      XCTAssertNil(responder.expectedStatus)
-    }
+    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_MATCH: #""ETAG""#]))
+    XCTAssertNil(responder.expectedStatus)
     
-    withEnvironmentVariables([HTTP_IF_MATCH:"\"OTHER\""]) {
-      XCTAssertEqual(responder.expectedStatus, .preconditionFailed)
-    }
+    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_MATCH: #""OTHER""#]))
+    XCTAssertEqual(responder.expectedStatus, .preconditionFailed)
     
-    withEnvironmentVariables([HTTP_IF_NONE_MATCH:"W/\"ETAG\""]) {
-      XCTAssertEqual(responder.expectedStatus, .notModified)
-    }
+    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_NONE_MATCH: #"W/"ETAG""#]))
+    XCTAssertEqual(responder.expectedStatus, .notModified)
     
-    withEnvironmentVariables([HTTP_IF_NONE_MATCH:"W/\"OTHER\""]) {
-      XCTAssertNil(responder.expectedStatus)
-    }
+    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_NONE_MATCH: #"W/"OTHER""#]))
+    XCTAssertNil(responder.expectedStatus)
   }
   
   func test_expectedStatus_Date() {
@@ -67,30 +63,23 @@ final class CGIResponderTests: XCTestCase {
     responder.header.insert(HTTPHeaderField.lastModified(date_base))
     XCTAssertNil(responder.expectedStatus)
     
-    withEnvironmentVariables([HTTP_IF_UNMODIFIED_SINCE:date_string(date_old)]) {
-      XCTAssertEqual(responder.expectedStatus, .preconditionFailed)
-    }
+    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_UNMODIFIED_SINCE: date_string(date_old)]))
+    XCTAssertEqual(responder.expectedStatus, .preconditionFailed)
     
-    withEnvironmentVariables([HTTP_IF_UNMODIFIED_SINCE:date_string(date_base)]) {
-      XCTAssertEqual(responder.expectedStatus, nil)
-    }
+    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_UNMODIFIED_SINCE:date_string(date_base)]))
+    XCTAssertEqual(responder.expectedStatus, nil)
     
-    withEnvironmentVariables([HTTP_IF_UNMODIFIED_SINCE:date_string(date_new)]
-    ) {
-      XCTAssertEqual(responder.expectedStatus, nil)
-    }
+    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_UNMODIFIED_SINCE:date_string(date_new)]))
+    XCTAssertEqual(responder.expectedStatus, nil)
     
-    withEnvironmentVariables([HTTP_IF_MODIFIED_SINCE:date_string(date_old)]) {
-      XCTAssertEqual(responder.expectedStatus, nil)
-    }
+    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_MODIFIED_SINCE:date_string(date_old)]))
+    XCTAssertEqual(responder.expectedStatus, nil)
     
-    withEnvironmentVariables([HTTP_IF_MODIFIED_SINCE:date_string(date_base)]) {
-      XCTAssertEqual(responder.expectedStatus, .notModified)
-    }
+    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_MODIFIED_SINCE:date_string(date_base)]))
+    XCTAssertEqual(responder.expectedStatus, .notModified)
     
-    withEnvironmentVariables([HTTP_IF_MODIFIED_SINCE:date_string(date_new)]) {
-      XCTAssertEqual(responder.expectedStatus, .notModified)
-    }
+    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_MODIFIED_SINCE:date_string(date_new)]))
+    XCTAssertEqual(responder.expectedStatus, .notModified)
   }
   
   func test_response() throws {
@@ -98,21 +87,27 @@ final class CGIResponderTests: XCTestCase {
     
     var responder = CGIResponder()
     
-    func check(_ expected:String,
-               expectedWarning:ErrorMessage? = nil,
+    func check(_ expectedOutput: String?,
+               expectedError: CGIResponderError? = nil,
                file: StaticString = #file, line: UInt = #line) throws {
       try TemporaryFile {
         var output = $0
-        let respond:() -> Void = { try! responder.respond(to:&output) }
-        if let warning = expectedWarning {
-          checkWarning(warning, file:file, line:line, respond)
+        let respond: () throws -> Void = { try responder.respond(to: &output, ignoringError: { _ in false }) }
+        if let expectedError = expectedError {
+          do {
+            try respond()
+            XCTFail("No throw.", file: file, line: line)
+          } catch {
+            let error = try XCTUnwrap(error as? CGIResponderError)
+            XCTAssertEqual(error, expectedError, "Unexpected Error.", file: file, line: line)
+            XCTAssertNil(expectedOutput)
+          }
         } else {
-          respond()
+          XCTAssertNoThrow(try respond(), file: file, line: line)
+          try output.seek(toOffset:0)
+          let data = output.availableData
+          XCTAssertEqual(expectedOutput, String(data:data, encoding:.utf8), file:file, line:line)
         }
-        
-        try output.seek(toOffset:0)
-        let data = output.availableData
-        XCTAssertEqual(expected, String(data:data, encoding:.utf8), file:file, line:line)
       }
     }
     
@@ -130,11 +125,8 @@ final class CGIResponderTests: XCTestCase {
     
     responder.stringEncoding = .ascii
     try check(
-      "Status: 200 OK\(CRLF)" +
-      "Content-Type: text/plain; charset=us-ascii\(CRLF)" +
-      "\(CRLF)" +
-      "CGI",
-      expectedWarning:.stringEncodingInconsistency(.utf8, .ascii)
+      nil,
+      expectedError: .stringEncodingInconsistency(actualEncoding: .utf8, specifiedEncoding: .ascii)
     )
   }
 }

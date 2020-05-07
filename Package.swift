@@ -1,10 +1,16 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.1
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
   name: "CGIResponder",
+  platforms: [
+    .macOS(.v10_15),
+    .iOS(.v13),
+    .watchOS(.v6),
+    .tvOS(.v13),
+  ],
   products: [
     // Products define the executables and libraries produced by a package, and make them visible to other packages.
     .library(name: "SwiftCGIResponder", type: .dynamic, targets: ["CGIResponder"]),
@@ -12,10 +18,10 @@ let package = Package(
   dependencies: [
     // Dependencies declare other packages that this package depends on.
     .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from: "1.6.2"),
-    .package(url:"https://github.com/YOCKOW/SwiftNetworkGear.git", "0.12.1"..<"2.0.0"),
-    .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from: "3.2.3"),
-    .package(url:"https://github.com/YOCKOW/SwiftXHTML.git", from: "1.0.0"),
-    .package(url:"https://github.com/YOCKOW/ySwiftExtensions.git", "0.10.2"..<"2.0.0"),
+    .package(url:"https://github.com/YOCKOW/SwiftNetworkGear.git", "0.13.0"..<"2.0.0"),
+    .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from: "4.0.1"),
+    .package(url:"https://github.com/YOCKOW/SwiftXHTML.git", from: "2.0.0"),
+    .package(url:"https://github.com/YOCKOW/ySwiftExtensions.git", from: "1.2.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package. A target can define a module or a test suite.

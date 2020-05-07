@@ -77,4 +77,15 @@ extension CGIContent {
       return octetStreamContentType
     }
   }
+  
+  internal var _stringEncoding: String.Encoding? {
+    switch self {
+    case .string(_, encoding: let encoding):
+      return encoding
+    case .xhtml(let document):
+      return document.prolog.stringEncoding
+    default:
+      return nil
+    }
+  }
 }

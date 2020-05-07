@@ -1,31 +1,12 @@
 /* *************************************************************************************************
  EnvironmentVariablesTests.swift
-   © 2017-2018 YOCKOW.
+   © 2017-2018, 2020 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
  
 import XCTest
 @testable import CGIResponder
-
-func withEnvironmentVariables(_ environments:[String:String?],
-                                      _ body:() throws -> Void) rethrows
-{
-  let env = EnvironmentVariables.default
-  var originalValues: [String:String?] = [:]
-  for key in environments.keys {
-    originalValues[key] = env[key]
-  }
-  defer {
-    for (key, value) in originalValues { env[key] = value }
-  }
-  
-  for (key, value) in environments {
-    env[key] = value
-  }
-  
-  try body()
-}
 
 class EnvironmentVariablesTests: XCTestCase {
   func test_accessor() {
