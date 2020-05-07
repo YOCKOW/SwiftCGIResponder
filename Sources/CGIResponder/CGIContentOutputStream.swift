@@ -26,7 +26,6 @@ extension CGIContentOutputStream {
     
     func _write(contentAtPath path: String) throws {
       guard let fh = FileHandle(forReadingAtPath:path) else {
-        warn(message: .cannotOpenFileAtPath(path))
         throw CGIResponderError.illegalOperation
       }
       try _write(contentsOf: fh)

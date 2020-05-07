@@ -15,7 +15,7 @@ final class CGIContentOutputStreamTests: XCTestCase {
     
     var output = Data()
     do {
-      try checkWarning(.cannotOpenFileAtPath(path)) { try output.write(unexisting) }
+      try output.write(unexisting)
     } catch CGIResponderError.illegalOperation {
       XCTAssertTrue(true)
     } catch {

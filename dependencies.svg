@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="858pt" height="479pt" viewBox="0.00 0.00 857.91 478.56" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg xmlns="http://www.w3.org/2000/svg" width="858pt" height="479pt" viewBox="0.00 0.00 858.21 478.56" xmlns:xlink="http://www.w3.org/1999/xlink">
 <style>
 a.external_repository_anchor {
   fill: #0366d6;
@@ -6,7 +6,7 @@ a.external_repository_anchor {
 }
 </style><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 474.56)">
 <title>CGIResponderDependenciesGraph</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-474.56 853.91,-474.56 853.91,4 -4,4" />
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-474.56 854.21,-474.56 854.21,4 -4,4" />
 
 <g id="node1" class="node">
 <title>BonaFideCharacterSet</title>
@@ -77,7 +77,7 @@ a.external_repository_anchor {
 <title>TemporaryFile</title>
 <ellipse fill="none" stroke="black" cx="717.82" cy="-373.1" rx="70" ry="25.41" />
 <text text-anchor="middle" x="717.82" y="-375.9" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftTemporaryFile.git" xlink:href="https://github.com/YOCKOW/SwiftTemporaryFile.git" class="external_repository_anchor">TemporaryFile</a></text>
-<text text-anchor="middle" x="717.82" y="-361.9" font-family="monospace" font-size="12px">@4.0.0</text>
+<text text-anchor="middle" x="717.82" y="-361.9" font-family="monospace" font-size="12px">@4.0.1</text>
 </g>
 
 <g id="edge5" class="edge">
@@ -100,16 +100,16 @@ a.external_repository_anchor {
 </g>
 
 <g id="node12" class="node">
-<title>ySwiftExtensions</title>
-<ellipse fill="none" stroke="black" cx="695.82" cy="-199.28" rx="81.32" ry="25.41" />
-<text text-anchor="middle" x="695.82" y="-202.08" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/ySwiftExtensions.git" xlink:href="https://github.com/YOCKOW/ySwiftExtensions.git" class="external_repository_anchor">ySwiftExtensions</a></text>
-<text text-anchor="middle" x="695.82" y="-188.08" font-family="monospace" font-size="12px">@1.1.0</text>
+<title>yExtensions</title>
+<ellipse fill="none" stroke="black" cx="685.82" cy="-199.28" rx="59.92" ry="25.41" />
+<text text-anchor="middle" x="685.82" y="-202.08" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/ySwiftExtensions.git" xlink:href="https://github.com/YOCKOW/ySwiftExtensions.git" class="external_repository_anchor">yExtensions</a></text>
+<text text-anchor="middle" x="685.82" y="-188.08" font-family="monospace" font-size="12px">@1.2.0</text>
 </g>
 
 <g id="edge7" class="edge">
-<title>CGIResponder-&gt;ySwiftExtensions</title>
-<path fill="none" stroke="black" d="M596.03,-446.51C660.25,-439.13 766.8,-423.49 796.82,-398.56 845.52,-358.11 867.39,-313.77 832.82,-260.74 819.1,-239.68 796.2,-225.9 773.01,-216.91" />
-<polygon fill="black" stroke="black" points="774.03,-213.56 763.44,-213.46 771.66,-220.15 774.03,-213.56" />
+<title>CGIResponder-&gt;yExtensions</title>
+<path fill="none" stroke="black" d="M596.03,-446.51C660.25,-439.13 766.8,-423.49 796.82,-398.56 845.52,-358.11 868.06,-313.33 832.82,-260.74 814.74,-233.75 782.22,-218.8 752.35,-210.52" />
+<polygon fill="black" stroke="black" points="752.9,-207.05 742.35,-207.96 751.17,-213.83 752.9,-207.05" />
 </g>
 
 <g id="edge8" class="edge">
@@ -157,9 +157,9 @@ a.external_repository_anchor {
 </g>
 
 <g id="edge13" class="edge">
-<title>NetworkGear-&gt;ySwiftExtensions</title>
-<path fill="none" stroke="black" d="M447.39,-270.59C497.1,-256.53 572.61,-235.15 627.34,-219.66" />
-<polygon fill="black" stroke="black" points="628.29,-223.03 636.96,-216.94 626.39,-216.29 628.29,-223.03" />
+<title>NetworkGear-&gt;yExtensions</title>
+<path fill="none" stroke="black" d="M447,-270.21C497.56,-255.4 574.8,-232.79 627.66,-217.31" />
+<polygon fill="black" stroke="black" points="628.95,-220.58 637.56,-214.41 626.98,-213.86 628.95,-220.58" />
 </g>
 
 <g id="edge14" class="edge">
@@ -176,15 +176,15 @@ a.external_repository_anchor {
 </g>
 
 <g id="edge15" class="edge">
-<title>StringComposition-&gt;ySwiftExtensions</title>
-<path fill="none" stroke="black" d="M711.46,-260.63C709.36,-252.53 706.99,-243.37 704.73,-234.68" />
-<polygon fill="black" stroke="black" points="708.07,-233.59 702.17,-224.78 701.29,-235.34 708.07,-233.59" />
+<title>StringComposition-&gt;yExtensions</title>
+<path fill="none" stroke="black" d="M708.57,-260.63C705.42,-252.29 701.85,-242.81 698.49,-233.88" />
+<polygon fill="black" stroke="black" points="701.75,-232.61 694.95,-224.49 695.2,-235.08 701.75,-232.61" />
 </g>
 
 <g id="edge16" class="edge">
-<title>TemporaryFile-&gt;ySwiftExtensions</title>
-<path fill="none" stroke="black" d="M765.16,-354.31C783.8,-344.69 803.26,-330.79 813.82,-311.65 824.76,-291.84 825.62,-280.04 813.82,-260.74 802.78,-242.68 784.45,-229.79 765.49,-220.69" />
-<polygon fill="black" stroke="black" points="766.71,-217.41 756.16,-216.52 763.86,-223.8 766.71,-217.41" />
+<title>TemporaryFile-&gt;yExtensions</title>
+<path fill="none" stroke="black" d="M765.16,-354.31C783.8,-344.69 803.26,-330.79 813.82,-311.65 824.76,-291.84 825.93,-279.85 813.82,-260.74 799.25,-237.73 773.31,-223.32 748.58,-214.37" />
+<polygon fill="black" stroke="black" points="749.42,-210.96 738.83,-211.08 747.19,-217.59 749.42,-210.96" />
 </g>
 
 <g id="edge17" class="edge">
@@ -219,20 +219,20 @@ a.external_repository_anchor {
 
 <g id="edge22" class="edge">
 <title>XHTML-&gt;UnicodeSupplement</title>
-<path fill="none" stroke="black" d="M550.7,-347.74C558.91,-309.44 577.42,-233.4 605.82,-173.82 610.36,-164.29 616.29,-154.57 622.22,-145.78" />
-<polygon fill="black" stroke="black" points="625.24,-147.56 628.09,-137.35 619.5,-143.55 625.24,-147.56" />
+<path fill="none" stroke="black" d="M552.86,-347.56C559.52,-324.86 570.09,-290.26 580.82,-260.74 595.1,-221.44 599.52,-211.89 616.82,-173.82 620.84,-164.97 625.41,-155.51 629.75,-146.75" />
+<polygon fill="black" stroke="black" points="632.98,-148.11 634.33,-137.6 626.72,-144.98 632.98,-148.11" />
 </g>
 
 <g id="edge23" class="edge">
-<title>XHTML-&gt;ySwiftExtensions</title>
-<path fill="none" stroke="black" d="M559.19,-348.51C573.15,-324.94 596.5,-288.33 621.82,-260.74 632.12,-249.51 644.55,-238.56 656.25,-229.13" />
-<polygon fill="black" stroke="black" points="658.52,-231.8 664.21,-222.87 654.19,-226.31 658.52,-231.8" />
+<title>XHTML-&gt;yExtensions</title>
+<path fill="none" stroke="black" d="M559.88,-348.45C574.2,-325.15 597.66,-289.05 621.82,-260.74 631.07,-249.89 642.07,-238.93 652.32,-229.37" />
+<polygon fill="black" stroke="black" points="654.96,-231.7 659.97,-222.36 650.23,-226.54 654.96,-231.7" />
 </g>
 
 <g id="edge24" class="edge">
-<title>ySwiftExtensions-&gt;UnicodeSupplement</title>
-<path fill="none" stroke="black" d="M681.91,-174.17C676.89,-165.48 671.14,-155.51 665.77,-146.2" />
-<polygon fill="black" stroke="black" points="668.8,-144.44 660.77,-137.53 662.73,-147.94 668.8,-144.44" />
+<title>yExtensions-&gt;UnicodeSupplement</title>
+<path fill="none" stroke="black" d="M674.75,-174.17C670.87,-165.73 666.44,-156.09 662.27,-147.01" />
+<polygon fill="black" stroke="black" points="665.41,-145.45 658.06,-137.83 659.05,-148.38 665.41,-145.45" />
 </g>
 </g>
 </svg>
