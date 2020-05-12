@@ -43,6 +43,11 @@ extension Server {
     return self._environmentVariables["SERVER_PORT"].flatMap(CSocketPortNumber.init)
   }
   
+  /// Returns the value of environment variable for "SCRIPT_NAME".
+  public var scriptName: String? {
+    return self._environmentVariables["SCRIPT_NAME"]
+  }
+  
   /// Returns string of server software.
   public var software: String? {
     return self._environmentVariables["SERVER_SOFTWARE"]
