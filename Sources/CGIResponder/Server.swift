@@ -17,6 +17,10 @@ public class Server {
   }
   
   public static let server = Server(environmentVariables: EnvironmentVariables.default)
+  
+  internal static func virtual(environmentVariables: EnvironmentVariables) -> Server {
+    return Server(environmentVariables: environmentVariables)
+  }
 }
 
 extension Server {
