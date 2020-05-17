@@ -39,6 +39,7 @@ extension ClientTests {
         ("test_cookies", test_cookies),
         ("test_formDataItems", test_formDataItems),
         ("test_queryItems", test_queryItems),
+        ("test_queryString", test_queryString),
     ]
 }
 

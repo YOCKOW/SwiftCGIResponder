@@ -48,6 +48,17 @@ final class ClientTests: XCTestCase {
     XCTAssertNotNil(queryItems?.first(where: { $0.name == "name4" }))
   }
   
+  func test_queryString() {
+    var client = Client.virtual(environmentVariables: .virtual(["QUERY_STRING":"q"]))
+    XCTAssertEqual(client.request.queryString, "q")
+    
+    client = Client.virtual(environmentVariables: .virtual(["QUERY_STRING":"", "REQUEST_URI": "/"]))
+    XCTAssertEqual(client.request.queryString, nil)
+    
+    client = Client.virtual(environmentVariables: .virtual(["QUERY_STRING":"", "REQUEST_URI": "/?"]))
+    XCTAssertEqual(client.request.queryString, "")
+  }
+  
   func test_formDataItems() throws {
     let CRLF = "\u{0D}\u{0A}"
     let boundary = "----this-is-test-boundary----"
