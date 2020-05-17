@@ -243,7 +243,16 @@ extension Client.Request {
   
   /// The value of "QUERY_STRING".
   public var queryString: String? {
-    return self._environmentVariables["QUERY_STRING"]
+    guard let query = self._environmentVariables["QUERY_STRING"] else { return nil }
+    if query.isEmpty {
+      return self.uri?.last == "?" ? "" : nil
+    }
+    return query
+  }
+  
+  /// The value of "REQUEST_URI"
+  public var uri: String? {
+    return self._environmentVariables["REQUEST_URI"]
   }
   
   /// The User Agent.
