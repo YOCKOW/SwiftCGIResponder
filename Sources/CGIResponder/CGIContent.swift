@@ -6,8 +6,12 @@
  ************************************************************************************************ */
 
 import Foundation
+#if canImport(FoundationXML)
+import FoundationXML
+#endif
 import TemporaryFile
 import XHTML
+import yExtensions
 
 /// A content to be output via CGI.
 public enum CGIContent {
@@ -34,6 +38,9 @@ public enum CGIContent {
   
   case xhtml(XHTMLDocument)
   public init(xhtml document:XHTMLDocument) { self = .xhtml(document) }
+  
+  case xml(XMLDocument, options: XMLNode.Options)
+  public init(xml document: XMLDocument, options: XMLNode.Options = []) { self = .xml(document, options: options) }
   
   case lazy(() throws -> CGIContent)
   public init(creator: @escaping () throws -> CGIContent) { self = .lazy(creator) }
@@ -73,6 +80,12 @@ extension CGIContent {
     case .xhtml(let document):
       let encoding = document.prolog.stringEncoding
       return ContentType(pathExtension: .xhtml, parameters: _parameters(encoding: encoding))!
+    case .xml(let document, _):
+      if let encodingString = document.characterEncoding,
+         let type = ContentType(pathExtension: .xml, parameters: ["charset": encodingString]) {
+        return type
+      }
+      return ContentType(pathExtension: .xml)!
     default:
       return octetStreamContentType
     }
@@ -84,6 +97,8 @@ extension CGIContent {
       return encoding
     case .xhtml(let document):
       return document.prolog.stringEncoding
+    case .xml(let document, _):
+      return document.characterEncoding.flatMap({ String.Encoding(ianaCharacterSetName: $0) })
     default:
       return nil
     }
