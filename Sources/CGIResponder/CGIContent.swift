@@ -35,8 +35,8 @@ public enum CGIContent {
   case xhtml(XHTMLDocument)
   public init(xhtml document:XHTMLDocument) { self = .xhtml(document) }
   
-  case lazy(() -> CGIContent)
-  public init(creator:@escaping () -> CGIContent) { self = .lazy(creator) }
+  case lazy(() throws -> CGIContent)
+  public init(creator: @escaping () throws -> CGIContent) { self = .lazy(creator) }
 }
 
 extension CGIContent {
