@@ -10,9 +10,11 @@ import XHTML
 
 /// Container of fallback response.
 public protocol CGIFallback {
+  /// HTTP Status that should be 4xx, or 5xx.
   var status: HTTPStatusCode { get }
+  
+  /// A content to report the error.
   var fallbackContent: CGIContent { get }
-  init(error: CGIError)
 }
 
 public struct TextFallback: CGIFallback {
@@ -20,7 +22,7 @@ public struct TextFallback: CGIFallback {
   
   public private(set) var fallbackContent: CGIContent
   
-  public init(error: CGIError) {
+  public init(_ error: CGIError) {
     let message = """
     Error \(error.status.rawValue): \(error.status.reasonPhrase)
     
@@ -37,7 +39,7 @@ public struct XHTMLFallback: CGIFallback {
   
   public private(set) var fallbackContent: CGIContent
   
-  public init(error: CGIError) {
+  public init(_ error: CGIError) {
     let title = "Error \(error.status.rawValue): \(error.status.reasonPhrase)"
     let xhtml = XHTMLDocument.template(
       title: title,
@@ -49,5 +51,11 @@ public struct XHTMLFallback: CGIFallback {
     
     self.status = error.status
     self.fallbackContent = .xhtml(xhtml)
+  }
+}
+
+extension CGIResponder: CGIFallback {
+  public var fallbackContent: CGIContent {
+    return self.content
   }
 }

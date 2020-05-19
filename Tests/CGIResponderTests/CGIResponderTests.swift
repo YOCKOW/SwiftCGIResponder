@@ -134,7 +134,7 @@ final class CGIResponderTests: XCTestCase {
     struct _Fallback: CGIFallback {
       var status: HTTPStatusCode
       var fallbackContent: CGIContent
-      init(error: CGIError) {
+      init(_ error: CGIError) {
         self.status = error.status
         self.fallbackContent = .string(error.localizedDescription, encoding: .utf8)
       }
@@ -147,7 +147,7 @@ final class CGIResponderTests: XCTestCase {
     
     let responder = CGIResponder(content: .lazy({ throw _Error() }))
     var output = InMemoryFile()
-    responder.respond(to: &output, fallback: _Fallback.self)
+    responder.respond(to: &output, fallback: { _Fallback($0) })
     
     try output.seek(toOffset: 0)
     let outputString = try output.readToEnd().flatMap({ String(data: $0, encoding: .utf8) })

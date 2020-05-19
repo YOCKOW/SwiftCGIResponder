@@ -25,4 +25,13 @@ internal struct _VersatileCGIError: CGIError {
     self.status = status
     self._localizedDescription = localizedDescription
   }
+  
+  init(localizedError: LocalizedError) {
+    self.init(localizedDescription: localizedError.errorDescription ?? localizedError.localizedDescription)
+  }
+  
+  init(error: Error) {
+    let error = error as NSError
+    self.init(localizedDescription: error.localizedFailureReason ?? error.localizedDescription)
+  }
 }
