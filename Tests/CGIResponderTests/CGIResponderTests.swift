@@ -12,6 +12,8 @@ import Foundation
 import NetworkGear
 import TemporaryFile
 
+let CRLF = "\u{0D}\u{0A}"
+
 final class CGIResponderTests: XCTestCase {
   func test_contentType() {
     var responder = CGIResponder()
@@ -83,8 +85,6 @@ final class CGIResponderTests: XCTestCase {
   }
   
   func test_response() throws {
-    let CRLF = "\u{0D}\u{0A}"
-    
     var responder = CGIResponder()
     
     func check(_ expectedOutput: String?,
@@ -127,6 +127,37 @@ final class CGIResponderTests: XCTestCase {
     try check(
       nil,
       expectedError: .stringEncodingInconsistency(actualEncoding: .utf8, specifiedEncoding: .ascii)
+    )
+  }
+  
+  func test_fallback() throws {
+    struct _Fallback: CGIFallback {
+      var status: HTTPStatusCode
+      var fallbackContent: CGIContent
+      init(error: CGIError) {
+        self.status = error.status
+        self.fallbackContent = .string(error.localizedDescription, encoding: .utf8)
+      }
+    }
+    
+    struct _Error: CGIError {
+      var status: HTTPStatusCode = .notFound
+      var localizedDescription: String = "Not Found."
+    }
+    
+    let responder = CGIResponder(content: .lazy({ throw _Error() }))
+    var output = InMemoryFile()
+    responder.respond(to: &output, fallback: _Fallback.self)
+    
+    try output.seek(toOffset: 0)
+    let outputString = try output.readToEnd().flatMap({ String(data: $0, encoding: .utf8) })
+    
+    XCTAssertEqual(
+      outputString,
+      "Status: 404 Not Found\(CRLF)" +
+      "Content-Type: text/plain; charset=utf-8\(CRLF)" +
+      "\(CRLF)" +
+      "Not Found."
     )
   }
 }

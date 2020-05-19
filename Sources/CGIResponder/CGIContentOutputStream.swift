@@ -72,4 +72,6 @@ extension FileHandle: CGIContentOutputStream {}
 
 extension Data: CGIContentOutputStream {}
 
+extension InMemoryFile: CGIContentOutputStream {}
+
 extension TemporaryFile: CGIContentOutputStream {}

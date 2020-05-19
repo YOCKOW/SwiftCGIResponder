@@ -8,7 +8,7 @@
 import NetworkGear
 
 /// Errors related to `CGIResponder`
-public enum CGIResponderError: Error, Equatable {
+public enum CGIResponderError: CGIError, Equatable {
   case dataConversionFailure
   case invalidArgument
   case illegalOperation
@@ -17,6 +17,10 @@ public enum CGIResponderError: Error, Equatable {
   case stringConversionFailure
   case stringEncodingInconsistency(actualEncoding: String.Encoding, specifiedEncoding: String.Encoding)
   case unexpectedError(message:String)
+  
+  public var status: HTTPStatusCode {
+    return .internalServerError
+  }
 }
 
 
