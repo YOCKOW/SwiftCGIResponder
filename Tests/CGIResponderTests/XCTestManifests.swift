@@ -27,6 +27,7 @@ extension CGIResponderTests {
         ("test_contentType", test_contentType),
         ("test_expectedStatus_Date", test_expectedStatus_Date),
         ("test_expectedStatus_ETag", test_expectedStatus_ETag),
+        ("test_fallback", test_fallback),
         ("test_response", test_response),
     ]
 }

@@ -58,6 +58,8 @@ extension CGIContentOutputStream {
         throw CGIResponderError.unexpectedError(message:"Cannot generate data of XHTML.")
       }
       try self.write(contentsOf: data)
+    case .xml(let document, options: let options):
+      try self.write(contentsOf: document.xmlData(options: options))
     case .lazy(let closure):
       try self.write(closure())
     }
@@ -69,5 +71,7 @@ extension AnyFileHandle: CGIContentOutputStream {}
 extension FileHandle: CGIContentOutputStream {}
 
 extension Data: CGIContentOutputStream {}
+
+extension InMemoryFile: CGIContentOutputStream {}
 
 extension TemporaryFile: CGIContentOutputStream {}
