@@ -250,6 +250,17 @@ extension Client.Request {
     return query
   }
   
+  /// The value of "HTTP_REFERER".
+  public var referer: String? {
+    return self._environmentVariables["HTTP_REFERER"]
+  }
+  
+  /// The alias of `var referer: String? { get }`.
+  @inlinable
+  public var referrer: String? {
+    return self.referer
+  }
+  
   /// The value of "REQUEST_URI"
   public var uri: String? {
     return self._environmentVariables["REQUEST_URI"]
