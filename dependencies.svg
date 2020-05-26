@@ -64,7 +64,7 @@ a.external_repository_anchor {
 <title>NetworkGear</title>
 <ellipse fill="none" stroke="black" cx="395.82" cy="-286.19" rx="65.37" ry="25.41" />
 <text text-anchor="middle" x="395.82" y="-288.99" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftNetworkGear.git" xlink:href="https://github.com/YOCKOW/SwiftNetworkGear.git" class="external_repository_anchor">NetworkGear</a></text>
-<text text-anchor="middle" x="395.82" y="-274.99" font-family="monospace" font-size="12px">@0.13.0</text>
+<text text-anchor="middle" x="395.82" y="-274.99" font-family="monospace" font-size="12px">@0.13.1</text>
 </g>
 
 <g id="edge4" class="edge">
@@ -90,7 +90,7 @@ a.external_repository_anchor {
 <title>XHTML</title>
 <ellipse fill="none" stroke="black" cx="545.82" cy="-373.1" rx="46.52" ry="25.41" />
 <text text-anchor="middle" x="545.82" y="-375.9" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftXHTML.git" xlink:href="https://github.com/YOCKOW/SwiftXHTML.git" class="external_repository_anchor">XHTML</a></text>
-<text text-anchor="middle" x="545.82" y="-361.9" font-family="monospace" font-size="12px">@2.0.0</text>
+<text text-anchor="middle" x="545.82" y="-361.9" font-family="monospace" font-size="12px">@2.1.1</text>
 </g>
 
 <g id="edge6" class="edge">
@@ -103,7 +103,7 @@ a.external_repository_anchor {
 <title>yExtensions</title>
 <ellipse fill="none" stroke="black" cx="685.82" cy="-199.28" rx="59.92" ry="25.41" />
 <text text-anchor="middle" x="685.82" y="-202.08" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/ySwiftExtensions.git" xlink:href="https://github.com/YOCKOW/ySwiftExtensions.git" class="external_repository_anchor">yExtensions</a></text>
-<text text-anchor="middle" x="685.82" y="-188.08" font-family="monospace" font-size="12px">@1.2.0</text>
+<text text-anchor="middle" x="685.82" y="-188.08" font-family="monospace" font-size="12px">@1.3.0</text>
 </g>
 
 <g id="edge7" class="edge">

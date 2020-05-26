@@ -21,7 +21,7 @@ let package = Package(
     .package(url:"https://github.com/YOCKOW/SwiftNetworkGear.git", "0.13.0"..<"2.0.0"),
     .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from: "4.0.1"),
     .package(url:"https://github.com/YOCKOW/SwiftXHTML.git", from: "2.0.0"),
-    .package(url:"https://github.com/YOCKOW/ySwiftExtensions.git", from: "1.2.0"),
+    .package(url:"https://github.com/YOCKOW/ySwiftExtensions.git", from: "1.3.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package. A target can define a module or a test suite.
