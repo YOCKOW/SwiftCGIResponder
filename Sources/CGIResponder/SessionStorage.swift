@@ -167,6 +167,14 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   }
   
   private func _createDirectory(at url: URL) throws {
+    #if !canImport(ObjectiveC)
+    // Workaround for https://bugs.swift.org/browse/SR-12737
+    if url.isExistingLocalDirectory {
+      return
+    } else {
+      try self._createParentDirectory(of: url)
+    }
+    #endif
     try FileManager.default.createDirectory(at: url,
                                             withIntermediateDirectories: true,
                                             attributes: [.posixPermissions: NSNumber(0o700)])
@@ -203,11 +211,16 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   open func removeSession(for id: UUID) throws {
     let manager = FileManager.default
     let symlinkURL = self._symbolicLinkURL(for: id)
-    let dest = try manager.destinationOfSymbolicLink(atPath: symlinkURL.standardizedFileURL.path)
+    
+    guard symlinkURL.isExistingLocalFile else { throw CocoaError(.fileNoSuchFile) }
+    
+    let dest = try manager.destinationOfSymbolicLink(atPath: symlinkURL.path)
     let sessionFileURL = URL(fileURLWithPath: dest,
                              isDirectory: false,
                              relativeTo: symlinkURL)
-    try self._removeFile(at: sessionFileURL)
+    if sessionFileURL.isExistingLocalFile {
+      try self._removeFile(at: sessionFileURL)
+    }
     try self._removeFile(at: symlinkURL)
   }
   
@@ -223,7 +236,7 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
 
     // Creates symbolic link.
     try self._createParentDirectory(of: urlSuite.symbolicLinkURL)
-    try FileManager.default.createSymbolicLink(atPath: urlSuite.symbolicLinkURL.standardizedFileURL.path,
+    try FileManager.default.createSymbolicLink(atPath: urlSuite.symbolicLinkURL.path,
                                                withDestinationPath: urlSuite.symbolicLinkDestination)
   }
   
