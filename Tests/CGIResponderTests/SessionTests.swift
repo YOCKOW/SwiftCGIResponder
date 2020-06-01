@@ -59,6 +59,18 @@ final class SessionTests: XCTestCase {
     
     try Self.storage.removeSession(for: session.id)
     XCTAssertNil(try Self.storage.session(for: session.id))
+    
+    XCTAssertTrue(
+      try FileManager.default.contentsOfDirectory(at: Self.storage.directory.appendingPathComponent("id"),
+                                                  includingPropertiesForKeys: nil,
+                                                  options: .skipsHiddenFiles).isEmpty
+    )
+    
+    XCTAssertTrue(
+      try FileManager.default.contentsOfDirectory(at: Self.storage.directory.appendingPathComponent("expires"),
+                                                  includingPropertiesForKeys: nil,
+                                                  options: .skipsHiddenFiles).isEmpty
+    )
   }
 }
 

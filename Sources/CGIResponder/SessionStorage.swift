@@ -185,16 +185,18 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   }
   
   /// Removes the file at `url` (and its parent directory if it is empty).
-  private func _removeFile(at url: URL) throws {
+  private func _removeItem(at url: URL) throws {
     let manager = FileManager.default
     try manager.removeItem(at: url)
     
     let parent = url.deletingLastPathComponent()
+    if parent.lastPathComponent == "id" || parent.lastPathComponent == "expires" { return }
+    
     let contents = try manager.contentsOfDirectory(at: parent,
                                                    includingPropertiesForKeys: nil,
                                                    options: .skipsHiddenFiles)
     if contents.isEmpty {
-      try manager.removeItem(at: parent)
+      try self._removeItem(at: parent)
     }
   }
   
@@ -219,9 +221,9 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
                              isDirectory: false,
                              relativeTo: symlinkURL)
     if sessionFileURL.isExistingLocalFile {
-      try self._removeFile(at: sessionFileURL)
+      try self._removeItem(at: sessionFileURL)
     }
-    try self._removeFile(at: symlinkURL)
+    try self._removeItem(at: symlinkURL)
   }
   
   open func storeSession(_ session: Session<UserInfo>) throws {
