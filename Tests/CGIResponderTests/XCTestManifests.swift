@@ -67,6 +67,7 @@ extension SessionTests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__SessionTests = [
+        ("test_fileSystemSessionStorage_expiration", test_fileSystemSessionStorage_expiration),
         ("test_fileSystemSessionStorage_store_remove", test_fileSystemSessionStorage_store_remove),
         ("test_fileSystemSessionStorage_URL", test_fileSystemSessionStorage_URL),
     ]

@@ -15,7 +15,10 @@ public protocol SessionStorage {
 
   /// Creates a new session with given arguments.
   func createSession(duration: NanosecondTimeInterval, userInfo: UserInfo) throws -> Session<UserInfo>
-
+  
+  /// Removes all sessions.
+  func removeAllSessions() throws
+  
   /// Removes all expired sessions that the storage contains.
   func removeExpiredSessions() throws
 
@@ -67,11 +70,12 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   
   /// Uses the directory at `url` for session storage.
   public init(directoryAt url: URL) throws {
-    let url = url.standardizedFileURL
+    let url = url.standardizedFileURL.resolvingSymlinksInPath()
     guard url.isExistingLocalDirectory else {
       throw CocoaError(.fileReadNoSuchFile)
     }
     self.directory = url
+    try self._prepareDirectories()
   }
   
   
@@ -105,7 +109,7 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   /// If `id` is "00000000-0000-0000-0000-000000000000"
   /// and `expirationTime` is `1234567890.987654321` then,
   /// returns `"00000029/IO/1D/4_7BF6HC8_AAAAAAAAAAAAAAAAAAAAAAAAAA"`
-  private func _sessionFileRelativePathFromExpiresDirectory(sessionID: UUID,
+  private func _sessionFileRelativePathFromExpiresDirectory(sessionID: UUID?,
                                                             expirationTime: NanosecondAbsoluteTime) -> String {
     let base32Seconds = expirationTime.seconds.base32EncodedData(using: .triacontakaidecimal,
                                                                  byteOrder: .bigEndian,
@@ -126,8 +130,10 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     relativePathData.append(contentsOf: base32Seconds[12..<13])
     relativePathData.append(_LOW_LINE)
     relativePathData.append(contentsOf: base32Nanoseconds)
-    relativePathData.append(_LOW_LINE)
-    relativePathData.append(contentsOf: self._base32EncodedSessionID(from: sessionID))
+    if let id = sessionID {
+      relativePathData.append(_LOW_LINE)
+      relativePathData.append(contentsOf: self._base32EncodedSessionID(from: id))
+    }
     
     return String(data: relativePathData, encoding: .utf8)!
   }
@@ -159,9 +165,9 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
             sessionFileURL: sessionFileURL)
   }
   
-  internal func _sessionID(fromSessionFileURL url: URL) -> UUID {
+  internal func _sessionID(fromSessionFileURL url: URL) throws -> UUID {
     guard let uuid = url.lastPathComponent.split(separator: "_").last.flatMap({ UUID(base32Encoded: $0, version: .rfc4648) }) else {
-      fatalError("Unexpected Session File URL.")
+      throw _VersatileCGIError(localizedDescription: "Unexpected Session File Name.")
     }
     return uuid
   }
@@ -184,6 +190,11 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     try self._createDirectory(at: url.standardizedFileURL.deletingLastPathComponent())
   }
   
+  private func _prepareDirectories() throws {
+    try self._createDirectory(at: self._idDirectory)
+    try self._createDirectory(at: self._expiresDirectory)
+  }
+  
   /// Removes the file at `url` (and its parent directory if it is empty).
   private func _removeItem(at url: URL) throws {
     let manager = FileManager.default
@@ -200,14 +211,95 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     }
   }
   
+  private func _expiredDirectories() throws -> [URL] {
+    let now = NanosecondAbsoluteTime.timeIntervalSinceReferenceDate
+    let relPath = self._sessionFileRelativePathFromExpiresDirectory(sessionID: nil, expirationTime: now)
+    let relPathComponents = relPath.split(separator: "/").dropLast()
+    assert(relPathComponents.count == 3)
+    
+    func __contents(at url: URL) throws -> [URL] {
+      let contents = try FileManager.default.contentsOfDirectory(at: currentDir,
+                                                                 includingPropertiesForKeys: nil,
+                                                                 options: .skipsHiddenFiles)
+      return contents.sorted { $0.lastPathComponent < $1.lastPathComponent }
+    }
+    
+    var depth = 0
+    var currentDir = self._expiresDirectory
+    var results: [URL] = []
+    // Directory names are sorted, and they represent expiration times...
+    enumerating: while depth < relPathComponents.count {
+      let contents = try __contents(at: currentDir)
+      let comp = relPathComponents[depth]
+      for dirURL in contents {
+        switch dirURL.lastPathComponent.compare(comp) {
+        case .orderedAscending:
+          results.append(dirURL)
+        case .orderedDescending:
+          break enumerating
+        case .orderedSame:
+          currentDir = dirURL
+          depth += 1
+          continue enumerating
+        }
+      }
+      break
+    }
+    
+    return results
+  }
+  
   open func createSession(duration: NanosecondTimeInterval, userInfo: UserInfo) throws -> Session<UserInfo> {
     let session = Session<UserInfo>(duration: duration, userInfo: userInfo)
     try self.storeSession(session)
     return session
   }
   
+  open func removeAllSessions() throws {
+    let manager = FileManager.default
+    try manager.removeItem(at: self._idDirectory)
+    try manager.removeItem(at: self._expiresDirectory)
+    try self._prepareDirectories()
+  }
+  
+  /// Removes expired sessions.
+  /// - parameters:
+  ///    - removeSymbolicLinks: Removes also symbolic links to session files that have expired if it is `true`.
+  ///                           Removal will be a little faster when this value is `false`.
+  ///
+  /// On specification, sessions of that 32 seconds have not elapsed from expiration may not be removed.
+  open func removeExpiredSessions(removeSymbolicLinks: Bool) throws {
+    let expiredDirectories = try self._expiredDirectories()
+    let manager = FileManager.default
+    if !removeSymbolicLinks {
+      try expiredDirectories.forEach { try self._removeItem(at: $0) }
+    } else {
+      // Removes also symbolic links
+      for url in expiredDirectories {
+        guard let enumerator = manager.enumerator(at: url,
+                                                  includingPropertiesForKeys: [.isRegularFileKey],
+                                                  options: .skipsHiddenFiles,
+                                                  errorHandler: nil)
+          else {
+            throw _VersatileCGIError(localizedDescription: "Enumeration failed at \(url.path)")
+        }
+        
+        for case let fileURL as URL in enumerator {
+          guard (try? fileURL.resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile == true else {
+            continue
+          }
+          let sessionID = try self._sessionID(fromSessionFileURL: fileURL)
+          try self._removeItem(at: self._symbolicLinkURL(for: sessionID))
+          try self._removeItem(at: fileURL)
+        }
+      }
+    }
+  }
+  
+  /// Removes expired sessions.
+  /// This method calls `removeExpiredSessions(removeSymbolicLinks:)` with `false` as its argument.
   open func removeExpiredSessions() throws {
-    fatalError("Unimplemented.")
+    try self.removeExpiredSessions(removeSymbolicLinks: false)
   }
   
   open func removeSession(for id: UUID) throws {
