@@ -40,12 +40,12 @@ public protocol SessionStorage: Sequence where Self.Element == Session<Self.User
  ```
  Specified Directory
   |
-  +- id
+  +- "<prefix>_id"
   |   |
   |   +- XXXX/YYYY/ZZZZ/<symbolic links to session files>
   |   :
   |
-  +- expires
+  +- "<prefix>_expiration"
       |
       +- TTTT/UUUU/VVVV/<actual files representing sessions>
       :
@@ -60,13 +60,18 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   /// The URL for the directory that contains session files.
   public let directory: URL
   
-  private var _idDirectory: URL {
-    return URL(fileURLWithPath: "id", isDirectory: true, relativeTo: self.directory)
-  }
+  /// The prefix that is used for subdirectories.
+  /// Usually you don't have to change this value.
+  ///
+  /// You can manage different types of sessions in the same directory
+  /// if you create multiple instances whose prefixes differ.
+  open var subdirectoryPrefix: String = "__cgi_responder_fsss_default"
   
-  private var _expiresDirectory: URL {
-    return URL(fileURLWithPath: "expires", isDirectory: true, relativeTo: self.directory)
-  }
+  /// The subdirectory that contains symbolic links (to session files) grouped by session ID.
+  public private(set) final lazy var idDirectory: URL = self.directory.appendingPathComponent("\(self.subdirectoryPrefix)_id", isDirectory: true)
+  
+  /// The subdirectory that contains session files grouped by expiration time.
+  public private(set) final lazy var expirationDirectory: URL = self.directory.appendingPathComponent("\(self.subdirectoryPrefix)_expiration", isDirectory: true)
   
   /// Uses the directory at `url` for session storage.
   public init(directoryAt url: URL) throws {
@@ -103,7 +108,7 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     
     return URL(fileURLWithPath: String(data: relativePathData, encoding: .utf8)!,
                isDirectory: false,
-               relativeTo: self._idDirectory)
+               relativeTo: self.idDirectory)
   }
   
   /// If `id` is "00000000-0000-0000-0000-000000000000"
@@ -142,12 +147,12 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     return URL(fileURLWithPath: self._sessionFileRelativePathFromExpiresDirectory(sessionID: sessionID,
                                                                                   expirationTime: expirationTime),
                isDirectory: false,
-               relativeTo: self._expiresDirectory)
+               relativeTo: self.expirationDirectory)
   }
   
   internal func _relativePathToSessionFileFromSymbolicLink(sessionID: UUID, expirationTime: NanosecondAbsoluteTime) -> String {
     return (
-      "../../../../expires/" +
+      "../../../../\(self.expirationDirectory.lastPathComponent)/" +
       self._sessionFileRelativePathFromExpiresDirectory(sessionID: sessionID,
                                                         expirationTime: expirationTime)
     )
@@ -191,8 +196,8 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   }
   
   private func _prepareDirectories() throws {
-    try self._createDirectory(at: self._idDirectory)
-    try self._createDirectory(at: self._expiresDirectory)
+    try self._createDirectory(at: self.idDirectory)
+    try self._createDirectory(at: self.expirationDirectory)
   }
   
   /// Removes the file at `url` (and its parent directory if it is empty).
@@ -201,7 +206,10 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     try manager.removeItem(at: url)
     
     let parent = url.deletingLastPathComponent()
-    if parent.lastPathComponent == "id" || parent.lastPathComponent == "expires" { return }
+    let parentName = parent.lastPathComponent
+    if parentName == self.idDirectory.lastPathComponent || parentName == self.expirationDirectory.lastPathComponent {
+      return
+    }
     
     let contents = try manager.contentsOfDirectory(at: parent,
                                                    includingPropertiesForKeys: nil,
@@ -225,7 +233,7 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     }
     
     var depth = 0
-    var currentDir = self._expiresDirectory
+    var currentDir = self.expirationDirectory
     var results: [URL] = []
     // Directory names are sorted, and they represent expiration times...
     enumerating: while depth < relPathComponents.count {
@@ -257,8 +265,8 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   
   open func removeAllSessions() throws {
     let manager = FileManager.default
-    try manager.removeItem(at: self._idDirectory)
-    try manager.removeItem(at: self._expiresDirectory)
+    try manager.removeItem(at: self.idDirectory)
+    try manager.removeItem(at: self.expirationDirectory)
     try self._prepareDirectories()
   }
   
@@ -358,7 +366,7 @@ extension FileSystemSessionStorage: Sequence {
     private let _enumerator: FileManager.DirectoryEnumerator
     
     fileprivate init(_ storage: FileSystemSessionStorage<UserInfo>) {
-      guard let enumerator = FileManager.default.enumerator(at: storage._expiresDirectory,
+      guard let enumerator = FileManager.default.enumerator(at: storage.expirationDirectory,
                                                             includingPropertiesForKeys: [.isRegularFileKey],
                                                             options: .skipsHiddenFiles,
                                                             errorHandler: nil)

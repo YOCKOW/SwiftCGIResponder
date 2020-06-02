@@ -34,11 +34,11 @@ final class FileSystemSessionStorageTests: XCTestCase {
     
     let symLinkURL = Self.storage._symbolicLinkURL(for: id)
     XCTAssertEqual(symLinkURL.standardizedFileURL,
-                   Self.storage.directory.appendingPathComponent("id/AAAAAA/AAAAAA/AAAAAAA/AAAAAAA"))
+                   Self.storage.idDirectory.appendingPathComponent("AAAAAA/AAAAAA/AAAAAAA/AAAAAAA"))
     
     let sessionURL = Self.storage._sessionFileURL(sessionID: id, expirationTime: expiration)
     XCTAssertEqual(sessionURL.standardizedFileURL,
-                   Self.storage.directory.appendingPathComponent("expires/00000029/IO/1D/4_7BF6HC8_AAAAAAAAAAAAAAAAAAAAAAAAAA"))
+                   Self.storage.expirationDirectory.appendingPathComponent("00000029/IO/1D/4_7BF6HC8_AAAAAAAAAAAAAAAAAAAAAAAAAA"))
     
     XCTAssertEqual(
       URL(fileURLWithPath: Self.storage._relativePathToSessionFileFromSymbolicLink(sessionID: id,
@@ -65,13 +65,13 @@ final class FileSystemSessionStorageTests: XCTestCase {
     XCTAssertNil(try Self.storage.session(for: session.id))
     
     XCTAssertTrue(
-      try FileManager.default.contentsOfDirectory(at: Self.storage.directory.appendingPathComponent("id"),
+      try FileManager.default.contentsOfDirectory(at: Self.storage.idDirectory,
                                                   includingPropertiesForKeys: nil,
                                                   options: .skipsHiddenFiles).isEmpty
     )
     
     XCTAssertTrue(
-      try FileManager.default.contentsOfDirectory(at: Self.storage.directory.appendingPathComponent("expires"),
+      try FileManager.default.contentsOfDirectory(at: Self.storage.expirationDirectory,
                                                   includingPropertiesForKeys: nil,
                                                   options: .skipsHiddenFiles).isEmpty
     )
