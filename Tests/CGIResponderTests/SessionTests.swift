@@ -116,5 +116,21 @@ final class SessionTests: XCTestCase {
       }
     }
   }
+  
+  func test_fileSystemSessionStorage_iterator() throws {
+    let sessions: Set<Session<Dictionary<String, String>>> = [
+      .init(duration: 12345678.9, userInfo: ["A": "A"]),
+      .init(duration: 12345678.9, userInfo: ["B": "B"]),
+      .init(duration: 12345678.9, userInfo: ["C": "C"]),
+      .init(duration: 12345678.9, userInfo: ["D": "D"]),
+      .init(duration: 12345678.9, userInfo: ["E": "E"]),
+    ]
+    
+    try sessions.forEach { try Self.storage.storeSession($0) }
+    
+    for session in Self.storage {
+      XCTAssertTrue(sessions.contains(session), "Missed: \(session.userInfo.keys.first!)")
+    }
+  }
 }
 

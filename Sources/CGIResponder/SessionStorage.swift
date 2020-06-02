@@ -10,7 +10,7 @@ import TimeSpecification
 import yExtensions
  
 /// A type that represents a container managing the storage of sessions.
-public protocol SessionStorage {
+public protocol SessionStorage: Sequence where Self.Element == Session<Self.UserInfo> {
   associatedtype UserInfo: Codable
 
   /// Creates a new session with given arguments.
@@ -345,5 +345,55 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
       return nil
     }
     return try JSONDecoder().decode(Session<UserInfo>.self, from: Data(contentsOf: url))
+  }
+}
+
+extension FileSystemSessionStorage: Sequence {
+  public typealias Element = Session<UserInfo>
+  
+  public struct Iterator: IteratorProtocol {
+    public typealias Element = Session<UserInfo>
+  
+    private unowned let _storage: FileSystemSessionStorage<UserInfo>
+    private let _enumerator: FileManager.DirectoryEnumerator
+    
+    fileprivate init(_ storage: FileSystemSessionStorage<UserInfo>) {
+      guard let enumerator = FileManager.default.enumerator(at: storage._expiresDirectory,
+                                                            includingPropertiesForKeys: [.isRegularFileKey],
+                                                            options: .skipsHiddenFiles,
+                                                            errorHandler: nil)
+        else {
+          fatalError("Failed to get directory enumerator.")
+      }
+      self._storage = storage
+      self._enumerator = enumerator
+    }
+    
+    public mutating func next() -> Session<UserInfo>? {
+      func __nextURL() -> URL? {
+        while true {
+          guard case let url as URL = self._enumerator.nextObject() else { return nil }
+          if (try? url.resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile == true {
+            return url
+          }
+        }
+      }
+      
+      func __nextSessionID() -> UUID? {
+        while true {
+          guard let nextURL = __nextURL() else { return nil }
+          if let id = try? self._storage._sessionID(fromSessionFileURL: nextURL) {
+            return id
+          }
+        }
+      }
+      
+      guard let id = __nextSessionID() else { return nil }
+      return try? self._storage.session(for: id)
+    }
+  }
+  
+  public func makeIterator() -> Iterator {
+    return .init(self)
   }
 }
