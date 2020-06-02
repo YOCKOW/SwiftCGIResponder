@@ -11,7 +11,7 @@ import XCTest
 import TimeSpecification
 import yExtensions
 
-final class SessionTests: XCTestCase {
+final class FileSystemSessionStorageTests: XCTestCase {
   static var storage: FileSystemSessionStorage<Dictionary<String, String>>!
   
   override class func setUp() {
@@ -28,7 +28,7 @@ final class SessionTests: XCTestCase {
     try Self.storage.removeAllSessions()
   }
   
-  func test_fileSystemSessionStorage_URL() throws {
+  func test_URL() throws {
     let id = try XCTUnwrap(UUID(uuidString: "00000000-0000-0000-0000-000000000000"))
     let expiration = TimeSpecification(seconds: 1234567890, nanoseconds: 987654321)
     
@@ -52,7 +52,7 @@ final class SessionTests: XCTestCase {
     XCTAssertEqual(try Self.storage._sessionID(fromSessionFileURL: sessionURL), id)
   }
   
-  func test_fileSystemSessionStorage_store_remove() throws {
+  func test_store_remove() throws {
     var session = try Self.storage.createSession(duration: 9999999.999,
                                                  userInfo: ["key": "value"])
     XCTAssertEqual(session, try Self.storage.session(for: session.id))
@@ -77,7 +77,7 @@ final class SessionTests: XCTestCase {
     )
   }
   
-  func test_fileSystemSessionStorage_expiration() throws {
+  func test_expiration() throws {
     let NUMBER_OF_SESSIONS = 100
     
     var sessions: [Session<Dictionary<String, String>>] = []
@@ -117,7 +117,7 @@ final class SessionTests: XCTestCase {
     }
   }
   
-  func test_fileSystemSessionStorage_iterator() throws {
+  func test_iterator() throws {
     let sessions: Set<Session<Dictionary<String, String>>> = [
       .init(duration: 12345678.9, userInfo: ["A": "A"]),
       .init(duration: 12345678.9, userInfo: ["B": "B"]),
