@@ -65,13 +65,27 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   ///
   /// You can manage different types of sessions in the same directory
   /// if you create multiple instances whose prefixes differ.
-  open var subdirectoryPrefix: String = "__cgi_responder_fsss_default"
+  public var subdirectoryPrefix: String = "__cgi_responder_fsss_default" {
+    didSet {
+      self.idDirectory = self._idDirectory()
+      self.expirationDirectory = self._expirationDirectory()
+      try! self._prepareDirectories()
+    }
+  }
+  
+  private func _idDirectory() -> URL {
+    return self.directory.appendingPathComponent("\(self.subdirectoryPrefix)_id", isDirectory: true)
+  }
+  
+  private func _expirationDirectory() -> URL {
+    return self.directory.appendingPathComponent("\(self.subdirectoryPrefix)_expiration", isDirectory: true)
+  }
   
   /// The subdirectory that contains symbolic links (to session files) grouped by session ID.
-  public private(set) final lazy var idDirectory: URL = self.directory.appendingPathComponent("\(self.subdirectoryPrefix)_id", isDirectory: true)
+  public private(set) final lazy var idDirectory: URL = self._idDirectory()
   
   /// The subdirectory that contains session files grouped by expiration time.
-  public private(set) final lazy var expirationDirectory: URL = self.directory.appendingPathComponent("\(self.subdirectoryPrefix)_expiration", isDirectory: true)
+  public private(set) final lazy var expirationDirectory: URL = self._expirationDirectory()
   
   /// Uses the directory at `url` for session storage.
   public init(directoryAt url: URL) throws {
