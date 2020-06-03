@@ -127,7 +127,7 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   
   /// If `id` is "00000000-0000-0000-0000-000000000000"
   /// and `expirationTime` is `1234567890.987654321` then,
-  /// returns `"00000029/IO/1D/4_7BF6HC8_AAAAAAAAAAAAAAAAAAAAAAAAAA"`
+  /// returns `"P00000029/IO/1D/4_7BF6HC8_AAAAAAAAAAAAAAAAAAAAAAAAAA"`
   private func _sessionFileRelativePathFromExpiresDirectory(sessionID: UUID?,
                                                             expirationTime: NanosecondAbsoluteTime) -> String {
     let base32Seconds = expirationTime.seconds.base32EncodedData(using: .triacontakaidecimal,
@@ -139,7 +139,8 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     assert(base32Seconds.count == 13)
     assert(base32Nanoseconds.count == 7)
     
-    var relativePathData = Data(capacity: 51)
+    var relativePathData = Data(capacity: 52)
+    relativePathData.append(expirationTime.seconds < 0 ? 0x4E /* N */ : 0x50 /* P */)
     relativePathData.append(contentsOf: base32Seconds[0..<8])
     relativePathData.append(_SLASH)
     relativePathData.append(contentsOf: base32Seconds[8..<10])

@@ -38,7 +38,7 @@ final class FileSystemSessionStorageTests: XCTestCase {
     
     let sessionURL = Self.storage._sessionFileURL(sessionID: id, expirationTime: expiration)
     XCTAssertEqual(sessionURL.standardizedFileURL,
-                   Self.storage.expirationDirectory.appendingPathComponent("00000029/IO/1D/4_7BF6HC8_AAAAAAAAAAAAAAAAAAAAAAAAAA"))
+                   Self.storage.expirationDirectory.appendingPathComponent("P00000029/IO/1D/4_7BF6HC8_AAAAAAAAAAAAAAAAAAAAAAAAAA"))
     
     XCTAssertEqual(
       URL(fileURLWithPath: Self.storage._relativePathToSessionFileFromSymbolicLink(sessionID: id,
