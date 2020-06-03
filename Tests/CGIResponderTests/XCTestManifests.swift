@@ -60,6 +60,7 @@ extension FileSystemSessionStorageTests {
     static let __allTests__FileSystemSessionStorageTests = [
         ("test_expiration", test_expiration),
         ("test_iterator", test_iterator),
+        ("test_manager", test_manager),
         ("test_store_remove", test_store_remove),
         ("test_URL", test_URL),
     ]

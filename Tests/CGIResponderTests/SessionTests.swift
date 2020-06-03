@@ -132,5 +132,17 @@ final class FileSystemSessionStorageTests: XCTestCase {
       XCTAssertTrue(sessions.contains(session), "Missed: \(session.userInfo.keys.first!)")
     }
   }
+  
+  func test_manager() throws {
+    let manager = SessionManager<Dictionary<String, String>>(storage: Self.storage)
+    
+    var session = try manager.createSession(duration: 12345678.9, userInfo: ["Use": "Manager"])
+    XCTAssertEqual(session, try manager.session(for: session.id))
+    
+    session.duration = -12345678.9
+    try manager.storeSession(session)
+    try manager.removeExpiredSessions()
+    XCTAssertNil(try manager.session(for: session.id))
+  }
 }
 
