@@ -94,6 +94,8 @@ public struct SessionManager<UserInfo>: Sequence where UserInfo: Codable {
   
   private let _box: _StorageBox
   
+  /// Initializes with an instance that conforms to `SessionStorage`.
+  /// This manager access sessions via the storage.
   public init<S>(storage: S) where S: SessionStorage, S.UserInfo == UserInfo {
     self._box = _SomeStorage<S>(storage)
   }
