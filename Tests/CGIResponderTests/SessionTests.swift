@@ -77,6 +77,23 @@ final class FileSystemSessionStorageTests: XCTestCase {
     )
   }
   
+  func test_brokenSymlinks() throws {
+    func __isSymlink(_ url: URL) -> Bool {
+      guard let attrs = try? FileManager.default.attributesOfItem(atPath: url.path) else { return false }
+      if case let type as FileAttributeType = attrs[.type], type == .typeSymbolicLink {
+        return true
+      }
+      return false
+    }
+    
+    let session = try Self.storage.createSession(duration: -12345678.9, userInfo: [:])
+    let symlinkURL = Self.storage._symbolicLinkURL(for: session.id)
+    try Self.storage.removeExpiredSessions(removeSymbolicLinks: false)
+    XCTAssertTrue(__isSymlink(symlinkURL))
+    try Self.storage.removeBrokenSymbolicLinks()
+    XCTAssertFalse(__isSymlink(symlinkURL))
+  }
+  
   func test_expiration() throws {
     let NUMBER_OF_SESSIONS = 100
     

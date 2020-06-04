@@ -176,12 +176,12 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
                relativeTo: self.expirationDirectory)
   }
   
-  private func _sessionFileURLByResolvingSymbolicLinkIfExists(sessionID: UUID, removingDeadSymbolicLink: Bool = true) -> URL? {
+  private func _sessionFileURLByResolvingSymbolicLinkIfExists(sessionID: UUID, removingBrokenSymbolicLink: Bool = true) -> URL? {
     let symlinkURL = self._symbolicLinkURL(for: sessionID)
     guard symlinkURL.isExistingLocalFile else { return nil }
     let url = symlinkURL.resolvingSymlinksInPath()
     guard url.isExistingLocalFile else {
-      if removingDeadSymbolicLink {
+      if removingBrokenSymbolicLink {
         // Deletes garbage.
         try? FileManager.default.removeItem(at: symlinkURL)
       }
@@ -310,6 +310,30 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     try self._prepareDirectories()
   }
   
+  /// Remove all symbolic links pointing to non-existing targets (session files).
+  open func removeBrokenSymbolicLinks() throws {
+    let manager = FileManager.default
+    guard let enumerator = manager.enumerator(at: self.idDirectory,
+                                              includingPropertiesForKeys: [.isSymbolicLinkKey],
+                                              options: .skipsHiddenFiles,
+                                              errorHandler: nil)
+      else {
+        throw _VersatileCGIError(localizedDescription: "Enumeration failed at \(self.idDirectory)")
+    }
+    
+    for case let fileURL as URL in enumerator {
+      guard (try? fileURL.resourceValues(forKeys: [.isSymbolicLinkKey]))?.isSymbolicLink == true else {
+        continue
+      }
+      let dest = URL(fileURLWithPath: try manager.destinationOfSymbolicLink(atPath: fileURL.path),
+                     isDirectory: false,
+                     relativeTo: fileURL)
+      if !manager.fileExists(atPath: dest.path) {
+        try manager.removeItem(at: fileURL)
+      }
+    }
+  }
+  
   /// Removes expired sessions.
   /// - parameters:
   ///    - removeSymbolicLinks: Removes also symbolic links to session files that have expired if it is `true`.
@@ -391,7 +415,7 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   
   open func sessionExists(for id: UUID) throws -> Bool {
     return self._sessionFileURLByResolvingSymbolicLinkIfExists(sessionID: id,
-                                                               removingDeadSymbolicLink: false) != nil
+                                                               removingBrokenSymbolicLink: false) != nil
   }
 }
 

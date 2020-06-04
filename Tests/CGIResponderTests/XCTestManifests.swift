@@ -58,6 +58,7 @@ extension FileSystemSessionStorageTests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__FileSystemSessionStorageTests = [
+        ("test_brokenSymlinks", test_brokenSymlinks),
         ("test_expiration", test_expiration),
         ("test_iterator", test_iterator),
         ("test_manager", test_manager),
