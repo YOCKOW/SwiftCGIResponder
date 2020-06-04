@@ -15,9 +15,7 @@ private func _mustBeOverridden(function: StaticString = #function, file: StaticS
 /// The manager of sessions.
 /// You can use any instance of `SessionStorage` to access stored sessions,
 /// namely this type can work as a type erasure of `SessionStorage`.
-public struct SessionManager<UserInfo>: Sequence where UserInfo: Codable {
-  public typealias Element = Session<UserInfo>
-  
+public struct SessionManager<UserInfo>: SessionStorage where UserInfo: Codable {
   private class _StorageBox {
     func createSession(duration: NanosecondTimeInterval, userInfo: UserInfo) throws -> Session<UserInfo> {
       _mustBeOverridden()
@@ -97,7 +95,11 @@ public struct SessionManager<UserInfo>: Sequence where UserInfo: Codable {
   /// Initializes with an instance that conforms to `SessionStorage`.
   /// This manager access sessions via the storage.
   public init<S>(storage: S) where S: SessionStorage, S.UserInfo == UserInfo {
-    self._box = _SomeStorage<S>(storage)
+    if case let manager as SessionManager<UserInfo> = storage {
+      self = manager
+    } else {
+      self._box = _SomeStorage<S>(storage)
+    }
   }
   
   public func createSession(duration: NanosecondTimeInterval, userInfo: UserInfo) throws -> Session<UserInfo> {
@@ -150,3 +152,6 @@ public struct SessionManager<UserInfo>: Sequence where UserInfo: Codable {
     return Iterator(self)
   }
 }
+
+/// A type erasure for `SessionStorage`.
+public typealias AnySessionStorage<UserInfo> = SessionManager<UserInfo> where UserInfo: Codable
