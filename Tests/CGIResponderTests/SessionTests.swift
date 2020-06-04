@@ -103,16 +103,16 @@ final class FileSystemSessionStorageTests: XCTestCase {
     try __store(middleN)
     for ii in 0..<middleN {
       // Not removed yet
-      XCTAssertTrue(try XCTUnwrap(Self.storage.session(for: sessions[ii].id)).hasExpired)
+      XCTAssertTrue(try Self.storage.sessionExists(for: sessions[ii].id))
     }
     
     try Self.storage.removeExpiredSessions(removeSymbolicLinks: true)
     for ii in 0..<NUMBER_OF_SESSIONS {
-      let session = try Self.storage.session(for: sessions[ii].id)
+      let id = sessions[ii].id
       if ii < middleN {
-        XCTAssertNil(session, "#\(ii) must be removed.")
+        XCTAssertFalse(try Self.storage.sessionExists(for: id), "#\(ii) must be removed.")
       } else {
-        XCTAssertNotNil(session, "#\(ii) must NOT be removed.")
+        XCTAssertTrue(try Self.storage.sessionExists(for: id), "#\(ii) must NOT be removed.")
       }
     }
   }
@@ -137,6 +137,7 @@ final class FileSystemSessionStorageTests: XCTestCase {
     let manager = SessionManager<Dictionary<String, String>>(storage: Self.storage)
     
     var session = try manager.createSession(duration: 12345678.9, userInfo: ["Use": "Manager"])
+    XCTAssertTrue(try manager.sessionExists(for: session.id))
     XCTAssertEqual(session, try manager.session(for: session.id))
     
     session.duration = -12345678.9

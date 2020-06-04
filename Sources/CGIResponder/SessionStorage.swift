@@ -30,6 +30,17 @@ public protocol SessionStorage: Sequence where Self.Element == Session<Self.User
 
   /// Returns a session identified by `identifier`.
   func session(for id: UUID) throws -> Session<UserInfo>?
+  
+  /// Returns a Boolean value that indicates whether the session specified by `id` exists or not.
+  ///
+  /// Default implementation provided.
+  func sessionExists(for id: UUID) throws -> Bool
+}
+
+extension SessionStorage {
+  public func sessionExists(for id: UUID) throws -> Bool {
+    return try self.session(for: id) != nil
+  }
 }
 
 /**
@@ -163,6 +174,20 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
                                                                                   expirationTime: expirationTime),
                isDirectory: false,
                relativeTo: self.expirationDirectory)
+  }
+  
+  private func _sessionFileURLByResolvingSymbolicLinkIfExists(sessionID: UUID, removingDeadSymbolicLink: Bool = true) -> URL? {
+    let symlinkURL = self._symbolicLinkURL(for: sessionID)
+    guard symlinkURL.isExistingLocalFile else { return nil }
+    let url = symlinkURL.resolvingSymlinksInPath()
+    guard url.isExistingLocalFile else {
+      if removingDeadSymbolicLink {
+        // Deletes garbage.
+        try? FileManager.default.removeItem(at: symlinkURL)
+      }
+      return nil
+    }
+    return url
   }
   
   internal func _relativePathToSessionFileFromSymbolicLink(sessionID: UUID, expirationTime: NanosecondAbsoluteTime) -> String {
@@ -358,16 +383,15 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   }
   
   open func session(for id: UUID) throws -> Session<UserInfo>? {
-    let symlinkURL = self._symbolicLinkURL(for: id)
-    guard symlinkURL.isExistingLocalFile else { return nil }
-    
-    let url = self._symbolicLinkURL(for: id).resolvingSymlinksInPath()
-    guard url.isExistingLocalFile else {
-      // Deletes garbage.
-      try? FileManager.default.removeItem(at: symlinkURL)
+    guard let url = self._sessionFileURLByResolvingSymbolicLinkIfExists(sessionID: id) else {
       return nil
     }
     return try JSONDecoder().decode(Session<UserInfo>.self, from: Data(contentsOf: url))
+  }
+  
+  open func sessionExists(for id: UUID) throws -> Bool {
+    return self._sessionFileURLByResolvingSymbolicLinkIfExists(sessionID: id,
+                                                               removingDeadSymbolicLink: false) != nil
   }
 }
 

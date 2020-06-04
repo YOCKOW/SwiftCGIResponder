@@ -43,6 +43,10 @@ public struct SessionManager<UserInfo>: Sequence where UserInfo: Codable {
       _mustBeOverridden()
     }
     
+    func sessionExists(for id: UUID) throws -> Bool {
+      _mustBeOverridden()
+    }
+    
     func makeIterator() -> AnyIterator<Session<UserInfo>> {
       _mustBeOverridden()
     }
@@ -79,6 +83,10 @@ public struct SessionManager<UserInfo>: Sequence where UserInfo: Codable {
       return try self._base.session(for: id)
     }
     
+    override func sessionExists(for id: UUID) throws -> Bool {
+      return try self._base.sessionExists(for: id)
+    }
+    
     override func makeIterator() -> AnyIterator<Session<UserInfo>> {
       return AnyIterator(self._base.makeIterator())
     }
@@ -112,6 +120,10 @@ public struct SessionManager<UserInfo>: Sequence where UserInfo: Codable {
 
   public func session(for id: UUID) throws -> Session<UserInfo>? {
     return try self._box.session(for: id)
+  }
+  
+  public func sessionExists(for id: UUID) throws -> Bool {
+    return try self._box.sessionExists(for: id)
   }
   
   private func _makeIterator() -> AnyIterator<Session<UserInfo>> {
