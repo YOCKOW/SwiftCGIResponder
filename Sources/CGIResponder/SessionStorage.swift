@@ -396,9 +396,14 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     
     let urlSuite = self._urlSuite(for: session)
     
-    // Creates sessin file.
-    try self._createParentDirectory(of: urlSuite.sessionFileURL)
-    try JSONEncoder().encode(session).write(to: urlSuite.sessionFileURL)
+    // Creates session file.
+    do {
+      let url = urlSuite.sessionFileURL
+      try self._createParentDirectory(of: url)
+      FileManager.default.createFile(atPath: url.path,
+                                     contents: try JSONEncoder().encode(session),
+                                     attributes: [.posixPermissions: NSNumber(0o600)])
+    }
 
     // Creates symbolic link.
     try self._createParentDirectory(of: urlSuite.symbolicLinkURL)
