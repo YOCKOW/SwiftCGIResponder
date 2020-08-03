@@ -4,8 +4,7 @@
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
- 
-import NetworkGear
+
 import XHTML
 
 /// Container of fallback response.

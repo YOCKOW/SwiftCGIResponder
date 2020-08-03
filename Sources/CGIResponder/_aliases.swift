@@ -5,7 +5,7 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
-import NetworkGear
+@_exported import NetworkGear
 
 /// Represents Content-Type.
 public typealias ContentType = MIMEType

@@ -5,8 +5,6 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
-import NetworkGear
-
 /// Errors related to `CGIResponder`
 public enum CGIResponderError: CGIError, Equatable {
   case dataConversionFailure

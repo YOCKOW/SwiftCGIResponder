@@ -6,7 +6,6 @@
  ************************************************************************************************ */
 
 import Foundation
-import NetworkGear
 import TemporaryFile
 import yExtensions
 import yProtocols
