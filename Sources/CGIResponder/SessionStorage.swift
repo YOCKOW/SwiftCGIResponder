@@ -218,17 +218,8 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   }
   
   private func _createDirectory(at url: URL) throws {
-    #if !canImport(ObjectiveC)
-    // Workaround for https://bugs.swift.org/browse/SR-12737
-    if url.isExistingLocalDirectory {
-      return
-    } else {
-      try self._createParentDirectory(of: url)
-    }
-    #endif
-    try FileManager.default.createDirectory(at: url,
-                                            withIntermediateDirectories: true,
-                                            attributes: [.posixPermissions: NSNumber(0o700)])
+    try FileManager.default.createDirectoryWithIntermediateDirectories(at: url,
+                                                                       attributes: [.posixPermissions: NSNumber(0o700)])
   }
   
   private func _createParentDirectory(of url: URL) throws {

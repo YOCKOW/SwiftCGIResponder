@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  CGIResponderTests.swift
-   © 2017-2019 YOCKOW.
+   © 2017-2020 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -9,7 +9,6 @@ import XCTest
 @testable import CGIResponder
 
 import Foundation
-import NetworkGear
 import TemporaryFile
 
 let CRLF = "\u{0D}\u{0A}"

@@ -6,7 +6,6 @@
  ************************************************************************************************ */
  
 import Foundation
-import NetworkGear
 
 public protocol CGIError: Error {
   var status: HTTPStatusCode { get }
