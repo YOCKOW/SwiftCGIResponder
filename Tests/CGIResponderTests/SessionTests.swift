@@ -34,7 +34,7 @@ final class FileSystemSessionStorageTests: XCTestCase {
     
     let symLinkURL = Self.storage._symbolicLinkURL(for: id)
     XCTAssertEqual(symLinkURL.standardizedFileURL,
-                   Self.storage.idDirectory.appendingPathComponent("AAAAAA/AAAAAA/AAAAAAA/AAAAAAA"))
+                   Self.storage.idDirectory.appendingPathComponent("AA/AA/AA/AAAAAAAAAAAAAAAAAAAA"))
     
     let sessionURL = Self.storage._sessionFileURL(sessionID: id, expirationTime: expiration)
     XCTAssertEqual(sessionURL.standardizedFileURL,

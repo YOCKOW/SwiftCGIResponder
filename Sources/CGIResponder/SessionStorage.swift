@@ -53,7 +53,7 @@ extension SessionStorage {
   |
   +- "<prefix>_id"
   |   |
-  |   +- XXXX/YYYY/ZZZZ/<symbolic links to session files>
+  |   +- XX/YY/ZZ/<symbolic links to session files>
   |   :
   |
   +- "<prefix>_expiration"
@@ -63,7 +63,7 @@ extension SessionStorage {
  
  ```
  
- * "XXXX/YYYY/ZZZZ/..." is generated from Session ID.
+ * "XX/YY/ZZ/..." is generated from Session ID.
  * "TTTT/UUUU/VVVV/..." is generated from Expiration time. It must be sortable.
  
  */
@@ -123,13 +123,13 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     assert(base32ID.count == 26)
     
     var relativePathData = Data(capacity: 29)
-    relativePathData.append(contentsOf: base32ID[0..<6])
+    relativePathData.append(contentsOf: base32ID[0..<2])
     relativePathData.append(_SLASH)
-    relativePathData.append(contentsOf: base32ID[6..<12])
+    relativePathData.append(contentsOf: base32ID[2..<4])
     relativePathData.append(_SLASH)
-    relativePathData.append(contentsOf: base32ID[12..<19])
+    relativePathData.append(contentsOf: base32ID[4..<6])
     relativePathData.append(_SLASH)
-    relativePathData.append(contentsOf: base32ID[19..<26])
+    relativePathData.append(contentsOf: base32ID[6...])
     
     return URL(fileURLWithPath: String(data: relativePathData, encoding: .utf8)!,
                isDirectory: false,
