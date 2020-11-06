@@ -29,7 +29,7 @@ public struct SessionManager<UserInfo>: SessionStorage where UserInfo: Codable {
       _mustBeOverridden()
     }
     
-    func removeSession(for id: UUID) throws {
+    func removeSession(for id: SessionID) throws {
       _mustBeOverridden()
     }
 
@@ -37,11 +37,11 @@ public struct SessionManager<UserInfo>: SessionStorage where UserInfo: Codable {
       _mustBeOverridden()
     }
 
-    func session(for id: UUID) throws -> Session<UserInfo>? {
+    func session(for id: SessionID) throws -> Session<UserInfo>? {
       _mustBeOverridden()
     }
     
-    func sessionExists(for id: UUID) throws -> Bool {
+    func sessionExists(for id: SessionID) throws -> Bool {
       _mustBeOverridden()
     }
     
@@ -69,7 +69,7 @@ public struct SessionManager<UserInfo>: SessionStorage where UserInfo: Codable {
       try self._base.removeExpiredSessions()
     }
     
-    override func removeSession(for id: UUID) throws {
+    override func removeSession(for id: SessionID) throws {
       try self._base.removeSession(for: id)
     }
 
@@ -77,11 +77,11 @@ public struct SessionManager<UserInfo>: SessionStorage where UserInfo: Codable {
       try self._base.storeSession(session)
     }
 
-    override func session(for id: UUID) throws -> Session<UserInfo>? {
+    override func session(for id: SessionID) throws -> Session<UserInfo>? {
       return try self._base.session(for: id)
     }
     
-    override func sessionExists(for id: UUID) throws -> Bool {
+    override func sessionExists(for id: SessionID) throws -> Bool {
       return try self._base.sessionExists(for: id)
     }
     
@@ -114,7 +114,7 @@ public struct SessionManager<UserInfo>: SessionStorage where UserInfo: Codable {
     return try self._box.removeExpiredSessions()
   }
   
-  public func removeSession(for id: UUID) throws {
+  public func removeSession(for id: SessionID) throws {
     return try self._box.removeSession(for: id)
   }
 
@@ -122,11 +122,11 @@ public struct SessionManager<UserInfo>: SessionStorage where UserInfo: Codable {
     return try self._box.storeSession(session)
   }
 
-  public func session(for id: UUID) throws -> Session<UserInfo>? {
+  public func session(for id: SessionID) throws -> Session<UserInfo>? {
     return try self._box.session(for: id)
   }
   
-  public func sessionExists(for id: UUID) throws -> Bool {
+  public func sessionExists(for id: SessionID) throws -> Bool {
     return try self._box.sessionExists(for: id)
   }
   

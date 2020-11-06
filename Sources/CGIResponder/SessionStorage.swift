@@ -23,22 +23,22 @@ public protocol SessionStorage: Sequence where Self.Element == Session<Self.User
   func removeExpiredSessions() throws
 
   /// Removes a session that is identified by `identifier`
-  func removeSession(for id: UUID) throws
+  func removeSession(for id: SessionID) throws
 
   /// Saves `session` to the storage.
   func storeSession(_ session: Session<UserInfo>) throws
 
   /// Returns a session identified by `identifier`.
-  func session(for id: UUID) throws -> Session<UserInfo>?
+  func session(for id: SessionID) throws -> Session<UserInfo>?
   
   /// Returns a Boolean value that indicates whether the session specified by `id` exists or not.
   ///
   /// Default implementation provided.
-  func sessionExists(for id: UUID) throws -> Bool
+  func sessionExists(for id: SessionID) throws -> Bool
 }
 
 extension SessionStorage {
-  public func sessionExists(for id: UUID) throws -> Bool {
+  public func sessionExists(for id: SessionID) throws -> Bool {
     return try self.session(for: id) != nil
   }
 }
@@ -76,7 +76,7 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   ///
   /// You can manage different types of sessions in the same directory
   /// if you create multiple instances whose prefixes differ.
-  public var subdirectoryPrefix: String = "__cgi_responder_fsss_default" {
+  public var subdirectoryPrefix: String {
     didSet {
       self.idDirectory = self._idDirectory()
       self.expirationDirectory = self._expirationDirectory()
@@ -99,47 +99,45 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   public private(set) final lazy var expirationDirectory: URL = self._expirationDirectory()
   
   /// Uses the directory at `url` for session storage.
-  public init(directoryAt url: URL) throws {
+  public init(directoryAt url: URL,
+              subdirectoryPrefix: String = "__cgi_responder_fsss_default") throws {
     let url = url.standardizedFileURL.resolvingSymlinksInPath()
     guard url.isExistingLocalDirectory else {
       throw CocoaError(.fileReadNoSuchFile)
     }
     self.directory = url
+    self.subdirectoryPrefix = subdirectoryPrefix
     try self._prepareDirectories()
   }
   
-  
-  private func _base32EncodedSessionID(from sessionID: UUID) -> Data {
-    return sessionID.base32EncodedData(using: .rfc4648, padding: false)
+  private func _base32EncodedSessionID(from sessionID: SessionID) -> Data {
+    return sessionID._base32EncodedData
   }
   
   private let _SLASH: UInt8 = 0x2F
   private let _LOW_LINE: UInt8 = 0x5F
   
-  /// If `id` is "00000000-0000-0000-0000-000000000000" then,
-  /// returns `"[storage directory]/id/AAAAAA/AAAAAA/AAAAAAA/AAAAAAA"`
-  internal func _symbolicLinkURL(for sessionID: UUID) -> URL {
+  internal func _symbolicLinkURL(for sessionID: SessionID) -> URL {
     let base32ID = self._base32EncodedSessionID(from: sessionID)
-    assert(base32ID.count == 26)
-    
-    var relativePathData = Data(capacity: 29)
-    relativePathData.append(contentsOf: base32ID[0..<2])
+
+    var relativePathData = Data()
+    relativePathData.append(contentsOf: base32ID.prefix(2))
     relativePathData.append(_SLASH)
-    relativePathData.append(contentsOf: base32ID[2..<4])
+    relativePathData.append(contentsOf: base32ID.dropFirst(2).prefix(2))
     relativePathData.append(_SLASH)
-    relativePathData.append(contentsOf: base32ID[4..<6])
+    relativePathData.append(contentsOf: base32ID.dropFirst(4).prefix(2))
     relativePathData.append(_SLASH)
-    relativePathData.append(contentsOf: base32ID[6...])
+    relativePathData.append(contentsOf: base32ID.dropFirst(6))
     
     return URL(fileURLWithPath: String(data: relativePathData, encoding: .utf8)!,
                isDirectory: false,
                relativeTo: self.idDirectory)
   }
   
-  /// If `id` is "00000000-0000-0000-0000-000000000000"
+  /// If base-32 encoded`id` is "AAAAAAAAAAAAAAAAAAAAAAAAAA"
   /// and `expirationTime` is `1234567890.987654321` then,
   /// returns `"P00000029/IO/1D/4_7BF6HC8_AAAAAAAAAAAAAAAAAAAAAAAAAA"`
-  private func _sessionFileRelativePathFromExpiresDirectory(sessionID: UUID?,
+  private func _sessionFileRelativePathFromExpiresDirectory(sessionID: SessionID?,
                                                             expirationTime: NanosecondAbsoluteTime) -> String {
     let base32Seconds = expirationTime.seconds.base32EncodedData(using: .triacontakaidecimal,
                                                                  byteOrder: .bigEndian,
@@ -150,15 +148,15 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     assert(base32Seconds.count == 13)
     assert(base32Nanoseconds.count == 7)
     
-    var relativePathData = Data(capacity: 52)
+    var relativePathData = Data()
     relativePathData.append(expirationTime.seconds < 0 ? 0x4E /* N */ : 0x50 /* P */)
-    relativePathData.append(contentsOf: base32Seconds[0..<8])
+    relativePathData.append(contentsOf: base32Seconds.prefix(8))
     relativePathData.append(_SLASH)
-    relativePathData.append(contentsOf: base32Seconds[8..<10])
+    relativePathData.append(contentsOf: base32Seconds.dropFirst(8).prefix(2))
     relativePathData.append(_SLASH)
-    relativePathData.append(contentsOf: base32Seconds[10..<12])
+    relativePathData.append(contentsOf: base32Seconds.dropFirst(10).prefix(2))
     relativePathData.append(_SLASH)
-    relativePathData.append(contentsOf: base32Seconds[12..<13])
+    relativePathData.append(contentsOf: base32Seconds.dropFirst(12).prefix(1))
     relativePathData.append(_LOW_LINE)
     relativePathData.append(contentsOf: base32Nanoseconds)
     if let id = sessionID {
@@ -169,14 +167,17 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     return String(data: relativePathData, encoding: .utf8)!
   }
   
-  internal func _sessionFileURL(sessionID: UUID, expirationTime: NanosecondAbsoluteTime) -> URL {
+  internal func _sessionFileURL(sessionID: SessionID, expirationTime: NanosecondAbsoluteTime) -> URL {
     return URL(fileURLWithPath: self._sessionFileRelativePathFromExpiresDirectory(sessionID: sessionID,
                                                                                   expirationTime: expirationTime),
                isDirectory: false,
                relativeTo: self.expirationDirectory)
   }
   
-  private func _sessionFileURLByResolvingSymbolicLinkIfExists(sessionID: UUID, removingBrokenSymbolicLink: Bool = true) -> URL? {
+  private func _sessionFileURLByResolvingSymbolicLinkIfExists(
+    sessionID: SessionID,
+    removingBrokenSymbolicLink: Bool = true
+  ) -> URL? {
     let symlinkURL = self._symbolicLinkURL(for: sessionID)
     guard symlinkURL.isExistingLocalFile else { return nil }
     let url = symlinkURL.resolvingSymlinksInPath()
@@ -190,7 +191,10 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     return url
   }
   
-  internal func _relativePathToSessionFileFromSymbolicLink(sessionID: UUID, expirationTime: NanosecondAbsoluteTime) -> String {
+  internal func _relativePathToSessionFileFromSymbolicLink(
+    sessionID: SessionID,
+    expirationTime: NanosecondAbsoluteTime
+  ) -> String {
     return (
       "../../../../\(self.expirationDirectory.lastPathComponent)/" +
       self._sessionFileRelativePathFromExpiresDirectory(sessionID: sessionID,
@@ -210,11 +214,11 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
             sessionFileURL: sessionFileURL)
   }
   
-  internal func _sessionID(fromSessionFileURL url: URL) throws -> UUID {
-    guard let uuid = url.lastPathComponent.split(separator: "_").last.flatMap({ UUID(base32Encoded: $0, version: .rfc4648) }) else {
+  internal func _sessionID(fromSessionFileURL url: URL) throws -> SessionID {
+    guard let id = url.lastPathComponent.split(separator: "_").last.flatMap({ SessionID(_base32EncodedString: $0) }) else {
       throw _VersatileCGIError(localizedDescription: "Unexpected Session File Name.")
     }
-    return uuid
+    return id
   }
   
   private func _createDirectory(at url: URL) throws {
@@ -365,7 +369,7 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
     try self.removeExpiredSessions(removeSymbolicLinks: false)
   }
   
-  open func removeSession(for id: UUID) throws {
+  open func removeSession(for id: SessionID) throws {
     let manager = FileManager.default
     let symlinkURL = self._symbolicLinkURL(for: id)
     
@@ -402,14 +406,14 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
                                                withDestinationPath: urlSuite.symbolicLinkDestination)
   }
   
-  open func session(for id: UUID) throws -> Session<UserInfo>? {
+  open func session(for id: SessionID) throws -> Session<UserInfo>? {
     guard let url = self._sessionFileURLByResolvingSymbolicLinkIfExists(sessionID: id) else {
       return nil
     }
     return try JSONDecoder().decode(Session<UserInfo>.self, from: Data(contentsOf: url))
   }
   
-  open func sessionExists(for id: UUID) throws -> Bool {
+  open func sessionExists(for id: SessionID) throws -> Bool {
     return self._sessionFileURLByResolvingSymbolicLinkIfExists(sessionID: id,
                                                                removingBrokenSymbolicLink: false) != nil
   }
@@ -446,7 +450,7 @@ extension FileSystemSessionStorage: Sequence {
         }
       }
       
-      func __nextSessionID() -> UUID? {
+      func __nextSessionID() -> SessionID? {
         while true {
           guard let nextURL = __nextURL() else { return nil }
           if let id = try? self._storage._sessionID(fromSessionFileURL: nextURL) {
