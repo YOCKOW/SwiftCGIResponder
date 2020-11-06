@@ -29,16 +29,16 @@ final class FileSystemSessionStorageTests: XCTestCase {
   }
   
   func test_URL() throws {
-    let id = try XCTUnwrap(UUID(uuidString: "00000000-0000-0000-0000-000000000000"))
+    let id = try XCTUnwrap(UUID(uuidString: "F2731D96-B94E-48FC-89C0-78E71A405904").map(SessionID.init(uuid:)))
     let expiration = TimeSpecification(seconds: 1234567890, nanoseconds: 987654321)
     
     let symLinkURL = Self.storage._symbolicLinkURL(for: id)
     XCTAssertEqual(symLinkURL.standardizedFileURL,
-                   Self.storage.idDirectory.appendingPathComponent("AA/AA/AA/AAAAAAAAAAAAAAAAAAAA"))
+                   Self.storage.idDirectory.appendingPathComponent("6J/ZR/3F/VZJZEPZCOAPDTRUQCZAQ"))
     
     let sessionURL = Self.storage._sessionFileURL(sessionID: id, expirationTime: expiration)
     XCTAssertEqual(sessionURL.standardizedFileURL,
-                   Self.storage.expirationDirectory.appendingPathComponent("P00000029/IO/1D/4_7BF6HC8_AAAAAAAAAAAAAAAAAAAAAAAAAA"))
+                   Self.storage.expirationDirectory.appendingPathComponent("P00000029/IO/1D/4_7BF6HC8_6JZR3FVZJZEPZCOAPDTRUQCZAQ"))
     
     XCTAssertEqual(
       URL(fileURLWithPath: Self.storage._relativePathToSessionFileFromSymbolicLink(sessionID: id,
