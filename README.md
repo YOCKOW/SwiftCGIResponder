@@ -33,7 +33,7 @@ try! responder.respond()
 //
 ```
 
-You may see other samples in [SwiftCGIResponderSamples](https://github.com/YOCKOW/SwiftCGIResponderSamples).
+You may see other samples in [Samples Directory](./Samples).
 
 # How to install
 
