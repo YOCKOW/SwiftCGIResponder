@@ -24,7 +24,7 @@ final class ClientTests: XCTestCase {
     XCTAssertEqual(items?[2].value, "another_value1")
   }
   
-  func test_queryItems() {
+  func test_queryItems() throws {
     let urlQuery = "name1=value1&name2=value2"
     let postData = "name3=value3&name4".data(using:.utf8)!
     let contentType = ContentType(type:.application, subtype:"x-www-form-urlencoded")!
@@ -36,16 +36,21 @@ final class ClientTests: XCTestCase {
       "CONTENT_LENGTH": String(contentLength),
       "REQUEST_METHOD": "POST",
     ]
+
+    /*
+      Requires workaround for
+        https://github.com/YOCKOW/SwiftCGIResponder/issues/69
+        https://bugs.swift.org/browse/SR-14620
+    */
     
     let client = Client.virtual(standardInput: InMemoryFile(postData),
                                 environmentVariables: .virtual(env))
-    let queryItems = client.request.queryItems
-    XCTAssertNotNil(queryItems)
-    XCTAssertEqual(queryItems?.first(where: { $0.name == "name1" })?.value, "value1")
-    XCTAssertEqual(queryItems?.first(where: { $0.name == "name2" })?.value, "value2")
-    XCTAssertEqual(queryItems?.first(where: { $0.name == "name3" })?.value, "value3")
-    XCTAssertEqual(queryItems?.first(where: { $0.name == "name4" })?.value, nil)
-    XCTAssertNotNil(queryItems?.first(where: { $0.name == "name4" }))
+    let queryItems = try XCTUnwrap(client.request.queryItems)
+    XCTAssertEqual(queryItems.first(where: { $0.name == "name1" })?.value, "value1")
+    XCTAssertEqual(queryItems.first(where: { $0.name == "name2" })?.value, "value2")
+    XCTAssertEqual(queryItems.first(where: { $0.name == "name3" })?.value, "value3")
+    XCTAssertEqual(queryItems.first(where: { $0.name == "name4" })?.value, nil)
+    XCTAssertNotNil(queryItems.first(where: { $0.name == "name4" }))
   }
   
   func test_queryString() {
