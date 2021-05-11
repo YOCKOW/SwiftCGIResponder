@@ -37,7 +37,7 @@ jobs:
           build-${{ github.workspace }}-${{ runner.os }}-${{ matrix.swift-compat-ver }}-
           build-${{ github.workspace }}-${{ runner.os }}-
           build-${{ github.workspace }}-
-    - uses: YOCKOW/Action-setup-swift@master
+    - uses: YOCKOW/Action-setup-swift@main
       with:
         swift-version: '5.4'
     # DEBUG mode
