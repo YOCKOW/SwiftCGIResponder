@@ -18,7 +18,9 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macOS-latest
+          # Disable macOS until Big Sur is available.
+          # https://github.com/actions/virtual-environments/issues/2486
+          # - macOS-latest
         swift-compat-ver:
           - '5'
           # - '4.2'
@@ -35,10 +37,10 @@ jobs:
           build-${{ github.workspace }}-${{ runner.os }}-${{ matrix.swift-compat-ver }}-
           build-${{ github.workspace }}-${{ runner.os }}-
           build-${{ github.workspace }}-
-    - uses: YOCKOW/Action-setup-swift@master
+    - uses: YOCKOW/Action-setup-swift@main
       with:
-        swift-version: '5.3'
-
+        swift-version: '5.4'
+    # DEBUG mode
     - name: Try to build products with debug mode.
       id: debug_build
       run: swift build --configuration debug -Xswiftc -swift-version -Xswiftc ${{ matrix.swift-compat-ver }}
@@ -46,14 +48,9 @@ jobs:
     - name: Clean debug build directory if necessary
       if: steps.debug_build.outcome == 'failure'
       run: rm -rf $(cd .build/debug && pwd -P)
-    - name: Check XCTestManifests.swift
-      if: runner.os == 'macOS'
-      run: |
-        swift test --generate-linuxmain -Xswiftc -swift-version -Xswiftc ${{ matrix.swift-compat-ver }}
-        git diff --exit-code
     - name: Test with debug mode.
       run: swift test --configuration debug -Xswiftc -swift-version -Xswiftc ${{ matrix.swift-compat-ver }}
-
+    # RELEASE mode
     - name: Try to build products with release mode.
       id: release_build
       run: swift build --configuration release -Xswiftc -enable-testing -Xswiftc -swift-version -Xswiftc ${{ matrix.swift-compat-ver }}
