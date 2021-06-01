@@ -65,7 +65,6 @@ final class ClientTests: XCTestCase {
   }
   
   func test_formDataItems() throws {
-    let CRLF = "\u{0D}\u{0A}"
     let boundary = "----this-is-test-boundary----"
     let testString =
       "--\(boundary)\(CRLF)" +
@@ -124,6 +123,57 @@ final class ClientTests: XCTestCase {
     XCTAssertNil(fourthItem)
     
     try tmpDir.close()
+  }
+
+  func test_emptyFormDataItem() throws {
+    // https://github.com/YOCKOW/SwiftCGIResponder/issues/71
+
+    let boundary = "----empty-item-test-boundary----"
+    let testString =
+      "--\(boundary)\(CRLF)" +
+      "Content-Disposition: form-data; name=\"Non-Empty\"\(CRLF)" +
+      "\(CRLF)" +
+      "Some Value\(CRLF)" +
+      "--\(boundary)\(CRLF)" +
+      "Content-Disposition: form-data; name=\"Empty\"\(CRLF)" +
+      "\(CRLF)" +
+      "\(CRLF)" +
+      "--\(boundary)\(CRLF)" +
+      "Content-Disposition: form-data; name=\"Another Non-Empty\"\(CRLF)" +
+      "\(CRLF)" +
+      "Another Value\(CRLF)" +
+      "--\(boundary)--\(CRLF)"
+    let testData = Data(testString.utf8)
+
+    let client = Client.virtual(
+      standardInput: InMemoryFile(testData),
+      environmentVariables: .virtual(["CONTENT_TYPE": "multipart/form-data; boundary=\(boundary)"])
+    )
+    let tmpDir = try TemporaryDirectory(prefix: "CGIResponder-ClientTests-\(#function)")
+    let formData = try client.request.formData(savingUploadedFilesIn: tmpDir)
+    let items = Array(formData)
+    XCTAssertNil(formData.error)
+    XCTAssertEqual(items.count, 3)
+
+    func __assert(
+      item: FormData.Item?,
+      expectedName: String,
+      expectedValue: String,
+      file: StaticString = #filePath,
+      line: UInt = #line
+    ) throws {
+      let item = try XCTUnwrap(item)
+      XCTAssertEqual(item.name, expectedName, file: file, line: line)
+      guard case .string(let string, _) = item.value.content else {
+        XCTFail("Unexpected form-data item.", file: file, line: line)
+        return
+      }
+      XCTAssertEqual(string, expectedValue, file: file, line: line)
+    }
+
+    try __assert(item: items.first, expectedName: "Non-Empty", expectedValue: "Some Value")
+    try __assert(item: items.dropFirst().first, expectedName: "Empty", expectedValue: "")
+    try __assert(item: items.last, expectedName: "Another Non-Empty", expectedValue: "Another Value")
   }
 }
 

@@ -278,7 +278,10 @@ public final class FormData: Sequence, IteratorProtocol {
       let value: FormData.Item.Value = try ({
         try temporaryFile.seek(toOffset: 0)
         if filename == nil {
-          guard let string = try temporaryFile.readToEnd().flatMap({ String(data: $0, encoding: stringEncoding) }) else {
+          guard let data = try temporaryFile.readToEnd() else {
+            return FormData.Item.Value(content: .string("", encoding: stringEncoding))
+          }
+          guard let string = String(data: data, encoding: stringEncoding) else {
             throw CGIResponderError.stringConversionFailure
           }
           return FormData.Item.Value(content: .string(string, encoding: stringEncoding))
@@ -288,7 +291,6 @@ public final class FormData: Sequence, IteratorProtocol {
                                      contentType: nilableContentType)
         }
       })()
-
       return FormData.Item(name: name, value: value)
     } catch {
       self.error = error
