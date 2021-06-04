@@ -19,7 +19,7 @@ let package = Package(
     // Dependencies declare other packages that this package depends on.
     .package(url:"https://github.com/YOCKOW/SwiftBonaFideCharacterSet.git", from: "1.6.2"),
     .package(url:"https://github.com/YOCKOW/SwiftNetworkGear.git", "0.14.4"..<"2.0.0"),
-    .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from: "4.0.3"),
+    .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from: "4.0.4"),
     .package(url:"https://github.com/YOCKOW/SwiftTimeSpecification.git", from: "3.3.0"),
     .package(url:"https://github.com/YOCKOW/SwiftXHTML.git", from: "2.2.3"),
     .package(url:"https://github.com/YOCKOW/ySwiftExtensions.git", from: "1.7.4"),
