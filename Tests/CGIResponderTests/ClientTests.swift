@@ -14,7 +14,9 @@ import TemporaryFile
 final class ClientTests: XCTestCase {
   func test_cookies() {
     let cookies = "name1=value1; name2=value2; name1=another_value1"
-    let items = Client.virtual(environmentVariables: .virtual(["HTTP_COOKIE": cookies])).request.cookies()
+    let items = Environment.virtual(
+      variables: .virtual(["HTTP_COOKIE": cookies])
+    ).client.request.cookies()
     XCTAssertNotNil(items)
     XCTAssertEqual(items?[0].name, "name1")
     XCTAssertEqual(items?[0].value, "value1")
@@ -43,8 +45,10 @@ final class ClientTests: XCTestCase {
         https://bugs.swift.org/browse/SR-14620
     */
     
-    let client = Client.virtual(standardInput: InMemoryFile(postData),
-                                environmentVariables: .virtual(env))
+    let client = Environment.virtual(
+      standardInput: InMemoryFile(postData),
+      variables: .virtual(env)
+    ).client
     let queryItems = try XCTUnwrap(client.request.queryItems)
     XCTAssertEqual(queryItems.first(where: { $0.name == "name1" })?.value, "value1")
     XCTAssertEqual(queryItems.first(where: { $0.name == "name2" })?.value, "value2")
@@ -54,13 +58,23 @@ final class ClientTests: XCTestCase {
   }
   
   func test_queryString() {
-    var client = Client.virtual(environmentVariables: .virtual(["QUERY_STRING":"q"]))
+    var client = Environment.virtual(variables: .virtual(["QUERY_STRING":"q"])).client
     XCTAssertEqual(client.request.queryString, "q")
     
-    client = Client.virtual(environmentVariables: .virtual(["QUERY_STRING":"", "REQUEST_URI": "/"]))
+    client = Environment.virtual(
+      variables: .virtual([
+        "QUERY_STRING":"",
+        "REQUEST_URI": "/",
+      ])
+    ).client
     XCTAssertEqual(client.request.queryString, nil)
     
-    client = Client.virtual(environmentVariables: .virtual(["QUERY_STRING":"", "REQUEST_URI": "/?"]))
+    client = Environment.virtual(
+      variables: .virtual([
+        "QUERY_STRING":"",
+        "REQUEST_URI": "/?",
+      ])
+    ).client
     XCTAssertEqual(client.request.queryString, "")
   }
   
@@ -87,10 +101,10 @@ final class ClientTests: XCTestCase {
       "ここまでは読み込まないでね。"
     let testData = testString.data(using:.utf8)!
     
-    let client = Client.virtual(
+    let client = Environment.virtual(
       standardInput: InMemoryFile(testData),
-      environmentVariables: .virtual(["CONTENT_TYPE": "multipart/form-data; boundary=\(boundary)"])
-    )
+      variables: .virtual(["CONTENT_TYPE": "multipart/form-data; boundary=\(boundary)"])
+    ).client
     
     let tmpDir = try TemporaryDirectory(prefix: "CGIResponder-ClientTests-")
     
@@ -145,10 +159,10 @@ final class ClientTests: XCTestCase {
       "--\(boundary)--\(CRLF)"
     let testData = Data(testString.utf8)
 
-    let client = Client.virtual(
+    let client = Environment.virtual(
       standardInput: InMemoryFile(testData),
-      environmentVariables: .virtual(["CONTENT_TYPE": "multipart/form-data; boundary=\(boundary)"])
-    )
+      variables: .virtual(["CONTENT_TYPE": "multipart/form-data; boundary=\(boundary)"])
+    ).client
     let tmpDir = try TemporaryDirectory(prefix: "CGIResponder-ClientTests-\(#function)")
     let formData = try client.request.formData(savingUploadedFilesIn: tmpDir)
     let items = Array(formData)

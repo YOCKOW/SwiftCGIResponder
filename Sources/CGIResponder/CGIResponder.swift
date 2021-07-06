@@ -43,7 +43,7 @@ public struct CGIResponder {
   public init(status: HTTPStatusCode  = .ok,
               header: HTTPHeader = HTTPHeader([]),
               content: CGIContent = .none) {
-    self.init(status: status, header: header, content: content, client: Client.client)
+    self.init(status: status, header: header, content: content, client: Environment.default.client)
   }
 }
 
@@ -199,7 +199,7 @@ extension CGIResponder {
     try output.write(CGIContent(string:header.description))
     
     // If the method is HEAD, the body is not required.
-    if let method = Client.client.request.method, method == .head {
+    if let method = Environment.default.client.request.method, method == .head {
       return
     }
     

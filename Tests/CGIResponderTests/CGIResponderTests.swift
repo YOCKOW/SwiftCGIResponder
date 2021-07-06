@@ -35,16 +35,16 @@ final class CGIResponderTests: XCTestCase {
     responder.header.insert(HTTPHeaderField.eTag(eTag))
     XCTAssertNil(responder.expectedStatus)
     
-    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_MATCH: #""ETAG""#]))
+    responder._client = Environment.virtual(variables: .virtual([HTTP_IF_MATCH: #""ETAG""#])).client
     XCTAssertNil(responder.expectedStatus)
     
-    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_MATCH: #""OTHER""#]))
+    responder._client = Environment.virtual(variables: .virtual([HTTP_IF_MATCH: #""OTHER""#])).client
     XCTAssertEqual(responder.expectedStatus, .preconditionFailed)
     
-    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_NONE_MATCH: #"W/"ETAG""#]))
+    responder._client = Environment.virtual(variables: .virtual([HTTP_IF_NONE_MATCH: #"W/"ETAG""#])).client
     XCTAssertEqual(responder.expectedStatus, .notModified)
     
-    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_NONE_MATCH: #"W/"OTHER""#]))
+    responder._client = Environment.virtual(variables: .virtual([HTTP_IF_NONE_MATCH: #"W/"OTHER""#])).client
     XCTAssertNil(responder.expectedStatus)
   }
   
@@ -64,22 +64,34 @@ final class CGIResponderTests: XCTestCase {
     responder.header.insert(HTTPHeaderField.lastModified(date_base))
     XCTAssertNil(responder.expectedStatus)
     
-    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_UNMODIFIED_SINCE: date_string(date_old)]))
+    responder._client = Environment.virtual(
+      variables: .virtual([HTTP_IF_UNMODIFIED_SINCE: date_string(date_old)])
+    ).client
     XCTAssertEqual(responder.expectedStatus, .preconditionFailed)
     
-    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_UNMODIFIED_SINCE:date_string(date_base)]))
+    responder._client = Environment.virtual(
+      variables: .virtual([HTTP_IF_UNMODIFIED_SINCE:date_string(date_base)])
+    ).client
     XCTAssertEqual(responder.expectedStatus, nil)
     
-    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_UNMODIFIED_SINCE:date_string(date_new)]))
+    responder._client = Environment.virtual(
+      variables: .virtual([HTTP_IF_UNMODIFIED_SINCE:date_string(date_new)])
+    ).client
     XCTAssertEqual(responder.expectedStatus, nil)
     
-    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_MODIFIED_SINCE:date_string(date_old)]))
+    responder._client = Environment.virtual(
+      variables: .virtual([HTTP_IF_MODIFIED_SINCE:date_string(date_old)])
+    ).client
     XCTAssertEqual(responder.expectedStatus, nil)
     
-    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_MODIFIED_SINCE:date_string(date_base)]))
+    responder._client = Environment.virtual(
+      variables: .virtual([HTTP_IF_MODIFIED_SINCE:date_string(date_base)])
+    ).client
     XCTAssertEqual(responder.expectedStatus, .notModified)
     
-    responder._client = .virtual(environmentVariables: .virtual([HTTP_IF_MODIFIED_SINCE:date_string(date_new)]))
+    responder._client = Environment.virtual(
+      variables: .virtual([HTTP_IF_MODIFIED_SINCE:date_string(date_new)])
+    ).client
     XCTAssertEqual(responder.expectedStatus, .notModified)
   }
   
