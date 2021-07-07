@@ -10,7 +10,7 @@ import XCTest
 
 final class ServerTests: XCTestCase {
   func test_hostname() {
-    let server = Server.virtual(environmentVariables: .virtual(["SERVER_NAME": "FOO.EXAMPLE.COM"]))
+    let server = Environment.virtual(variables: .virtual(["SERVER_NAME": "FOO.EXAMPLE.COM"])).server
     XCTAssertEqual(server.hostname, Domain("foo.example.com"))
   }
 }
