@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  CGIResponder.swift
-   © 2017-2018, 2020 YOCKOW.
+   © 2017-2018, 2020-2021 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -21,17 +21,19 @@ public struct CGIResponder {
   /// The content.
   public var content: CGIContent
   
-  internal var _client: Client
+  internal var _environment: Environment
   
   @usableFromInline
-  internal init(status: HTTPStatusCode  = .ok,
-                header: HTTPHeader = HTTPHeader([]),
-                content: CGIContent = .none,
-                client: Client) {
+  internal init(
+    status: HTTPStatusCode  = .ok,
+    header: HTTPHeader = HTTPHeader([]),
+    content: CGIContent = .none,
+    environment: Environment
+  ) {
     self.status = status
     self.header = header
     self.content = content
-    self._client = client
+    self._environment = environment
   }
   
   /// Create a responder.
@@ -40,10 +42,12 @@ public struct CGIResponder {
   /// - parameter header: Initial HTTP Header
   /// - parameter content: Initial Content
   @inlinable
-  public init(status: HTTPStatusCode  = .ok,
-              header: HTTPHeader = HTTPHeader([]),
-              content: CGIContent = .none) {
-    self.init(status: status, header: header, content: content, client: Environment.default.client)
+  public init(
+    status: HTTPStatusCode  = .ok,
+    header: HTTPHeader = HTTPHeader([]),
+    content: CGIContent = .none
+  ) {
+    self.init(status: status, header: header, content: content, environment: .default)
   }
 }
 
@@ -88,7 +92,7 @@ extension CGIResponder {
   /// Estimate the expected status by checking ETag or Last-Modified.
   public var expectedStatus: HTTPStatusCode? {
     let header = self.header
-    let req = self._client.request
+    let req = _environment.client.request
     
     if let eTagHeaderField = header[.eTag].first, let eTag = eTagHeaderField.source as? HTTPETag {
       if let ifMatch = req.ifMatch {
@@ -149,7 +153,7 @@ extension CGIResponder {
    ```
    */
   public func respond(ignoringError: (Error) -> Bool = defaultIgnoringError) throws {
-    var stdout = FileHandle.standardOutput
+    var stdout = _environment.standardOutput
     try self.respond(to: &stdout, ignoringError: ignoringError)
   }
   
