@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  CGIResponderTests.swift
-   © 2017-2020 YOCKOW.
+   © 2017-2021 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -12,6 +12,12 @@ import Foundation
 import TemporaryFile
 
 let CRLF = "\u{0D}\u{0A}"
+
+private extension CGIResponder {
+  mutating func _resetEnvironment(_ newEnvironment: Environment = .virtual(variables: .virtual([:]))) {
+    self._environment = newEnvironment
+  }
+}
 
 final class CGIResponderTests: XCTestCase {
   func test_contentType() {
@@ -34,17 +40,17 @@ final class CGIResponderTests: XCTestCase {
     
     responder.header.insert(HTTPHeaderField.eTag(eTag))
     XCTAssertNil(responder.expectedStatus)
-    
-    responder._client = Environment.virtual(variables: .virtual([HTTP_IF_MATCH: #""ETAG""#])).client
+
+    responder._resetEnvironment()
+    responder._environment.variables[HTTP_IF_MATCH] = #""ETAG""#
     XCTAssertNil(responder.expectedStatus)
-    
-    responder._client = Environment.virtual(variables: .virtual([HTTP_IF_MATCH: #""OTHER""#])).client
+    responder._environment.variables[HTTP_IF_MATCH] = #""OTHER""#
     XCTAssertEqual(responder.expectedStatus, .preconditionFailed)
-    
-    responder._client = Environment.virtual(variables: .virtual([HTTP_IF_NONE_MATCH: #"W/"ETAG""#])).client
+
+    responder._resetEnvironment()
+    responder._environment.variables[HTTP_IF_NONE_MATCH] = #"W/"ETAG""#
     XCTAssertEqual(responder.expectedStatus, .notModified)
-    
-    responder._client = Environment.virtual(variables: .virtual([HTTP_IF_NONE_MATCH: #"W/"OTHER""#])).client
+    responder._environment.variables[HTTP_IF_NONE_MATCH] = #"W/"OTHER""#
     XCTAssertNil(responder.expectedStatus)
   }
   
@@ -63,35 +69,21 @@ final class CGIResponderTests: XCTestCase {
     var responder = CGIResponder()
     responder.header.insert(HTTPHeaderField.lastModified(date_base))
     XCTAssertNil(responder.expectedStatus)
-    
-    responder._client = Environment.virtual(
-      variables: .virtual([HTTP_IF_UNMODIFIED_SINCE: date_string(date_old)])
-    ).client
+
+    responder._resetEnvironment()
+    responder._environment.variables[HTTP_IF_UNMODIFIED_SINCE] = date_string(date_old)
     XCTAssertEqual(responder.expectedStatus, .preconditionFailed)
-    
-    responder._client = Environment.virtual(
-      variables: .virtual([HTTP_IF_UNMODIFIED_SINCE:date_string(date_base)])
-    ).client
+    responder._environment.variables[HTTP_IF_UNMODIFIED_SINCE] = date_string(date_base)
     XCTAssertEqual(responder.expectedStatus, nil)
-    
-    responder._client = Environment.virtual(
-      variables: .virtual([HTTP_IF_UNMODIFIED_SINCE:date_string(date_new)])
-    ).client
+    responder._environment.variables[HTTP_IF_UNMODIFIED_SINCE] = date_string(date_new)
     XCTAssertEqual(responder.expectedStatus, nil)
-    
-    responder._client = Environment.virtual(
-      variables: .virtual([HTTP_IF_MODIFIED_SINCE:date_string(date_old)])
-    ).client
+
+    responder._resetEnvironment()
+    responder._environment.variables[HTTP_IF_MODIFIED_SINCE] = date_string(date_old)
     XCTAssertEqual(responder.expectedStatus, nil)
-    
-    responder._client = Environment.virtual(
-      variables: .virtual([HTTP_IF_MODIFIED_SINCE:date_string(date_base)])
-    ).client
+    responder._environment.variables[HTTP_IF_MODIFIED_SINCE] = date_string(date_base)
     XCTAssertEqual(responder.expectedStatus, .notModified)
-    
-    responder._client = Environment.virtual(
-      variables: .virtual([HTTP_IF_MODIFIED_SINCE:date_string(date_new)])
-    ).client
+    responder._environment.variables[HTTP_IF_MODIFIED_SINCE] = date_string(date_new)
     XCTAssertEqual(responder.expectedStatus, .notModified)
   }
   
