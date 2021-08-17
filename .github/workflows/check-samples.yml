@@ -12,19 +12,16 @@ on:
     paths:
       - '**/*.swift'
       - '.github/workflows/*.yml'
-defaults:
-  run:
-    shell: bash
-    working-directory: ./Samples
 jobs:
   test:
+    defaults:
+      run:
+        working-directory: ./Samples
     strategy:
       matrix:
         os:
-          - ubuntu-latest
-          # Disable macOS until Big Sur is available.
-          # https://github.com/actions/virtual-environments/issues/2486
-          # - macOS-latest
+          - ubuntu-20.04
+          - macOS-11
         swift-compat-ver:
           - '5'
           # - '4.2'
@@ -43,24 +40,24 @@ jobs:
           build-${{ github.workspace }}-
     - uses: YOCKOW/Action-setup-swift@main
       with:
-        swift-version: '5.4'
+        swift-version: '5.4.2'
     # DEBUG mode
-    - name: Try to build products with debug mode.
-      id: debug_build
-      run: swift build --configuration debug -Xswiftc -swift-version -Xswiftc ${{ matrix.swift-compat-ver }}
-      continue-on-error: true
-    - name: Clean debug build directory if necessary
-      if: steps.debug_build.outcome == 'failure'
-      run: rm -rf $(cd .build/debug && pwd -P)
     - name: Test with debug mode.
+      id: debug_test
       run: swift test --configuration debug -Xswiftc -swift-version -Xswiftc ${{ matrix.swift-compat-ver }}
-    # RELEASE mode
-    - name: Try to build products with release mode.
-      id: release_build
-      run: swift build --configuration release -Xswiftc -enable-testing -Xswiftc -swift-version -Xswiftc ${{ matrix.swift-compat-ver }}
       continue-on-error: true
-    - name: Clean release build directory if necessary
-      if: steps.release_build.outcome == 'failure'
-      run: rm -rf $(cd .build/release && pwd -P)
+    - name: Retry test with debug mode if necessary
+      if: steps.debug_test.outcome == 'failure'
+      run: |
+        rm -rf $(cd .build/debug && pwd -P)
+        swift test --configuration debug -Xswiftc -swift-version -Xswiftc ${{ matrix.swift-compat-ver }}
+    # RELEASE mode
     - name: Test with release mode.
+      id: release_test
       run: swift test --configuration release -Xswiftc -enable-testing -Xswiftc -swift-version -Xswiftc ${{ matrix.swift-compat-ver }}
+      continue-on-error: true
+    - name: Retry test with release mode if necessary
+      if: steps.release_test.outcome == 'failure'
+      run: |
+        rm -rf $(cd .build/release && pwd -P)
+        swift test --configuration release -Xswiftc -swift-version -Xswiftc ${{ matrix.swift-compat-ver }}
