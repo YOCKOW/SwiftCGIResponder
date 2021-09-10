@@ -84,7 +84,9 @@ public final class Environment {
   internal let standardInput: AnyFileHandle
   internal let standardOutput: AnyFileHandle
   internal let standardError: AnyFileHandle
-  internal let variables: Variables
+
+  /// Current environment variables.
+  public let variables: Variables
 
   private init<STDIN, STDOUT, STDERR>(
     standardInput: STDIN,
