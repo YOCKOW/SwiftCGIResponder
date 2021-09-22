@@ -40,7 +40,7 @@ jobs:
           build-${{ github.workspace }}-
     - uses: YOCKOW/Action-setup-swift@main
       with:
-        swift-version: '5.4.2'
+        swift-version: '5.5'
     # DEBUG mode
     - name: Test with debug mode.
       id: debug_test
