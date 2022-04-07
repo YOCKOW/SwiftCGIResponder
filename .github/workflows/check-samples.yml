@@ -16,7 +16,7 @@ jobs:
   test:
     defaults:
       run:
-        working-directory: ./Samples
+        working-directory: './Samples'
     strategy:
       matrix:
         os:
@@ -30,7 +30,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Use a cache for ".build" directory.
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: .build
         key: build-${{ github.workspace }}-${{ runner.os }}-${{ matrix.swift-compat-ver }}-${{ hashFiles('**/*.swift') }}
@@ -40,7 +40,7 @@ jobs:
           build-${{ github.workspace }}-
     - uses: YOCKOW/Action-setup-swift@main
       with:
-        swift-version: '5.5'
+        swift-version: '5.6'
     # DEBUG mode
     - name: Test with debug mode.
       id: debug_test
