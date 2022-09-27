@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="986pt" height="493pt" viewBox="0.00 0.00 986.35 492.70" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg xmlns="http://www.w3.org/2000/svg" width="987pt" height="493pt" viewBox="0.00 0.00 987.06 492.70" xmlns:xlink="http://www.w3.org/1999/xlink">
 <style>
 a.external_repository_anchor {
   fill: #0366d6;
@@ -6,7 +6,7 @@ a.external_repository_anchor {
 }
 </style><g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 488.7)">
 <title>CGIResponderDependenciesGraph</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-488.7 982.35,-488.7 982.35,4 -4,4" />
+<polygon fill="white" stroke="none" points="-4,4 -4,-488.7 983.06,-488.7 983.06,4 -4,4" />
 
 <g id="node1" class="node">
 <title>BonaFideCharacterSet</title>
@@ -37,8 +37,8 @@ a.external_repository_anchor {
 
 <g id="edge2" class="edge">
 <title>BonaFideCharacterSet-&gt;Ranges</title>
-<path fill="none" stroke="black" d="M168.05,-179.18C159.82,-153.4 152.72,-114.41 173.33,-89.74 202.14,-55.25 328.58,-64.03 372.33,-53.74 386.44,-50.42 401.65,-46.23 415.43,-42.2" />
-<polygon fill="black" stroke="black" points="416.59,-45.51 425.18,-39.3 414.6,-38.8 416.59,-45.51" />
+<path fill="none" stroke="black" d="M168.05,-179.17C159.82,-153.4 152.71,-114.4 173.33,-89.74 202.29,-55.09 329.38,-64.12 373.33,-53.74 387.29,-50.44 402.33,-46.26 415.96,-42.22" />
+<polygon fill="black" stroke="black" points="417.03,-45.56 425.59,-39.33 415.01,-38.85 417.03,-45.56" />
 </g>
 
 <g id="node2" class="node">
@@ -64,7 +64,7 @@ a.external_repository_anchor {
 <title>NetworkGear</title>
 <ellipse fill="none" stroke="black" cx="308.33" cy="-296.09" rx="63.78" ry="26.74" />
 <text text-anchor="middle" x="308.33" y="-299.89" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftNetworkGear.git" xlink:href="https://github.com/YOCKOW/SwiftNetworkGear.git" class="external_repository_anchor">NetworkGear</a></text>
-<text text-anchor="middle" x="308.33" y="-284.89" font-family="monospace" font-size="12px">@0.14.6</text>
+<text text-anchor="middle" x="308.33" y="-284.89" font-family="monospace" font-size="12px">@0.15.1</text>
 </g>
 
 <g id="edge4" class="edge">
@@ -77,7 +77,7 @@ a.external_repository_anchor {
 <title>TemporaryFile</title>
 <ellipse fill="none" stroke="black" cx="799.33" cy="-296.09" rx="69.09" ry="26.74" />
 <text text-anchor="middle" x="799.33" y="-299.89" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftTemporaryFile.git" xlink:href="https://github.com/YOCKOW/SwiftTemporaryFile.git" class="external_repository_anchor">TemporaryFile</a></text>
-<text text-anchor="middle" x="799.33" y="-284.89" font-family="monospace" font-size="12px">@4.0.4</text>
+<text text-anchor="middle" x="799.33" y="-284.89" font-family="monospace" font-size="12px">@4.0.6</text>
 </g>
 
 <g id="edge5" class="edge">
@@ -88,7 +88,7 @@ a.external_repository_anchor {
 
 <g id="node10" class="node">
 <title>TimeSpecification</title>
-<ellipse fill="none" stroke="black" cx="896.33" cy="-26.87" rx="82.05" ry="26.74" />
+<ellipse fill="none" stroke="black" cx="896.33" cy="-26.87" rx="82.96" ry="26.74" />
 <text text-anchor="middle" x="896.33" y="-30.67" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftTimeSpecification.git" xlink:href="https://github.com/YOCKOW/SwiftTimeSpecification.git" class="external_repository_anchor">TimeSpecification</a></text>
 <text text-anchor="middle" x="896.33" y="-15.67" font-family="monospace" font-size="12px">@3.3.0</text>
 </g>
@@ -103,7 +103,7 @@ a.external_repository_anchor {
 <title>XHTML</title>
 <ellipse fill="none" stroke="black" cx="438.33" cy="-385.83" rx="45.92" ry="26.74" />
 <text text-anchor="middle" x="438.33" y="-389.63" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftXHTML.git" xlink:href="https://github.com/YOCKOW/SwiftXHTML.git" class="external_repository_anchor">XHTML</a></text>
-<text text-anchor="middle" x="438.33" y="-374.63" font-family="monospace" font-size="12px">@2.4.0</text>
+<text text-anchor="middle" x="438.33" y="-374.63" font-family="monospace" font-size="12px">@2.5.3</text>
 </g>
 
 <g id="edge7" class="edge">
@@ -116,7 +116,7 @@ a.external_repository_anchor {
 <title>yExtensions</title>
 <ellipse fill="none" stroke="black" cx="551.33" cy="-206.35" rx="58.88" ry="26.74" />
 <text text-anchor="middle" x="551.33" y="-210.15" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/ySwiftExtensions.git" xlink:href="https://github.com/YOCKOW/ySwiftExtensions.git" class="external_repository_anchor">yExtensions</a></text>
-<text text-anchor="middle" x="551.33" y="-195.15" font-family="monospace" font-size="12px">@1.7.4</text>
+<text text-anchor="middle" x="551.33" y="-195.15" font-family="monospace" font-size="12px">@1.7.5</text>
 </g>
 
 <g id="edge8" class="edge">
@@ -139,9 +139,9 @@ a.external_repository_anchor {
 
 <g id="node6" class="node">
 <title>PublicSuffix</title>
-<ellipse fill="none" stroke="black" cx="304.33" cy="-26.87" rx="59.29" ry="26.74" />
+<ellipse fill="none" stroke="black" cx="304.33" cy="-26.87" rx="60.21" ry="26.74" />
 <text text-anchor="middle" x="304.33" y="-30.67" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftPublicSuffix.git" xlink:href="https://github.com/YOCKOW/SwiftPublicSuffix.git" class="external_repository_anchor">PublicSuffix</a></text>
-<text text-anchor="middle" x="304.33" y="-15.67" font-family="monospace" font-size="12px">@2.0.2</text>
+<text text-anchor="middle" x="304.33" y="-15.67" font-family="monospace" font-size="12px">@2.1.0</text>
 </g>
 
 <g id="edge11" class="edge">
@@ -160,7 +160,7 @@ a.external_repository_anchor {
 <title>UnicodeSupplement</title>
 <ellipse fill="none" stroke="black" cx="461.33" cy="-116.61" rx="90.52" ry="26.74" />
 <text text-anchor="middle" x="461.33" y="-120.41" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftUnicodeSupplement.git" xlink:href="https://github.com/YOCKOW/SwiftUnicodeSupplement.git" class="external_repository_anchor">UnicodeSupplement</a></text>
-<text text-anchor="middle" x="461.33" y="-105.41" font-family="monospace" font-size="12px">@1.0.1</text>
+<text text-anchor="middle" x="461.33" y="-105.41" font-family="monospace" font-size="12px">@1.2.0</text>
 </g>
 
 <g id="edge13" class="edge">
@@ -185,7 +185,7 @@ a.external_repository_anchor {
 <title>StringComposition</title>
 <ellipse fill="none" stroke="black" cx="551.33" cy="-296.09" rx="84.71" ry="26.74" />
 <text text-anchor="middle" x="551.33" y="-299.89" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftStringComposition.git" xlink:href="https://github.com/YOCKOW/SwiftStringComposition.git" class="external_repository_anchor">StringComposition</a></text>
-<text text-anchor="middle" x="551.33" y="-284.89" font-family="monospace" font-size="12px">@2.0.2</text>
+<text text-anchor="middle" x="551.33" y="-284.89" font-family="monospace" font-size="12px">@2.0.4</text>
 </g>
 
 <g id="edge16" class="edge">
