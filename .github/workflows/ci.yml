@@ -21,16 +21,16 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
-          - macOS-11
+          - macOS-12
         swift-compat-ver:
           - '5'
           # - '4.2'
           # - '4'
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use a cache for ".build" directory.
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: .build
         key: build-${{ github.workspace }}-${{ runner.os }}-${{ matrix.swift-compat-ver }}-${{ hashFiles('**/*.swift') }}
@@ -40,7 +40,7 @@ jobs:
           build-${{ github.workspace }}-
     - uses: YOCKOW/Action-setup-swift@main
       with:
-        swift-version: '5.6'
+        swift-version: '5.7'
     # DEBUG mode
     - name: Test with debug mode.
       id: debug_test
