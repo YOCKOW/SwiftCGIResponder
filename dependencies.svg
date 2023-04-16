@@ -24,8 +24,8 @@ a.external_repository_anchor {
 
 <g id="edge1" class="edge">
 <title>BonaFideCharacterSet-&gt;Predicate</title>
-<path fill="none" stroke="black" d="M193.35,-179.5C198.52,-170.61 204.38,-160.53 209.85,-151.12" />
-<polygon fill="black" stroke="black" points="212.93,-152.78 214.93,-142.37 206.88,-149.26 212.93,-152.78" />
+<path fill="none" stroke="black" d="M193.35,-179.5C198.41,-170.8 204.14,-160.95 209.51,-151.71" />
+<polygon fill="black" stroke="black" points="212.93,-153.78 214.93,-143.37 206.88,-150.26 212.93,-153.78" />
 </g>
 
 <g id="node7" class="node">
@@ -37,8 +37,8 @@ a.external_repository_anchor {
 
 <g id="edge2" class="edge">
 <title>BonaFideCharacterSet-&gt;Ranges</title>
-<path fill="none" stroke="black" d="M168.05,-179.17C159.82,-153.4 152.71,-114.4 173.33,-89.74 202.29,-55.09 329.38,-64.12 373.33,-53.74 387.29,-50.44 402.33,-46.26 415.96,-42.22" />
-<polygon fill="black" stroke="black" points="417.03,-45.56 425.59,-39.33 415.01,-38.85 417.03,-45.56" />
+<path fill="none" stroke="black" d="M168.2,-179.66C159.91,-153.88 152.58,-114.55 173.33,-89.74 202.29,-55.09 329.38,-64.12 373.33,-53.74 387.02,-50.5 401.75,-46.42 415.16,-42.46" />
+<polygon fill="black" stroke="black" points="416.02,-45.55 424.59,-39.33 414.01,-38.85 416.02,-45.55" />
 </g>
 
 <g id="node2" class="node">
@@ -56,21 +56,21 @@ a.external_repository_anchor {
 
 <g id="edge3" class="edge">
 <title>CGIResponder-&gt;BonaFideCharacterSet</title>
-<path fill="none" stroke="black" d="M502.16,-463.1C421.08,-455.8 261.59,-428.11 194.33,-322.96 179.3,-299.47 175.8,-267.82 175.79,-243.58" />
-<polygon fill="black" stroke="black" points="179.29,-243.41 175.98,-233.35 172.29,-243.28 179.29,-243.41" />
+<path fill="none" stroke="black" d="M501.84,-463.07C420.65,-455.73 261.5,-427.97 194.33,-322.96 179.43,-299.68 175.87,-268.39 175.79,-244.23" />
+<polygon fill="black" stroke="black" points="179.3,-244.41 175.98,-234.35 172.3,-244.29 179.3,-244.41" />
 </g>
 
 <g id="node4" class="node">
 <title>NetworkGear</title>
 <ellipse fill="none" stroke="black" cx="308.33" cy="-296.09" rx="63.78" ry="26.74" />
 <text text-anchor="middle" x="308.33" y="-299.89" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftNetworkGear.git" xlink:href="https://github.com/YOCKOW/SwiftNetworkGear.git" class="external_repository_anchor">NetworkGear</a></text>
-<text text-anchor="middle" x="308.33" y="-284.89" font-family="monospace" font-size="12px">@0.15.1</text>
+<text text-anchor="middle" x="308.33" y="-284.89" font-family="monospace" font-size="12px">@0.15.2</text>
 </g>
 
 <g id="edge4" class="edge">
 <title>CGIResponder-&gt;NetworkGear</title>
-<path fill="none" stroke="black" d="M501.99,-459.25C466.13,-452.52 418.01,-439.09 383.33,-412.7 355.86,-391.8 335.53,-357.73 323.01,-331.98" />
-<polygon fill="black" stroke="black" points="326.18,-330.48 318.76,-322.91 319.84,-333.45 326.18,-330.48" />
+<path fill="none" stroke="black" d="M501.99,-459.25C466.13,-452.52 418.01,-439.09 383.33,-412.7 356.1,-391.98 335.88,-358.33 323.35,-332.66" />
+<polygon fill="black" stroke="black" points="326.18,-331.47 318.76,-323.91 319.85,-334.45 326.18,-331.47" />
 </g>
 
 <g id="node9" class="node">
@@ -82,8 +82,8 @@ a.external_repository_anchor {
 
 <g id="edge5" class="edge">
 <title>CGIResponder-&gt;TemporaryFile</title>
-<path fill="none" stroke="black" d="M600.45,-450C624.92,-441.01 654.33,-428.39 678.33,-412.7 714.03,-389.36 748.58,-354.77 771.55,-329.51" />
-<polygon fill="black" stroke="black" points="774.22,-331.77 778.3,-321.99 769.02,-327.09 774.22,-331.77" />
+<path fill="none" stroke="black" d="M600.76,-449.89C625.17,-440.91 654.43,-428.32 678.33,-412.7 713.72,-389.56 747.98,-355.36 770.96,-330.16" />
+<polygon fill="black" stroke="black" points="773.22,-332.77 777.3,-322.99 768.01,-328.09 773.22,-332.77" />
 </g>
 
 <g id="node10" class="node">
@@ -95,46 +95,46 @@ a.external_repository_anchor {
 
 <g id="edge6" class="edge">
 <title>CGIResponder-&gt;TimeSpecification</title>
-<path fill="none" stroke="black" d="M600.39,-463.71C695.64,-456.95 896.33,-427.26 896.33,-297.09 896.33,-297.09 896.33,-297.09 896.33,-205.35 896.33,-156.62 896.33,-100.37 896.33,-64.48" />
-<polygon fill="black" stroke="black" points="899.83,-64.03 896.33,-54.03 892.83,-64.03 899.83,-64.03" />
+<path fill="none" stroke="black" d="M600.76,-463.69C696.15,-456.87 896.33,-427.09 896.33,-297.09 896.33,-297.09 896.33,-297.09 896.33,-205.35 896.33,-156.83 896.33,-100.86 896.33,-64.95" />
+<polygon fill="black" stroke="black" points="899.83,-65.03 896.33,-55.03 892.83,-65.03 899.83,-65.03" />
 </g>
 
 <g id="node12" class="node">
 <title>XHTML</title>
 <ellipse fill="none" stroke="black" cx="438.33" cy="-385.83" rx="45.92" ry="26.74" />
 <text text-anchor="middle" x="438.33" y="-389.63" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/SwiftXHTML.git" xlink:href="https://github.com/YOCKOW/SwiftXHTML.git" class="external_repository_anchor">XHTML</a></text>
-<text text-anchor="middle" x="438.33" y="-374.63" font-family="monospace" font-size="12px">@2.5.3</text>
+<text text-anchor="middle" x="438.33" y="-374.63" font-family="monospace" font-size="12px">@2.5.4</text>
 </g>
 
 <g id="edge7" class="edge">
 <title>CGIResponder-&gt;XHTML</title>
-<path fill="none" stroke="black" d="M526.81,-448.59C511.88,-438.17 492.52,-424.66 475.71,-412.93" />
-<polygon fill="black" stroke="black" points="477.4,-409.83 467.19,-406.98 473.39,-415.57 477.4,-409.83" />
+<path fill="none" stroke="black" d="M526.53,-448.39C511.73,-438.06 492.64,-424.74 476,-413.13" />
+<polygon fill="black" stroke="black" points="478.26,-409.74 468.06,-406.88 474.25,-415.48 478.26,-409.74" />
 </g>
 
 <g id="node13" class="node">
 <title>yExtensions</title>
 <ellipse fill="none" stroke="black" cx="551.33" cy="-206.35" rx="58.88" ry="26.74" />
 <text text-anchor="middle" x="551.33" y="-210.15" font-family="monospace" font-size="12px"><a href="https://github.com/YOCKOW/ySwiftExtensions.git" xlink:href="https://github.com/YOCKOW/ySwiftExtensions.git" class="external_repository_anchor">yExtensions</a></text>
-<text text-anchor="middle" x="551.33" y="-195.15" font-family="monospace" font-size="12px">@1.7.5</text>
+<text text-anchor="middle" x="551.33" y="-195.15" font-family="monospace" font-size="12px">@1.7.6</text>
 </g>
 
 <g id="edge8" class="edge">
 <title>CGIResponder-&gt;yExtensions</title>
-<path fill="none" stroke="black" d="M567.58,-448.54C590.2,-423.35 630.08,-373.84 645.33,-322.96 652.18,-300.08 656.66,-290.25 645.33,-269.22 636.18,-252.24 620.1,-239.16 603.81,-229.49" />
-<polygon fill="black" stroke="black" points="605.22,-226.27 594.78,-224.47 601.82,-232.39 605.22,-226.27" />
+<path fill="none" stroke="black" d="M567.58,-448.54C590.2,-423.35 630.08,-373.84 645.33,-322.96 652.18,-300.08 656.66,-290.25 645.33,-269.22 636.26,-252.4 620.4,-239.4 604.26,-229.76" />
+<polygon fill="black" stroke="black" points="606.22,-226.28 595.78,-224.47 602.8,-232.4 606.22,-226.28" />
 </g>
 
 <g id="edge9" class="edge">
 <title>NetworkGear-&gt;BonaFideCharacterSet</title>
-<path fill="none" stroke="black" d="M275.52,-272.95C259.49,-262.13 239.96,-248.95 222.63,-237.25" />
-<polygon fill="black" stroke="black" points="224.57,-234.34 214.32,-231.65 220.65,-240.14 224.57,-234.34" />
+<path fill="none" stroke="black" d="M275.52,-272.95C259.64,-262.23 240.32,-249.19 223.1,-237.57" />
+<polygon fill="black" stroke="black" points="225.57,-234.34 215.32,-231.65 221.65,-240.14 225.57,-234.34" />
 </g>
 
 <g id="edge10" class="edge">
 <title>NetworkGear-&gt;Bootstring</title>
-<path fill="none" stroke="black" d="M248.1,-287.29C185.64,-277.88 94,-259.93 71.33,-233.22 31.24,-185.99 36.66,-108.8 44.38,-63.72" />
-<polygon fill="black" stroke="black" points="47.84,-64.27 46.21,-53.8 40.96,-63 47.84,-64.27" />
+<path fill="none" stroke="black" d="M247.81,-287.25C185.37,-277.83 93.96,-259.88 71.33,-233.22 31.49,-186.29 36.59,-109.78 44.24,-64.58" />
+<polygon fill="black" stroke="black" points="47.85,-65.27 46.21,-54.8 40.97,-64.01 47.85,-65.27" />
 </g>
 
 <g id="node6" class="node">
@@ -146,14 +146,14 @@ a.external_repository_anchor {
 
 <g id="edge11" class="edge">
 <title>NetworkGear-&gt;PublicSuffix</title>
-<path fill="none" stroke="black" d="M307.94,-268.98C307.22,-221.09 305.69,-119.1 304.87,-64.37" />
-<polygon fill="black" stroke="black" points="308.37,-64.03 304.72,-54.08 301.37,-64.14 308.37,-64.03" />
+<path fill="none" stroke="black" d="M307.94,-268.98C307.22,-221.29 305.7,-119.94 304.88,-65.06" />
+<polygon fill="black" stroke="black" points="308.37,-65.03 304.72,-55.08 301.37,-65.14 308.37,-65.03" />
 </g>
 
 <g id="edge12" class="edge">
 <title>NetworkGear-&gt;Ranges</title>
-<path fill="none" stroke="black" d="M313.93,-268.93C325.24,-216.92 350.63,-104.27 361.33,-89.74 375.54,-70.44 397.75,-55.83 417.63,-45.67" />
-<polygon fill="black" stroke="black" points="419.4,-48.7 426.86,-41.17 416.34,-42.4 419.4,-48.7" />
+<path fill="none" stroke="black" d="M313.85,-269.33C325.11,-217.5 350.6,-104.31 361.33,-89.74 375.41,-70.61 397.35,-56.09 417.09,-45.94" />
+<polygon fill="black" stroke="black" points="418.41,-48.7 425.86,-41.17 415.34,-42.41 418.41,-48.7" />
 </g>
 
 <g id="node11" class="node">
@@ -165,20 +165,20 @@ a.external_repository_anchor {
 
 <g id="edge13" class="edge">
 <title>NetworkGear-&gt;UnicodeSupplement</title>
-<path fill="none" stroke="black" d="M328.19,-270.43C347.36,-246.81 377.36,-210.31 404.33,-179.48 412.74,-169.86 422.06,-159.59 430.69,-150.24" />
-<polygon fill="black" stroke="black" points="433.51,-152.34 437.73,-142.63 428.37,-147.59 433.51,-152.34" />
+<path fill="none" stroke="black" d="M328.19,-270.43C347.36,-246.81 377.36,-210.31 404.33,-179.48 412.66,-169.96 421.88,-159.8 430.43,-150.52" />
+<polygon fill="black" stroke="black" points="432.51,-153.34 436.73,-143.63 427.37,-148.59 432.51,-153.34" />
 </g>
 
 <g id="edge14" class="edge">
 <title>NetworkGear-&gt;yExtensions</title>
-<path fill="none" stroke="black" d="M355.76,-277.96C396.12,-263.39 454.12,-242.45 496.47,-227.16" />
-<polygon fill="black" stroke="black" points="497.85,-230.38 506.07,-223.69 495.48,-223.79 497.85,-230.38" />
+<path fill="none" stroke="black" d="M356.04,-277.86C396.14,-263.38 453.49,-242.68 495.67,-227.45" />
+<polygon fill="black" stroke="black" points="496.56,-230.49 504.77,-223.8 494.18,-223.9 496.56,-230.49" />
 </g>
 
 <g id="edge15" class="edge">
 <title>Predicate-&gt;Ranges</title>
-<path fill="none" stroke="black" d="M268.16,-100.92C309.41,-85.32 374.5,-60.71 417.54,-44.43" />
-<polygon fill="black" stroke="black" points="418.8,-47.7 426.91,-40.88 416.32,-41.15 418.8,-47.7" />
+<path fill="none" stroke="black" d="M268.16,-100.92C309.15,-85.42 373.68,-61.02 416.73,-44.74" />
+<polygon fill="black" stroke="black" points="417.8,-47.7 425.91,-40.88 415.32,-41.15 417.8,-47.7" />
 </g>
 
 <g id="node8" class="node">
@@ -190,74 +190,74 @@ a.external_repository_anchor {
 
 <g id="edge16" class="edge">
 <title>StringComposition-&gt;yExtensions</title>
-<path fill="none" stroke="black" d="M551.33,-268.77C551.33,-260.8 551.33,-251.91 551.33,-243.42" />
-<polygon fill="black" stroke="black" points="554.83,-243.35 551.33,-233.35 547.83,-243.35 554.83,-243.35" />
+<path fill="none" stroke="black" d="M551.33,-269.24C551.33,-261.37 551.33,-252.56 551.33,-244.11" />
+<polygon fill="black" stroke="black" points="554.83,-244.32 551.33,-234.32 547.83,-244.32 554.83,-244.32" />
 </g>
 
 <g id="edge17" class="edge">
 <title>TemporaryFile-&gt;Ranges</title>
-<path fill="none" stroke="black" d="M796.4,-268.97C790.05,-225.12 770.89,-136.87 716.33,-89.74 685.85,-63.42 575.85,-43.95 510.7,-34.41" />
-<polygon fill="black" stroke="black" points="511.05,-30.93 500.65,-32.97 510.05,-37.86 511.05,-30.93" />
+<path fill="none" stroke="black" d="M796.4,-268.97C790.05,-225.12 770.89,-136.87 716.33,-89.74 685.97,-63.53 576.76,-44.11 511.51,-34.53" />
+<polygon fill="black" stroke="black" points="512.05,-30.93 501.65,-32.97 511.05,-37.86 512.05,-30.93" />
 </g>
 
 <g id="edge18" class="edge">
 <title>TemporaryFile-&gt;yExtensions</title>
-<path fill="none" stroke="black" d="M749.44,-277.44C708.1,-262.82 649.41,-242.05 606.64,-226.92" />
-<polygon fill="black" stroke="black" points="607.55,-223.53 596.96,-223.49 605.22,-230.13 607.55,-223.53" />
+<path fill="none" stroke="black" d="M749.14,-277.33C708.08,-262.81 650.05,-242.28 607.46,-227.21" />
+<polygon fill="black" stroke="black" points="608.85,-223.64 598.26,-223.6 606.52,-230.23 608.85,-223.64" />
 </g>
 
 <g id="edge19" class="edge">
 <title>UnicodeSupplement-&gt;Ranges</title>
-<path fill="none" stroke="black" d="M461.33,-89.29C461.33,-81.32 461.33,-72.43 461.33,-63.94" />
-<polygon fill="black" stroke="black" points="464.83,-63.87 461.33,-53.87 457.83,-63.87 464.83,-63.87" />
+<path fill="none" stroke="black" d="M461.33,-89.76C461.33,-81.89 461.33,-73.08 461.33,-64.63" />
+<polygon fill="black" stroke="black" points="464.83,-64.84 461.33,-54.84 457.83,-64.84 464.83,-64.84" />
 </g>
 
 <g id="edge20" class="edge">
 <title>XHTML-&gt;BonaFideCharacterSet</title>
-<path fill="none" stroke="black" d="M392.63,-381.3C347.89,-375.66 280.11,-361.01 235.33,-322.96 210.94,-302.24 196.01,-268.59 187.58,-242.92" />
-<polygon fill="black" stroke="black" points="190.86,-241.69 184.56,-233.17 184.18,-243.76 190.86,-241.69" />
+<path fill="none" stroke="black" d="M392.63,-381.3C347.89,-375.66 280.11,-361.01 235.33,-322.96 211.15,-302.42 196.27,-269.18 187.81,-243.6" />
+<polygon fill="black" stroke="black" points="190.87,-242.68 184.56,-234.17 184.19,-244.76 190.87,-242.68" />
 </g>
 
 <g id="edge21" class="edge">
 <title>XHTML-&gt;NetworkGear</title>
-<path fill="none" stroke="black" d="M408.83,-364.92C391.34,-353.12 368.9,-337.98 349.67,-324.99" />
-<polygon fill="black" stroke="black" points="351.61,-322.08 341.37,-319.39 347.7,-327.89 351.61,-322.08" />
+<path fill="none" stroke="black" d="M408.83,-364.92C391.57,-353.28 369.51,-338.38 350.45,-325.52" />
+<polygon fill="black" stroke="black" points="352.61,-322.08 342.37,-319.39 348.7,-327.89 352.61,-322.08" />
 </g>
 
 <g id="edge22" class="edge">
 <title>XHTML-&gt;Ranges</title>
-<path fill="none" stroke="black" d="M482.44,-377.91C537.21,-368.31 625.83,-349.13 645.33,-322.96 709.6,-236.66 653.72,-168.42 580.33,-89.74 560.34,-68.32 531.26,-53.01 506.85,-42.98" />
-<polygon fill="black" stroke="black" points="508,-39.67 497.41,-39.26 505.43,-46.18 508,-39.67" />
+<path fill="none" stroke="black" d="M482.44,-377.91C537.21,-368.31 625.83,-349.13 645.33,-322.96 709.6,-236.66 653.72,-168.42 580.33,-89.74 560.52,-68.51 531.78,-53.28 507.5,-43.25" />
+<polygon fill="black" stroke="black" points="509,-39.68 498.41,-39.26 506.43,-46.19 509,-39.68" />
 </g>
 
 <g id="edge23" class="edge">
 <title>XHTML-&gt;StringComposition</title>
 <path fill="none" stroke="black" d="M465.39,-363.81C479.28,-353.04 496.45,-339.7 511.78,-327.79" />
-<polygon fill="black" stroke="black" points="514.33,-330.25 520.08,-321.35 510.04,-324.72 514.33,-330.25" />
+<polygon fill="black" stroke="black" points="513.33,-330.25 519.08,-321.35 509.04,-324.72 513.33,-330.25" />
 </g>
 
 <g id="edge24" class="edge">
 <title>XHTML-&gt;UnicodeSupplement</title>
-<path fill="none" stroke="black" d="M436.79,-358.95C436.21,-347.87 435.61,-334.79 435.33,-322.96 434.75,-299.08 433.3,-293.02 435.33,-269.22 438.72,-229.35 447.05,-184.22 453.37,-153.64" />
-<polygon fill="black" stroke="black" points="456.88,-153.97 455.51,-143.46 450.03,-152.52 456.88,-153.97" />
+<path fill="none" stroke="black" d="M436.78,-358.65C436.2,-347.63 435.61,-334.68 435.33,-322.96 434.75,-299.08 433.3,-293.02 435.33,-269.22 438.69,-229.64 446.93,-184.88 453.23,-154.31" />
+<polygon fill="black" stroke="black" points="456.82,-155.24 455.46,-144.73 449.97,-153.8 456.82,-155.24" />
 </g>
 
 <g id="edge25" class="edge">
 <title>XHTML-&gt;yExtensions</title>
-<path fill="none" stroke="black" d="M436.85,-358.83C436.69,-333.9 439.83,-296.18 457.33,-269.22 467.83,-253.04 484.21,-240.14 500.37,-230.4" />
-<polygon fill="black" stroke="black" points="502.34,-233.3 509.29,-225.31 498.87,-227.22 502.34,-233.3" />
+<path fill="none" stroke="black" d="M436.85,-358.83C436.69,-333.9 439.83,-296.18 457.33,-269.22 467.73,-253.19 483.91,-240.38 499.92,-230.67" />
+<polygon fill="black" stroke="black" points="501.35,-233.31 508.29,-225.31 497.87,-227.24 501.35,-233.31" />
 </g>
 
 <g id="edge26" class="edge">
 <title>yExtensions-&gt;Ranges</title>
-<path fill="none" stroke="black" d="M561.41,-179.72C569.38,-155.07 576.82,-117.55 561.33,-89.74 549.52,-68.55 527.13,-53.71 506.53,-43.88" />
-<polygon fill="black" stroke="black" points="507.79,-40.61 497.24,-39.71 504.93,-46.99 507.79,-40.61" />
+<path fill="none" stroke="black" d="M561.41,-179.72C569.38,-155.07 576.82,-117.55 561.33,-89.74 549.54,-68.59 527.21,-53.76 506.64,-43.93" />
+<polygon fill="black" stroke="black" points="508.3,-40.39 497.74,-39.5 505.44,-46.78 508.3,-40.39" />
 </g>
 
 <g id="edge27" class="edge">
 <title>yExtensions-&gt;UnicodeSupplement</title>
-<path fill="none" stroke="black" d="M527.21,-181.84C517.05,-171.94 505.08,-160.26 494.14,-149.6" />
-<polygon fill="black" stroke="black" points="496.37,-146.89 486.77,-142.42 491.49,-151.9 496.37,-146.89" />
+<path fill="none" stroke="black" d="M527.21,-181.84C517.24,-172.12 505.51,-160.68 494.73,-150.17" />
+<polygon fill="black" stroke="black" points="497.69,-148.2 488.09,-143.73 492.81,-153.21 497.69,-148.2" />
 </g>
 </g>
 </svg>
