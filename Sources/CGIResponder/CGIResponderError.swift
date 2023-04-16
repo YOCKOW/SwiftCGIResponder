@@ -1,9 +1,11 @@
 /* *************************************************************************************************
  CGIResponderError.swift
-   © 2017-2018, 2020 YOCKOW.
+   © 2017-2018,2020,2023 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
+
+import Foundation
 
 /// Errors related to `CGIResponder`
 public enum CGIResponderError: CGIError, Equatable {
