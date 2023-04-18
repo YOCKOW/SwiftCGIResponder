@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  Environment.swift
-   © 2017-2021 YOCKOW.
+   © 2017-2021,2023 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -252,12 +252,20 @@ extension Client.Request {
 
     var result:[HTTPCookieItem] = []
 
-    let pairStrings = cookiesString.split(separator: ";").map {
-      $0.trimmingUnicodeScalars(in: .whitespaces)
+
+    func __trim(_ string: Substring) -> Substring {
+      let isWhitespaceOrNewline = { (character: Character) -> Bool in character.isWhitespace || character.isNewline  }
+      guard let firstIndex = string.firstIndex(where: { !isWhitespaceOrNewline($0) }),
+            let lastIndex = string.lastIndex(where: { !isWhitespaceOrNewline($0) }) else {
+        return ""
+      }
+      return string[firstIndex...lastIndex]
     }
+
+    let pairStrings = cookiesString.split(separator: ";").map(__trim)
     for pairString in pairStrings {
       guard let item = HTTPCookieItem(
-        string: pairString,
+        string: String(pairString),
         removingPercentEncoding: removingPercentEncoding
       ) else {
         return nil
