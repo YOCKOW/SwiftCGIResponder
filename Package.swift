@@ -20,7 +20,7 @@ let package = Package(
     .package(url:"https://github.com/YOCKOW/SwiftNetworkGear.git", "0.16.0"..<"2.0.0"),
     .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from: "4.0.6"),
     .package(url:"https://github.com/YOCKOW/SwiftTimeSpecification.git", from: "3.3.0"),
-    .package(url:"https://github.com/YOCKOW/SwiftXHTML.git", from: "2.6.0"),
+    .package(url:"https://github.com/YOCKOW/SwiftXHTML.git", from: "2.7.0"),
     .package(url:"https://github.com/YOCKOW/ySwiftExtensions.git", from: "1.7.6"),
   ],
   targets: [

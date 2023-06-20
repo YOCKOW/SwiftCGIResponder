@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  CGIContentOutputStream.swift
-   © 2017-2018, 2020 YOCKOW.
+   © 2017-2018,2020,2023 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -53,9 +53,9 @@ extension CGIContentOutputStream {
       } else {
         try self.write(contentsOf: try Data(contentsOf:url))
       }
-    case .xhtml(let document):
-      guard let data = document.xhtmlData else {
-        throw CGIResponderError.unexpectedError(message:"Cannot generate data of XHTML.")
+    case .xhtml(let document, let asHTML):
+      guard let data = asHTML ? try document.htmlData : document.xhtmlData else {
+        throw CGIResponderError.unexpectedError(message: "Cannot generate data of (X)HTML.")
       }
       try self.write(contentsOf: data)
     case .xml(let document, options: let options):

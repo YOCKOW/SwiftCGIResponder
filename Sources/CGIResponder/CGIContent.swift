@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  CGIContent.swift
-   © 2017-2018, 2020 YOCKOW.
+   © 2017-2018,2020,2023 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -36,8 +36,8 @@ public enum CGIContent {
   case url(URL)
   public init(url:URL) { self = .url(url) }
   
-  case xhtml(XHTMLDocument)
-  public init(xhtml document:XHTMLDocument) { self = .xhtml(document) }
+  case xhtml(XHTMLDocument, asHTML: Bool = false)
+  public init(xhtml document: XHTMLDocument, asHTML: Bool = false) { self = .xhtml(document, asHTML: asHTML) }
   
   case xml(XMLDocument, options: XMLNode.Options)
   public init(xml document: XMLDocument, options: XMLNode.Options = []) { self = .xml(document, options: options) }
@@ -77,9 +77,13 @@ extension CGIContent {
       return ContentType(pathExtension: .txt, parameters: _parameters(encoding: encoding))!
     case .url(let url):
       return _contentType(pathExtension: url.pathExtension)
-    case .xhtml(let document):
+    case .xhtml(let document, let asHTML):
       let encoding = document.prolog.stringEncoding
-      return ContentType(pathExtension: .xhtml, parameters: _parameters(encoding: encoding))!
+      if asHTML {
+        return ContentType(pathExtension: .html, parameters: _parameters(encoding: encoding))!
+      } else {
+        return ContentType(pathExtension: .xhtml, parameters: _parameters(encoding: encoding))!
+      }
     case .xml(let document, _):
       if let encodingString = document.characterEncoding,
          let type = ContentType(pathExtension: .xml, parameters: ["charset": encodingString]) {
@@ -95,7 +99,7 @@ extension CGIContent {
     switch self {
     case .string(_, encoding: let encoding):
       return encoding
-    case .xhtml(let document):
+    case .xhtml(let document, _):
       return document.prolog.stringEncoding
     case .xml(let document, _):
       return document.characterEncoding.flatMap({ String.Encoding(ianaCharacterSetName: $0) })
