@@ -189,6 +189,33 @@ final class ClientTests: XCTestCase {
     try __assert(item: items.dropFirst().first, expectedName: "Empty", expectedValue: "")
     try __assert(item: items.last, expectedName: "Another Non-Empty", expectedValue: "Another Value")
   }
+
+  func test_postedJSON() throws {
+    struct __Item: Decodable {
+      let property: String
+    }
+
+    let json = """
+    [
+      {"property": "value0"},
+      {"property": "value1"},
+      {"property": "value2"},
+    ]
+    """
+    let requestBody = InMemoryFile(Data(json.utf8))
+    let environment = Environment.virtual(
+      standardInput: requestBody,
+      variables: .virtual([
+        "CONTENT_TYPE": "application/json"
+      ])
+    )
+
+    let decoded = try environment.client.request.decodeJSON(as: [__Item].self)
+    XCTAssertEqual(decoded.count, 3)
+    XCTAssertEqual(decoded.first?.property, "value0")
+    XCTAssertEqual(decoded.dropFirst().first?.property, "value1")
+    XCTAssertEqual(decoded.last?.property, "value2")
+  }
 }
 
 

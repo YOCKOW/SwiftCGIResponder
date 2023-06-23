@@ -306,6 +306,31 @@ extension Client.Request {
                         temporaryDirectory: temporaryDirectory)
   }
 
+  public enum JSONDecodingError: Swift.Error {
+    case invalidRequest
+    case missingRequestBody
+  }
+
+  public static let defaultJSONDecoder: JSONDecoder = .init()
+
+  /// Decode posted JSON.
+  ///
+  /// - Returns: An instance of `T`
+  public func decodeJSON<T>(
+    as type: T.Type,
+    decoder: JSONDecoder = defaultJSONDecoder
+  ) throws -> T where T: Decodable {
+    guard let clientContentType = _client.contentType,
+          clientContentType.type == .application,
+          clientContentType.subtype == "json" else {
+      throw JSONDecodingError.invalidRequest
+    }
+    guard let requestBody = try _standardInput.readToEnd() else {
+      throw JSONDecodingError.missingRequestBody
+    }
+    return try decoder.decode(T.self, from: requestBody)
+  }
+
   /// Returns hostname of the client's request.
   public var hostname: Domain? {
     return _environmentVariables["HTTP_HOST"].flatMap{ Domain($0, options: .loose) }
