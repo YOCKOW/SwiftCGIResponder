@@ -23,14 +23,14 @@ jobs:
           - ubuntu-22.04
           - macOS-13
         swift-version:
-          - '5.8.1'
+          - '5.9'
         swift-compat-ver:
           - '5'
           # - '4.2'
           # - '4'
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Use a cache for ".build" directory.
       uses: actions/cache@v3
       with:
