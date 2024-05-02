@@ -1,10 +1,11 @@
 /* *************************************************************************************************
  Environment.swift
-   © 2017-2021,2023 YOCKOW.
+   © 2017-2021,2023,2024 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
+import CNetworkGear
 import Foundation
 import NetworkGear
 import TemporaryFile
