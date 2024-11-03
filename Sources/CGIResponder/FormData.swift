@@ -1,10 +1,11 @@
 /* *************************************************************************************************
  FormData.swift
-   © 2017-2018, 2020 YOCKOW.
+   © 2017-2018, 2020,2024 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
+import Dispatch
 import Foundation
 import TemporaryFile
 import yExtensions
@@ -310,22 +311,39 @@ private extension FileHandleProtocol {
   }
 }
 
-private var _instances: [ObjectIdentifier: FormData] = [:]
+private final class _FormDataInstanceManager: @unchecked Sendable {
+  private var _instances: [ObjectIdentifier: FormData] = [:]
+  private let _queue: DispatchQueue = .init(
+    label: "jp.YOCKOW.CGIResponder._FormDataInstanceManager",
+    attributes: .concurrent
+  )
+  static let shared: _FormDataInstanceManager = .init()
+
+  func withInstances<T>(_ body: (inout [ObjectIdentifier: FormData]) throws -> T) rethrows -> T {
+    return try _queue.sync(flags: .barrier) {
+      try body(&_instances)
+    }
+  }
+}
+
+
 private protocol _FormData {}
 extension _FormData {
   init<FH>(_input input: FH,
            boundary: String,
            stringEncoding encoding: String.Encoding,
            temporaryDirectory: TemporaryDirectory) throws where FH: FileHandleProtocol {
-    if let instance = _instances[input._objectIdentifier] {
-      self = instance as! Self
-    } else {
-      let newInstance = try FormData(__input: input,
-                                     boundary: boundary,
-                                     stringEncoding: encoding,
-                                     temporaryDirectory: temporaryDirectory)
-      _instances[ObjectIdentifier(input)] = newInstance
-      self = newInstance as! Self
+    self = try _FormDataInstanceManager.shared.withInstances {
+      if let instance = $0[input._objectIdentifier] {
+        return instance as! Self
+      } else {
+        let newInstance = try FormData(__input: input,
+                                       boundary: boundary,
+                                       stringEncoding: encoding,
+                                       temporaryDirectory: temporaryDirectory)
+        $0[ObjectIdentifier(input)] = newInstance
+        return newInstance as! Self
+      }
     }
   }
 }

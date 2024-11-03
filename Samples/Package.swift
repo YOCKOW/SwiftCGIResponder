@@ -44,7 +44,7 @@ private struct Dependency {
 
 private let dependencies: [Dependency] = [
   .init(.package(name: "CGIResponder", path: "../")),
-  .init(.package(url: "https://github.com/YOCKOW/SwiftNetworkGear.git", "0.14.8"..<"2.0.0")),
+  .init(.package(url: "https://github.com/YOCKOW/SwiftNetworkGear.git", "0.19.1"..<"2.0.0")),
 ]
 
 private extension Int {
@@ -75,6 +75,7 @@ let package = Package(
   ],
   products: products,
   dependencies: dependencies.map({ $0.packageDependency }),
-  targets: targets
+  targets: targets,
+  swiftLanguageVersions: [.v5, .version("6")]
 )
 

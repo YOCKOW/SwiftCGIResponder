@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  CGIResponder.swift
-   © 2017-2018, 2020-2021 YOCKOW.
+   © 2017-2018,2020-2021,2024 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -114,7 +114,7 @@ extension CGIResponder {
 }
 
 extension CGIResponder {
-  public static let defaultIgnoringError: (Error) -> Bool = {
+  public static let defaultIgnoringError: @Sendable (Error) -> Bool = {
     if case let error as CGIResponderError = $0 {
       switch error {
       case .statusCodeInconsistency, .stringEncodingInconsistency:

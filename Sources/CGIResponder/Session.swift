@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  session.swift
-   © 2020 YOCKOW.
+   © 2020,2024 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -10,8 +10,8 @@ import TimeSpecification
 import yExtensions
 
 /// Represents the identifier for Session.
-public struct SessionID: Equatable, Hashable, LosslessStringConvertible, Codable {
-  public enum Length {
+public struct SessionID: Equatable, Hashable, LosslessStringConvertible, Codable, Sendable {
+  public enum Length: Sendable {
     /// 128-bit length
     case normal
 
@@ -19,7 +19,7 @@ public struct SessionID: Equatable, Hashable, LosslessStringConvertible, Codable
     case long
   }
 
-  private enum _Variant: Equatable, Hashable {
+  private enum _Variant: Equatable, Hashable, Sendable {
     case normal((UInt64, UInt64))
     case long((UInt64, UInt64, UInt64, UInt64))
 
@@ -200,7 +200,7 @@ public struct Session<UserInfo>: Codable where UserInfo: Codable {
     return self.expirationTime < .timeIntervalSinceReferenceDate
   }
   
-  public enum CodingKeys: String, CodingKey {
+  public enum CodingKeys: String, CodingKey, Sendable {
     case version
     case id
     case creationTime
@@ -277,3 +277,5 @@ public struct Session<UserInfo>: Codable where UserInfo: Codable {
 extension Session: Equatable where UserInfo: Equatable {}
 
 extension Session: Hashable where UserInfo: Hashable {}
+
+extension Session: Sendable where UserInfo: Sendable {}

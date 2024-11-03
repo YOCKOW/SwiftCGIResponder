@@ -17,11 +17,11 @@ let package = Package(
   ],
   dependencies: [
     // Dependencies declare other packages that this package depends on.
-    .package(url:"https://github.com/YOCKOW/SwiftNetworkGear.git", "0.18.0"..<"2.0.0"),
-    .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from: "4.0.7"),
-    .package(url:"https://github.com/YOCKOW/SwiftTimeSpecification.git", from: "3.3.0"),
-    .package(url:"https://github.com/YOCKOW/SwiftXHTML.git", from: "2.7.0"),
-    .package(url:"https://github.com/YOCKOW/ySwiftExtensions.git", from: "1.10.1"),
+    .package(url:"https://github.com/YOCKOW/SwiftNetworkGear.git", "0.19.1"..<"2.0.0"),
+    .package(url:"https://github.com/YOCKOW/SwiftTemporaryFile.git", from: "4.1.0"),
+    .package(url:"https://github.com/YOCKOW/SwiftTimeSpecification.git", from: "3.4.0"),
+    .package(url:"https://github.com/YOCKOW/SwiftXHTML.git", from: "2.8.0"),
+    .package(url:"https://github.com/YOCKOW/ySwiftExtensions.git", from: "1.11.1"),
   ],
   targets: [
     // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -47,7 +47,7 @@ let package = Package(
       ]
     ),
   ],
-  swiftLanguageVersions: [.v4, .v4_2, .v5]
+  swiftLanguageVersions: [.v4, .v4_2, .v5, .version("6")]
 )
 
 import Foundation

@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  CGIError.swift
-   © 2020 YOCKOW.
+   © 2020,2024 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -16,11 +16,11 @@ public protocol CGIError: Error {
 internal struct _VersatileCGIError: CGIError {
   var status: HTTPStatusCode
   
-  var _localizedDescription: () -> String
+  var _localizedDescription: @Sendable () -> String
   var localizedDescription: String { return _localizedDescription() }
   
   init(status: HTTPStatusCode = .internalServerError,
-       localizedDescription: @escaping @autoclosure () -> String) {
+       localizedDescription: @escaping @Sendable @autoclosure () -> String) {
     self.status = status
     self._localizedDescription = localizedDescription
   }
