@@ -8,7 +8,7 @@
 import Foundation
 
 /// Errors related to `CGIResponder`
-public enum CGIResponderError: CGIError, Equatable {
+public enum CGIResponderError: CGIError, Equatable, Sendable {
   case dataConversionFailure
   case invalidArgument
   case illegalOperation

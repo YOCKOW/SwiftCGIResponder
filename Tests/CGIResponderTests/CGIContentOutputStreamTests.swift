@@ -1,12 +1,29 @@
 /* *************************************************************************************************
  CGIContentOutputStreamTests.swift
-   © 2018 YOCKOW.
+   © 2018,2024 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
- 
-import XCTest
+
 @testable import CGIResponder
+import Foundation
+
+#if swift(>=6) && canImport(Testing)
+import Testing
+
+@Suite final class CGIContentOutputStreamTests {
+  @Test func test_pathForUnexistingFile() {
+    let path = "--hoge/fuga/piyo--"
+    let unexisting = CGIContent(fileAtPath:path)
+
+    var output = Data()
+    #expect(throws: CGIResponderError.illegalOperation) {
+      try output.write(unexisting)
+    }
+  }
+}
+#else
+import XCTest
 
 final class CGIContentOutputStreamTests: XCTestCase {
   func test_pathForUnexistingFile() {
@@ -23,5 +40,4 @@ final class CGIContentOutputStreamTests: XCTestCase {
     }
   }
 }
-
-
+#endif

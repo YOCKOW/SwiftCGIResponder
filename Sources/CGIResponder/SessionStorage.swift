@@ -308,12 +308,14 @@ open class FileSystemSessionStorage<UserInfo>: SessionStorage where UserInfo: Co
   /// Remove all symbolic links pointing to non-existing targets (session files).
   open func removeBrokenSymbolicLinks() throws {
     let manager = FileManager.default
-    guard let enumerator = manager.enumerator(at: self.idDirectory,
-                                              includingPropertiesForKeys: [.isSymbolicLinkKey],
-                                              options: .skipsHiddenFiles,
-                                              errorHandler: nil)
-      else {
-        throw _VersatileCGIError(localizedDescription: "Enumeration failed at \(self.idDirectory)")
+    guard let enumerator = manager.enumerator(
+      at: self.idDirectory,
+      includingPropertiesForKeys: [.isSymbolicLinkKey],
+      options: .skipsHiddenFiles,
+      errorHandler: nil
+    ) else {
+      let desc = "Enumeration failed at \(self.idDirectory)"
+      throw _VersatileCGIError(localizedDescription: desc)
     }
     
     for case let fileURL as URL in enumerator {

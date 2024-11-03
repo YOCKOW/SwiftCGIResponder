@@ -6,6 +6,7 @@
  ************************************************************************************************ */
 
 import CNetworkGear
+import Dispatch
 import Foundation
 import NetworkGear
 import TemporaryFile
@@ -16,8 +17,12 @@ import yExtensions
 /// This class is expected to be used for the purpose of some tests.
 public final class Environment {
   /// Represents environment variables.
-  public class Variables {
+  public class Variables: @unchecked Sendable {
     private var _variables: [String: String]
+    private let _variablesQueue: DispatchQueue = .init(
+      label: "jp.YOCKOW.CGIResponder.Environment.Variables",
+      attributes: .concurrent
+    )
 
     fileprivate init(_ variables: [String: String]) {
       _variables = variables
@@ -26,10 +31,14 @@ public final class Environment {
     /// Accesses the environment variable for `name`
     public subscript(_ name: String) -> String? {
       get {
-        return self._variables[name]
+        return _variablesQueue.sync(flags: .barrier) {
+          return self._variables[name]
+        }
       }
       set {
-        self._variables[name] = newValue
+        _variablesQueue.sync(flags: .barrier) {
+          self._variables[name] = newValue
+        }
       }
     }
 
@@ -45,9 +54,9 @@ public final class Environment {
       return value
     }
 
-    internal final class _Virtual: Variables {}
+    internal final class _Virtual: Variables, @unchecked Sendable {}
 
-    private final class _Process: Variables {
+    private final class _Process: Variables, @unchecked Sendable {
       init() {
         super.init(ProcessInfo.processInfo.environment)
       }
@@ -102,12 +111,14 @@ public final class Environment {
   }
   
   /// Default environment.
-  public static let `default`: Environment = .init(
-    standardInput: FileHandle.standardInput,
-    standardOutput: FileHandle.standardOutput,
-    standardError: FileHandle.standardError,
-    variables: .default
-  )
+  public static var `default`: Environment {
+    .init(
+      standardInput: FileHandle.standardInput,
+      standardOutput: FileHandle.standardOutput,
+      standardError: FileHandle.standardError,
+      variables: .default
+    )
+  }
 
   internal static func virtual<STDIN, STDOUT, STDERR>(
     standardInput: STDIN,
@@ -174,7 +185,7 @@ public final class Client {
 
   /// The client who is trying to access the server.
   @available(*, deprecated, message: "Use `Environment.default.client` instead.")
-  public static let client: Client = Client(environment: .default)
+  @MainActor public static let client: Client = Client(environment: .default)
 }
 
 extension Environment {
@@ -466,7 +477,7 @@ public class Server {
   }
 
   @available(*, deprecated, message: "Use `Environment.default.server` instead.")
-  public static let server = Server(environment: .default)
+  @MainActor public static let server = Server(environment: .default)
 }
 
 extension Environment {

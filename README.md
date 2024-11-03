@@ -3,7 +3,7 @@
 It's an experimental library under development, and useless as of now.
 
 # Requirements
-* Swift 5
+* Swift 5, 6
   * CoreFoundation
   * Foundation
 * macOS >= 10.15 or Linux
