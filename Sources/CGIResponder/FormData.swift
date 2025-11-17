@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  FormData.swift
-   © 2017-2018, 2020,2024 YOCKOW.
+   © 2017-2018, 2020,2024-2025 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -219,7 +219,7 @@ public final class FormData: Sequence, IteratorProtocol {
       let stringEncoding: String.Encoding = header._stringEncoding ?? self._encoding
       let transferEncoding = header._transferEncoding ?? ._7bit
 
-      let temporaryFile = try TemporaryFile(in: self._temporaryDirectory, prefix: "FormData-")
+      let temporaryFile = HybridTemporaryFile(temporaryDirectory: self._temporaryDirectory)
 
       // Anyway, let's read & write data
       while true {
@@ -287,7 +287,7 @@ public final class FormData: Sequence, IteratorProtocol {
           }
           return FormData.Item.Value(content: .string(string, encoding: stringEncoding))
         } else {
-          return FormData.Item.Value(content: .init(temporaryFile: temporaryFile),
+          return FormData.Item.Value(content: .fileHandle(temporaryFile),
                                      filename: filename,
                                      contentType: nilableContentType)
         }

@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  CGIContent.swift
-   © 2017-2018,2020,2023-2024 YOCKOW.
+   © 2017-2018,2020,2023-2025 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -21,10 +21,12 @@ public enum CGIContent {
   case data(Data)
   public init(data:Data) { self = .data(data) }
   
-  case fileHandle(FileHandle)
-  public init(fileHandle:FileHandle) { self = .fileHandle(fileHandle) }
-  
+  case fileHandle(any FileHandleProtocol)
+  public init<FH>(fileHandle: FH) where FH: FileHandleProtocol { self = .fileHandle(fileHandle) }
+
+  @available(*, deprecated, message: "Use `fileHandle` instead.")
   case temporaryFile(TemporaryFile)
+  @available(*, deprecated, message: "Use `.init(fileHandle:)` instead.")
   public init(temporaryFile: TemporaryFile) { self = .temporaryFile(temporaryFile) }
   
   case path(String)
@@ -44,6 +46,8 @@ public enum CGIContent {
   
   case lazy(() throws -> CGIContent)
   public init(creator: @escaping () throws -> CGIContent) { self = .lazy(creator) }
+
+  case streamable(any CGIContentOutputStreamable)
 }
 
 extension CGIContent {

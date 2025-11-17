@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  CGIContentOutputStream.swift
-   © 2017-2018,2020,2023 YOCKOW.
+   © 2017-2018,2020,2023,2025 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -14,6 +14,11 @@ import yProtocols
 /// Inherits from `DataOutputStream`.
 public protocol CGIContentOutputStream: DataOutputStream {
   mutating func write(_: CGIContent) throws
+}
+
+public protocol CGIContentOutputStreamable: DataOutputStreamable {
+  /// Writes a CGI-content of this instance into the given output stream.
+  func write<Target>(to target: inout Target) throws where Target: CGIContentOutputStream
 }
 
 extension CGIContentOutputStream {
@@ -62,16 +67,20 @@ extension CGIContentOutputStream {
       try self.write(contentsOf: document.xmlData(options: options))
     case .lazy(let closure):
       try self.write(closure())
+    case .streamable(let streamable):
+      try streamable.write(to: &self)
     }
   }
 }
 
-extension AnyFileHandle: CGIContentOutputStream {}
+extension AnyFileHandle: CGIContentOutputStream, CGIContentOutputStreamable {}
 
-extension FileHandle: CGIContentOutputStream {}
+extension FileHandle: CGIContentOutputStream, CGIContentOutputStreamable {}
 
-extension Data: CGIContentOutputStream {}
+extension Data: CGIContentOutputStream, CGIContentOutputStreamable {}
 
-extension InMemoryFile: CGIContentOutputStream {}
+extension InMemoryFile: CGIContentOutputStream, CGIContentOutputStreamable {}
 
-extension TemporaryFile: CGIContentOutputStream {}
+extension TemporaryFile: CGIContentOutputStream, CGIContentOutputStreamable {}
+
+extension HybridTemporaryFile: CGIContentOutputStream, CGIContentOutputStreamable {}
