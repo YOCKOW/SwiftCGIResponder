@@ -24,34 +24,22 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-22.04
           - ubuntu-24.04
-          - macOS-14
-          - macOS-15
+          - macOS-26
         swift-version:
-          - '6.0.1'
-          - '5.10.1'
-          - '5.10'
+          - '6.2.1'
+          - '6.1.3'
+          - '6.0.3'
         swift-compat-ver:
           - '6'
           - '5'
           # - '4.2'
           # - '4'
         exclude:
-          - os: ubuntu-22.04
-            swift-version: '5.10'
-          - os: ubuntu-24.04
-            swift-version: '5.10'
-          - os: macOS-14
-            swift-version: '5.10.1'
-          - os: macOS-15
-            swift-version: '5.10.1'
-          - os: macOS-15
-            swift-version: '5.10'
-          - swift-version: '5.10.1'
-            swift-compat-ver: '6'
-          - swift-version: '5.10'
-            swift-compat-ver: '6'
+          - os: macOS-26
+            swift-version: '6.1.3'
+          - os: macOS-26
+            swift-version: '6.0.3'
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
