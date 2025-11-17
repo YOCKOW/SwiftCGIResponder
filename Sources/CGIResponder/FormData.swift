@@ -1,6 +1,6 @@
 /* *************************************************************************************************
  FormData.swift
-   © 2017-2018, 2020,2024 YOCKOW.
+   © 2017-2018, 2020,2024-2025 YOCKOW.
      Licensed under MIT License.
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
@@ -92,16 +92,42 @@ public final class FormData: Sequence, IteratorProtocol {
     /// Represents a value of the item.
     /// `content` may be expressed by `String`, `URL`, or `TemporaryFile`.
     public struct Value {
+      /// A type that represents the content of the value.
+      public enum Content {
+        case fileHandle(any FileHandleProtocol)
+        case string(String, encoding: String.Encoding)
+
+        public init?(_ cgiContent: CGIContent) {
+          switch cgiContent {
+          case .fileHandle(let fh):
+            self = .fileHandle(fh)
+          case .string(let string, let encoding):
+            self = .string(string, encoding: encoding)
+          default:
+            return nil
+          }
+        }
+
+        public var cgiContent: CGIContent {
+          switch self {
+          case .fileHandle(let fh):
+            return .fileHandle(fh)
+          case .string(let string, let encoding):
+            return .string(string, encoding: encoding)
+          }
+        }
+      }
+
       /// Posted data
-      public let content: CGIContent
-      
+      public let content: Content
+
       /// The filename tied up with the data.
       public let filename: String?
       
       /// The content type of the data.
       public let contentType: ContentType?
       
-      fileprivate init(content: CGIContent, filename: String? = nil, contentType: ContentType? = nil) {
+      fileprivate init(content: Content, filename: String? = nil, contentType: ContentType? = nil) {
         self.content = content
         self.filename = filename
         self.contentType = contentType
@@ -219,7 +245,7 @@ public final class FormData: Sequence, IteratorProtocol {
       let stringEncoding: String.Encoding = header._stringEncoding ?? self._encoding
       let transferEncoding = header._transferEncoding ?? ._7bit
 
-      let temporaryFile = try TemporaryFile(in: self._temporaryDirectory, prefix: "FormData-")
+      let temporaryFile = HybridTemporaryFile(temporaryDirectory: self._temporaryDirectory)
 
       // Anyway, let's read & write data
       while true {
@@ -287,7 +313,7 @@ public final class FormData: Sequence, IteratorProtocol {
           }
           return FormData.Item.Value(content: .string(string, encoding: stringEncoding))
         } else {
-          return FormData.Item.Value(content: .init(temporaryFile: temporaryFile),
+          return FormData.Item.Value(content: .fileHandle(temporaryFile),
                                      filename: filename,
                                      contentType: nilableContentType)
         }
