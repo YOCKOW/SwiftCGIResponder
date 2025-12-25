@@ -1,0 +1,20 @@
+name: Update Dependencies in README
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - '**'
+    paths:
+      - '**/Package.swift'
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  update-dependencies-files:
+    uses: YOCKOW/SwiftPackageHelperTools/.github/workflows/reusable_update-dependencies-files.yml@v1
+    with:
+      swift-version: "6.2.3"
+      mermaid-embedded-markdown-file: "./README.md"
+      commit-pattern: via-pr
+    secrets:
+      gh-token: ${{ secrets.GITHUB_TOKEN }}

@@ -11,7 +11,8 @@ It's an experimental library under development, and useless as of now.
 
 ## Dependencies
 
-![Dependencies](./dependencies.svg)
+<!-- SWIFT PACKAGE DEPENDENCIES MERMAID START -->
+<!-- SWIFT PACKAGE DEPENDENCIES MERMAID END -->
 
 
 # Usage
