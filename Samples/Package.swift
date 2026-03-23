@@ -1,4 +1,4 @@
-// swift-tools-version:5.6
+// swift-tools-version:6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import Foundation
@@ -68,14 +68,14 @@ for (ii, name) in sampleNames.enumerated() {
 let package = Package(
   name: "CGIResponderSamples",
   platforms: [
-    .macOS("10.15.4"), // Workaround for https://bugs.swift.org/browse/SR-13859
-    .iOS(.v13),
-    .watchOS(.v6),
-    .tvOS(.v13),
+    .macOS(.v13),
+    .iOS(.v16),
+    .watchOS(.v9),
+    .tvOS(.v16),
   ],
   products: products,
   dependencies: dependencies.map({ $0.packageDependency }),
   targets: targets,
-  swiftLanguageVersions: [.v5, .version("6")]
+  swiftLanguageModes: [.v5, .v6]
 )
 

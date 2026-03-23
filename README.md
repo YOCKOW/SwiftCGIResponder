@@ -3,10 +3,10 @@
 It's an experimental library under development, and useless as of now.
 
 # Requirements
-* Swift 5, 6
+* Swift >=6.2
   * CoreFoundation
   * Foundation
-* macOS >= 10.15 or Linux
+* macOS >= 13 or Linux
 * HTTP server software (e.g. Apache or similar software)
 
 ## Dependencies
@@ -19,15 +19,15 @@ title: CGIResponder Dependencies
 flowchart TD
   swiftbootstring(["Bootstring<br>@1.2.0"])
   swiftcgiresponder["CGIResponder"]
-  swiftnetworkgear(["NetworkGear<br>@0.19.7"])
-  swiftpublicsuffix(["PublicSuffix<br>@2.4.3"])
-  swiftranges(["Ranges<br>@3.2.2"])
-  swiftstringcomposition(["StringComposition<br>@2.2.0"])
-  swifttemporaryfile(["TemporaryFile<br>@4.2.1"])
+  swiftnetworkgear(["NetworkGear<br>@0.20.0"])
+  swiftpublicsuffix(["PublicSuffix<br>@2.4.13"])
+  swiftranges(["Ranges<br>@4.0.1"])
+  swiftstringcomposition(["StringComposition<br>@3.0.0"])
+  swifttemporaryfile(["TemporaryFile<br>@5.0.0"])
   swifttimespecification(["TimeSpecification<br>@3.4.0"])
-  swiftunicodesupplement(["UnicodeSupplement<br>@1.7.0"])
-  swiftxhtml(["XHTML<br>@2.8.0"])
-  yswiftextensions(["yExtensions<br>@1.12.1"])
+  swiftunicodesupplement(["UnicodeSupplement<br>@2.0.0"])
+  swiftxhtml(["XHTML<br>@3.0.0"])
+  yswiftextensions(["yExtensions<br>@2.0.0"])
 
   click swiftbootstring href "https://github.com/YOCKOW/SwiftBootstring.git"
   click swiftnetworkgear href "https://github.com/YOCKOW/SwiftNetworkGear.git"
