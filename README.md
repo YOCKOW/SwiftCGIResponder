@@ -3,10 +3,10 @@
 It's an experimental library under development, and useless as of now.
 
 # Requirements
-* Swift 5, 6
+* Swift >=6.2
   * CoreFoundation
   * Foundation
-* macOS >= 10.15 or Linux
+* macOS >= 13 or Linux
 * HTTP server software (e.g. Apache or similar software)
 
 ## Dependencies
