@@ -46,7 +46,7 @@ import Testing
     #expect(queryItems.first(where: { $0.name == "name1" })?.value == "value1")
     #expect(queryItems.first(where: { $0.name == "name2" })?.value == "value2")
     #expect(queryItems.first(where: { $0.name == "name3" })?.value == "value3")
-    #expect(queryItems.first(where: { $0.name == "name4" })?.value == nil)
+    #expect(queryItems.first(where: { $0.name == "name4" })?.value == Optional<String>.none)
     #expect(queryItems.first(where: { $0.name == "name4" }) != nil)
   }
 
@@ -60,7 +60,7 @@ import Testing
         "REQUEST_URI": "/",
       ])
     ).client
-    #expect(client.request.queryString == nil)
+    #expect(client.request.queryString.isNil)
 
     client = Environment.virtual(
       variables: .virtual([

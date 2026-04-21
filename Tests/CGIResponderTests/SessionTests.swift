@@ -5,9 +5,6 @@
      See "LICENSE.txt" for more information.
  ************************************************************************************************ */
 
-#if !canImport(Testing)
-#warning("SessionTests only run with swift-testing.")
-#else
 @testable import CGIResponder
 import Foundation
 import Testing
@@ -202,4 +199,3 @@ actor StringDictionaryFileSystemSessionStorageWrapper {
     }
   }
 }
-#endif

@@ -304,7 +304,7 @@ public final class FormData: Sequence, IteratorProtocol {
       // if `filename` is nil, regard the data as simple string.
       let value: FormData.Item.Value = try ({
         try temporaryFile.seek(toOffset: 0)
-        if filename == nil {
+        if filename.isNil {
           guard let data = try temporaryFile.readToEnd() else {
             return FormData.Item.Value(content: .string("", encoding: stringEncoding))
           }
