@@ -72,11 +72,12 @@ flowchart TD
 
 ```Swift
 import CGIResponder
+import NetworkGear
 
 var responder = CGIResponder()
 responder.status = .ok
-responder.contentType = ContentType(pathExtension:.txt, parameters:["charset":"UTF-8"])!
-responder.content = .string("Hello, World!\n", encoding:.utf8)
+responder.contentType = ContentType(pathExtension: .txt, parameters: [.charset: "UTF-8"])!
+responder.content = .string("Hello, World!\n", encoding: .utf8)
 try! responder.respond()
 
 // -- Output --
