@@ -1,6 +1,6 @@
 /***************************************************************************************************
  CRS-0001
-   © 2017-2018 YOCKOW.
+   © 2017-2018,2026 YOCKOW.
      Licensed under CC0 1.0 Universal.
      See "LICENSE.txt" for more information.
  **************************************************************************************************/
@@ -13,7 +13,7 @@ import NetworkGear
 
 var responder = CGIResponder()
 responder.status = .ok
-responder.contentType = ContentType(pathExtension: .txt, parameters: ["charset": "UTF-8"])!
+responder.contentType = ContentType(pathExtension: .txt, parameters: [.charset: "UTF-8"])!
 responder.content = .string("Hello, World!\n", encoding: .utf8)
 
 try! responder.respond()

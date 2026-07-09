@@ -351,7 +351,7 @@ extension Client.Request {
   /// An array of ETags generated from the value of `HTTP_IF_MATCH`
   public var ifMatch: HTTPETagList? {
     guard let ifMatchString = _environmentVariables["HTTP_IF_MATCH"] else { return nil }
-    return try? HTTPETagList(ifMatchString)
+    return HTTPETagList(string: ifMatchString)
   }
 
   /// A date generated from the value of `HTTP_IF_MODIFIED_SINCE`
@@ -362,7 +362,7 @@ extension Client.Request {
   /// An array of ETags generated from the value of `HTTP_IF_NONE_MATCH`
   public var ifNoneMatch: HTTPETagList? {
     guard let ifNoneMatchString = _environmentVariables["HTTP_IF_NONE_MATCH"] else { return nil }
-    return try? HTTPETagList(ifNoneMatchString)
+    return HTTPETagList(string: ifNoneMatchString)
   }
 
   /// A date generated from the value of `HTTP_IF_UNMODIFIED_SINCE`

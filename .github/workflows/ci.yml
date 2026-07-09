@@ -27,7 +27,7 @@ jobs:
           - ubuntu-24.04
           - macOS-26
         swift-version:
-          - '6.3.1'
+          - '6.3.3'
           - '6.2.4'
         swift-compat-ver:
           - '6'
@@ -36,14 +36,14 @@ jobs:
           # - '4'
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Install Dependencies
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
         sudo apt-get install --no-install-recommends libcurl4-openssl-dev
     - name: Use a cache for ".build" directory.
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       with:
         path: .build
         key: build-${{ github.workspace }}-${{ runner.os }}-${{ matrix.os }}-${{ matrix.swift-version }}-${{ matrix.swift-compat-ver }}-${{ hashFiles('**/*.swift') }}

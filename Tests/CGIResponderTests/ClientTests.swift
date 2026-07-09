@@ -28,7 +28,7 @@ import Testing
   @Test func test_queryItems() throws {
     let urlQuery = "name1=value1&name2=value2"
     let postData = "name3=value3&name4".data(using:.utf8)!
-    let contentType = ContentType(type:.application, subtype:"x-www-form-urlencoded")!
+    let contentType = ContentType.wwwFormURLEncoded
     let contentLength = postData.count
 
     let env: [String:String] = [
@@ -122,7 +122,7 @@ import Testing
     let thirdItem = try #require(iterator.next())
     #expect(thirdItem.name == "File")
     #expect(thirdItem.value.filename == "Filename.txt")
-    #expect(thirdItem.value.contentType == ContentType(pathExtension:.txt, parameters:["charset":"UTF-8"]))
+    #expect(thirdItem.value.contentType == ContentType(pathExtension:.txt, parameters: [.charset: "UTF-8"]))
     guard case .fileHandle(let temporaryFile) = thirdItem.value.content else {
       Issue.record("Unexpected content.")
       return

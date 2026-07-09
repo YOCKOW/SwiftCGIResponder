@@ -53,7 +53,7 @@ public enum CGIContent {
 extension CGIContent {
   /// Determine the content type
   internal var _defaultContentType: ContentType {
-    let octetStreamContentType = ContentType(type:.application, subtype:"octet-stream")!
+    let octetStreamContentType = ContentType.octetStream
     
     func _parameters(encoding: String.Encoding) -> ContentType.Parameters? {
       guard let charset = encoding.ianaCharacterSetName else { return nil }
@@ -90,7 +90,7 @@ extension CGIContent {
       }
     case .xml(let document, _):
       if let encodingString = document.characterEncoding,
-         let type = ContentType(pathExtension: .xml, parameters: ["charset": encodingString]) {
+         let type = ContentType(pathExtension: .xml, parameters: [.charset: encodingString]) {
         return type
       }
       return ContentType(pathExtension: .xml)!
