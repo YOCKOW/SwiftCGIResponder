@@ -31,14 +31,14 @@ private extension HTTPHeader {
     guard
       let dispositionField = self[.contentDisposition].first,
       case let disposition as ContentDisposition = dispositionField.source,
-      disposition.value == .formData,
-      let dispositionParameters = disposition.parameters,
-      let name = dispositionParameters[.name],
+      disposition.type == .formData,
+      let dispositionParameters = disposition.parameterList,
+      let name = dispositionParameters[.name]?.content,
       !name.isEmpty else
     {
       return nil
     }
-    return (name: name, filename: dispositionParameters[.filename])
+    return (name: name, filename: disposition.filename)
   }
   
   var _contentType: ContentType? {
@@ -243,7 +243,7 @@ public final class FormData: Sequence, IteratorProtocol {
       guard let (name, filename) = header._name_filename else { throw Error.invalidHTTPHeader }
       let nilableContentType = header._contentType
       let stringEncoding: String.Encoding = header._stringEncoding ?? self._encoding
-      let transferEncoding = header._transferEncoding ?? ._7bit
+      let transferEncoding = header._transferEncoding ?? .`7bit`
 
       let temporaryFile = HybridTemporaryFile(temporaryDirectory: self._temporaryDirectory)
 
@@ -286,7 +286,7 @@ public final class FormData: Sequence, IteratorProtocol {
 
         // write the data...
         switch transferEncoding {
-        case ._7bit, ._8bit, .binary:
+        case .`7bit`, .`8bit`, .binary:
           try temporaryFile.write(contentsOf: data)
         case .base64:
           guard let decoded = Data(base64Encoded: data, options: [.ignoreUnknownCharacters]) else {

@@ -24,7 +24,7 @@ private extension CGIResponder {
     var responder = CGIResponder()
     #expect(responder.contentType == ContentType(type:.application, subtype:"octet-stream"))
 
-    let text_utf8_contentType = ContentType(type:.text, subtype:"plain", parameters:["charset":"UTF-8"])!
+    let text_utf8_contentType = ContentType(type:.text, subtype:"plain", parameters: [.charset: "UTF-8"])
     responder.contentType = text_utf8_contentType
     #expect(responder.contentType.type == .text)
     #expect(responder.contentType.subtype == "plain")
@@ -114,7 +114,7 @@ private extension CGIResponder {
     }
 
     responder.status = .ok
-    responder.contentType = ContentType(type:.text, subtype:"plain")!
+    responder.contentType = .plainText
     responder.stringEncoding = .utf8
     responder.content = .init(string:"CGI")
 
