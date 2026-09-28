@@ -17,16 +17,16 @@ import Testing
     #expect(content._defaultContentType == ContentType("image/png"))
 
     content = .string("CONTENT", encoding: .japaneseEUC)
-    #expect(content._defaultContentType == ContentType("text/plain; charset=euc-jp"))
+    #expect(content._defaultContentType == ContentType("text/plain; charset=\(eucJPDescription)"))
 
     content = .url(URL(fileURLWithPath: "/my.style.css"))
     #expect(content._defaultContentType == ContentType("text/css"))
 
     content = .xhtml(try XHTMLDocument(rootElement: .init(name: "html")))
-    #expect(content._defaultContentType == ContentType("application/xhtml+xml; charset=utf-8"))
+    #expect(content._defaultContentType == ContentType("application/xhtml+xml; charset=\(utf8Description)"))
 
     content = .xhtml(try XHTMLDocument(rootElement: .init(name: "html")), asHTML: true)
-    #expect(content._defaultContentType == ContentType("text/html; charset=utf-8"))
+    #expect(content._defaultContentType == ContentType("text/html; charset=\(utf8Description)"))
   }
 
   @Test func test_xhtml_html() throws {
@@ -54,7 +54,7 @@ import Testing
       let xhtmlExpected = try #require(output.readToEnd().flatMap({ String(data: $0, encoding: .utf8) }))
       #expect(
         xhtmlExpected ==
-        #"<?xml version="1.0" encoding="utf-8"?>\#n<!DOCTYPE html>\#n<html xmlns="http://www.w3.org/1999/xhtml"><head><title>YOCKOW</title></head><body><div>Hi, I&apos;m YOCKOW.</div></body></html>"#
+        #"<?xml version="1.0" encoding="\#(utf8Description)"?>\#n<!DOCTYPE html>\#n<html xmlns="http://www.w3.org/1999/xhtml"><head><title>YOCKOW</title></head><body><div>Hi, I&apos;m YOCKOW.</div></body></html>"#
       )
     }
 
