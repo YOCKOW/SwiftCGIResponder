@@ -7,8 +7,8 @@ import PackageDescription
 private let useLocal = ProcessInfo.processInfo.environment["YOCKOW_USE_LOCAL_PACKAGES"] != nil
 
 private let sampleNames: [String] = [
-  "WithoutLibrary", // CSR-0000
-  "SimpleCGI", // CSR-0001
+  "WithoutLibrary", // CRS-0000
+  "SimpleCGI", // CRS-0001
 ]
 
 private struct Dependency {
@@ -44,7 +44,8 @@ private struct Dependency {
 
 private let dependencies: [Dependency] = [
   .init(.package(name: "CGIResponder", path: "../")),
-  .init(.package(url: "https://github.com/YOCKOW/SwiftNetworkGear.git", "0.21.0"..<"2.0.0")),
+  .init(.package(url: "https://github.com/YOCKOW/SwiftNetworkGear.git", "0.22.0"..<"2.0.0")),
+  .init(.package(url: "https://github.com/YOCKOW/ySwiftExtensions.git", from: "2.3.0")),
 ]
 
 private extension Int {

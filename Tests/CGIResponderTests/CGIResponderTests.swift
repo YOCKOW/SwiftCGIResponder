@@ -10,8 +10,6 @@ import Foundation
 import TemporaryFile
 import Testing
 
-let CRLF = "\u{0D}\u{0A}"
-
 private extension CGIResponder {
   mutating func _resetEnvironment(_ newEnvironment: Environment = .virtual(variables: .virtual([:]))) {
     self._environment = newEnvironment
@@ -120,7 +118,7 @@ private extension CGIResponder {
 
     try check(
       "Status: 200 OK\(CRLF)" +
-      "Content-Type: text/plain; charset=utf-8\(CRLF)" +
+      "Content-Type: text/plain; charset=\(utf8Description)\(CRLF)" +
       "\(CRLF)" +
       "CGI"
     )
@@ -158,7 +156,7 @@ private extension CGIResponder {
       outputString ==
       """
       Status: 404 Not Found\(CRLF)\
-      Content-Type: text/plain; charset=utf-8\(CRLF)\
+      Content-Type: text/plain; charset=\(utf8Description)\(CRLF)\
       \(CRLF)\
       Not Found.
       """
